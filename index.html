@@ -28,6 +28,11 @@
       </div>
 
       <div class="control-group">
+        <label>אימוג'י:</label>
+        <button id="emoji-btn">⭐</button>
+      </div>
+
+      <div class="control-group">
         <label for="shape-select">בחר צורה:</label>
         <select id="shape-select" onchange="updateControls()">
           <option value="">-- בחר צורה --</option>
@@ -103,6 +108,18 @@
     </div>
   </div>
 
+  <div id="picker-overlay">
+    <div id="picker-modal">
+      <div id="picker-header">
+        <span>בחר אימוג'י</span>
+        <button id="picker-close">✕</button>
+      </div>
+      <div id="emoji-grid"></div>
+    </div>
+  </div>
+
+  <script src="emojis.js"></script>
+  <script src="shapes.js"></script>
   <script src="script.js"></script>
 </body>
 

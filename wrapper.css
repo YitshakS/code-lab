@@ -1,0 +1,173 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+#wrapper-container {
+  display: flex;
+  height: 100vh;
+}
+
+#editor-panel {
+  width: 45%;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  background: #1e1e1e;
+}
+
+#splitter {
+  width: 5px;
+  cursor: ew-resize;
+  background: #3c3c3c;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+#splitter:hover {
+  background: #4CAF50;
+}
+
+#tabs {
+  display: flex;
+  background: #252526;
+  border-bottom: 1px solid #3c3c3c;
+  flex-shrink: 0;
+}
+
+.tab {
+  padding: 10px 18px;
+  background: transparent;
+  color: #999;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-family: 'Consolas', monospace;
+  transition: color 0.2s;
+}
+
+.tab:hover {
+  color: #ddd;
+  background: #2a2d2e;
+}
+
+.tab.active {
+  color: #fff;
+  border-bottom: 2px solid #4CAF50;
+  background: #1e1e1e;
+}
+
+.tab.exercise {
+  color: #6dde73;
+}
+
+.tab.readonly {
+  color: #666;
+  font-style: italic;
+}
+
+.tab.readonly.active {
+  border-bottom-color: #666;
+}
+
+#editor-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.CodeMirror {
+  height: 100% !important;
+  font-size: 14px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+#editor-footer {
+  padding: 10px 16px;
+  background: #252526;
+  border-top: 1px solid #3c3c3c;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+#run-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#auto-label, #run-label {
+  font-size: 0.85em;
+  color: #666;
+  transition: color 0.2s;
+}
+
+#auto-label.active {
+  color: #4CAF50;
+}
+
+#run-label.active {
+  color: #4CAF50;
+}
+
+#run-control button {
+  padding: 7px 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  transition: background 0.2s, color 0.2s;
+}
+
+#auto-btn {
+  background: #333;
+  color: #666;
+  border-radius: 6px 0 0 6px;
+  border-right: 1px solid #555;
+}
+
+#auto-btn:hover { color: #ccc; }
+
+#auto-btn.active {
+  background: #4CAF50;
+  color: white;
+}
+
+#run-btn {
+  background: #4CAF50;
+  color: white;
+  border-radius: 0 6px 6px 0;
+}
+
+#run-btn:hover { background: #45a049; }
+
+#run-btn.inactive {
+  background: #333;
+  color: #666;
+}
+
+#preview-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#preview {
+  flex: 1;
+  border: none;
+  width: 100%;
+  background: white;
+}

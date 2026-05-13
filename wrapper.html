@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>תרגיל לולאות</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+
+  <link rel="stylesheet" href="wrapper.css">
+</head>
+<body>
+  <div id="wrapper-container">
+
+    <div id="editor-panel">
+      <div id="tabs">
+        <button class="tab readonly" data-file="index.html">index.html 👁</button>
+        <button class="tab readonly" data-file="style.css">style.css 👁</button>
+        <button class="tab readonly" data-file="script.js">script.js 👁</button>
+        <button class="tab exercise active" data-file="emojis.js">emojis.js ✏️</button>
+        <button class="tab exercise" data-file="shapes.js">shapes.js ✏️</button>
+      </div>
+      <div id="editor-container">
+        <textarea id="code-editor"></textarea>
+      </div>
+      <div id="editor-footer">
+        <div id="run-control">
+          <span id="auto-label">רענון אוטומטי<br>בכל שינוי קוד</span>
+          <button id="auto-btn">↺</button>
+          <button id="run-btn">▶</button>
+          <span id="run-label">רענון בלחיצה<br>על הכפתור</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="splitter"></div>
+
+    <div id="preview-panel">
+      <iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+
+  </div>
+
+  <script src="wrapper.js"></script>
+</body>
+</html>

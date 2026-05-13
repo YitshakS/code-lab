@@ -135,6 +135,8 @@ input[type="range"] {
   line-height: var(--cell-size);
   color: var(--star-color);
   transition: color 0.4s, filter 0.4s;
+  border: 1px solid transparent;
+  margin: -0.5px;
 }
 
 .dark-mode .cell {
@@ -142,8 +144,7 @@ input[type="range"] {
 }
 
 .show-border .cell {
-  border: 1px solid red;
-  margin: -0.5px;
+  border-color: red;
 }
 
 .switch {
@@ -237,4 +238,96 @@ input:checked + .slider:before {
 #rows-group,
 #cols-group {
   display: none;
+}
+
+.rowcols-group {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+#emoji-btn {
+  font-size: 1.5em;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  width: 100%;
+  line-height: 1;
+  text-align: right;
+}
+
+#emoji-btn:hover {
+  border-color: var(--accent-color);
+}
+
+#picker-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+
+#picker-overlay.open {
+  display: flex;
+}
+
+#picker-modal {
+  background: var(--panel-bg-color);
+  border-radius: 12px;
+  padding: 16px;
+  width: min(90vw, 420px);
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+#picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  color: var(--text-color);
+  flex-shrink: 0;
+}
+
+#picker-close {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+#picker-close:hover {
+  background: var(--border-color);
+}
+
+#emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  gap: 2px;
+}
+
+.emoji-item {
+  font-size: 1.4em;
+  padding: 3px;
+  cursor: pointer;
+  border-radius: 4px;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.emoji-item:hover {
+  background: var(--border-color);
 }
