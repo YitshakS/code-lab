@@ -331,3 +331,4 @@ input:checked + .slider:before {
 .emoji-item:hover {
   background: var(--border-color);
 }
+

@@ -82,7 +82,7 @@ function getIframeState() {
       cellSize: sel('cell-size-slider').value,
       darkMode: sel('mode-toggle').checked,
       border:   sel('border-toggle').checked,
-      emoji:    preview.contentWindow.emoji || '⭐',
+      emoji:    preview.contentWindow.emoji || '\u2B50',
     };
   } catch(e) { return null; }
 }

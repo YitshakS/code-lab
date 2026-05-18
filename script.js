@@ -1,4 +1,4 @@
-var emoji = '⭐';
+var emoji = '\u2B50';
 const canvas = document.getElementById('canvas');
 const shapeSelect = document.getElementById('shape-select');
 const thicknessGroup = document.getElementById('thickness-group');
