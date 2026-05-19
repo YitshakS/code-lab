@@ -201,8 +201,9 @@ input:checked + .slider:before {
   transform: translateX(-22px);
 }
 
-#shape-dependent-controls {
-  display: none;
+.control-disabled {
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .style-and-thickness-group {
@@ -229,15 +230,6 @@ input:checked + .slider:before {
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-}
-
-#thickness-group {
-  display: none;
-}
-
-#rows-group,
-#cols-group {
-  display: none;
 }
 
 .rowcols-group {

@@ -28,14 +28,9 @@
       </div>
 
       <div class="control-group">
-        <label>אימוג'י:</label>
-        <button id="emoji-btn">&#x2B50;</button>
-      </div>
-
-      <div class="control-group">
-        <label for="shape-select">בחר צורה:</label>
+        <label for="shape-select">צורה:</label>
         <select id="shape-select" onchange="updateControls()">
-          <option value="">-- בחר צורה --</option>
+          <option value="">-- צורה --</option>
           <option value="rectangle1">☐ ◻</option>
           <option value="rectangle2">☒ ⊠</option>
           <option value="triangle1">◺</option>
@@ -48,10 +43,29 @@
       </div>
 
       <div id="shape-dependent-controls">
+        <div class="control-group">
+          <label>אימוג'י:</label>
+          <button id="emoji-btn">&#x2B50;</button>
+        </div>
+
         <div class="control-group" id="cell-size-group">
           <label for="cell-size-slider">גודל תא:</label>
           <input type="range" id="cell-size-slider" min="20" max="100" value="25">
           <span id="cell-size-value">25px</span>
+        </div>
+
+        <div class="control-group style-and-thickness-group">
+          <div class="style-toggle-container">
+            <label for="border-toggle">גבול תא:</label>
+            <div class="style-toggle-row">
+              <span>הסתר</span>
+              <label class="switch">
+                <input type="checkbox" id="border-toggle">
+                <span class="slider"></span>
+              </label>
+              <span>הצג</span>
+            </div>
+          </div>
         </div>
 
         <div class="control-group style-and-thickness-group">
@@ -67,24 +81,10 @@
             </div>
           </div>
         </div>
-        
+
         <div class="control-group" id="thickness-group">
           <label for="thickness-input">עובי:</label>
           <input type="number" id="thickness-input" min="1" max="5" value="1">
-        </div>
-
-        <div class="control-group style-and-thickness-group">
-          <div class="style-toggle-container">
-            <label for="border-toggle">גבול תא:</label>
-            <div class="style-toggle-row">
-              <span>הסתר</span>
-              <label class="switch">
-                <input type="checkbox" id="border-toggle">
-                <span class="slider"></span>
-              </label>
-              <span>הצג</span>
-            </div>
-          </div>
         </div>
 
         <div class="style-and-thickness-group rowcols-group">

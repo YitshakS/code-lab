@@ -111,35 +111,29 @@ function getSelectedStyle() {
   return styleToggle.checked ? 'solid' : 'hollow';
 }
 
+function setDisabled(el, on) {
+  el.classList.toggle('control-disabled', on);
+  el.querySelectorAll('input, button, select').forEach(inp => inp.disabled = on);
+}
+
 function updateControls() {
   const selectedShape = shapeSelect.value;
   const isHollow = getSelectedStyle() === 'hollow';
+  const noShape = !selectedShape;
 
-  const show = (el, on) => el.style.display = on ? 'block' : 'none';
-  // חדש: הצגה כ-flex רק לקבוצות שצריכות label לצד input
-  const showFlex = (el, on) => el.style.display = on ? 'flex' : 'none';
+  if (noShape) clearCanvas();
 
-  show(shapeDependentControls, !!selectedShape);
+  setDisabled(shapeDependentControls, noShape);
 
-  if (!selectedShape) {
-    clearCanvas();
-    showFlex(thicknessGroup, false);
-    showFlex(rowsGroup, false);
-    showFlex(colsGroup, false);
-    return;
+  if (!noShape) {
+    setDisabled(thicknessGroup, !isHollow);
+
+    if (!rowsInput.value) rowsInput.value = 5;
+
+    const isRect1 = selectedShape === 'rectangle1';
+    setDisabled(colsGroup, !isRect1);
+    if (isRect1 && !colsInput.value) colsInput.value = 10;
   }
-
-  // הכותרת לצד ה-input
-  showFlex(thicknessGroup, isHollow);
-
-  // שורות תמיד מוצג, לצד ה-input
-  showFlex(rowsGroup, true);
-  if (!rowsInput.value) rowsInput.value = 5;
-
-  const isRectangleWithCols = (selectedShape === 'rectangle1');
-  // עמודות לצד ה-input רק במלבנים הרלוונטיים
-  showFlex(colsGroup, isRectangleWithCols);
-  if (isRectangleWithCols && !colsInput.value) colsInput.value = 10;
 }
 
 
