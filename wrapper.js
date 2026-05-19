@@ -1,4 +1,4 @@
-const FILE_NAMES = ['index.html', 'style.css', 'script.js', 'emojis.js', 'shapes.js'];
+const TAB_FILES = ['index.html', 'style.css', 'script.js', 'emojis.js', 'shapes.js'];
 const FILE_MODES = {
   'index.html': 'htmlmixed',
   'style.css': 'css',
@@ -6,13 +6,23 @@ const FILE_MODES = {
   'emojis.js': 'javascript',
   'shapes.js': 'javascript'
 };
+const EXERCISE_MAP = { 'emojis.js': 'emojis_exercise.js' };
+const SOLUTION_MAP = { 'emojis.js': 'emojis_solution.js' };
 
 const files = {};
 let editor;
 let activeFile = 'emojis.js';
+let showingSolution = false;
+let studentSnapshot = null;
 
 async function loadFiles() {
-  await Promise.all(FILE_NAMES.map(async name => {
+  await Promise.all(TAB_FILES.map(async name => {
+    const fetchName = EXERCISE_MAP[name] || name;
+    const res = await fetch(fetchName);
+    if (!res.ok) throw new Error(`Failed to load ${fetchName}`);
+    files[name] = await res.text();
+  }));
+  await Promise.all(Object.values(SOLUTION_MAP).map(async name => {
     const res = await fetch(name);
     if (!res.ok) throw new Error(`Failed to load ${name}`);
     files[name] = await res.text();
@@ -42,8 +52,46 @@ function onEditorChange() {
 
 const EDITABLE_FILES = ['emojis.js', 'shapes.js'];
 
+function updateSolutionBtn() {
+  const icon = document.getElementById('solution-icon');
+  if (SOLUTION_MAP[activeFile]) {
+    icon.style.display = '';
+    icon.classList.toggle('active', showingSolution);
+  } else {
+    icon.style.display = 'none';
+  }
+}
+
+function toggleSolution() {
+  if (!SOLUTION_MAP[activeFile]) return;
+  if (!showingSolution) {
+    studentSnapshot = { value: editor.getValue(), history: editor.getHistory() };
+    editor.off('change', onEditorChange);
+    editor.setValue(files[SOLUTION_MAP[activeFile]]);
+    editor.clearHistory();
+    editor.on('change', onEditorChange);
+    editor.setOption('readOnly', true);
+    showingSolution = true;
+    if (autoRun) runCode();
+  } else {
+    editor.off('change', onEditorChange);
+    editor.setValue(studentSnapshot.value);
+    editor.setHistory(studentSnapshot.history);
+    editor.on('change', onEditorChange);
+    editor.setOption('readOnly', false);
+    showingSolution = false;
+    studentSnapshot = null;
+    if (autoRun) runCode();
+  }
+  updateSolutionBtn();
+}
+
 function switchTab(fileName) {
-  if (EDITABLE_FILES.includes(activeFile)) {
+  if (showingSolution && studentSnapshot) {
+    files[activeFile] = studentSnapshot.value;
+    showingSolution = false;
+    studentSnapshot = null;
+  } else if (EDITABLE_FILES.includes(activeFile)) {
     files[activeFile] = editor.getValue();
   }
   activeFile = fileName;
@@ -59,6 +107,7 @@ function switchTab(fileName) {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.classList.toggle('active', tab.dataset.file === fileName);
   });
+  updateSolutionBtn();
 }
 
 function extractBody(html) {
@@ -114,10 +163,15 @@ function buildRestoreScript(state) {
 }
 
 function runCode() {
-  files[activeFile] = editor.getValue();
+  if (!showingSolution) {
+    files[activeFile] = editor.getValue();
+  }
 
   const state = getIframeState();
   const bodyContent = extractBody(files['index.html']);
+  const emojisContent = (showingSolution && activeFile === 'emojis.js')
+    ? editor.getValue()
+    : files['emojis.js'];
 
   const html = `<!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -128,7 +182,7 @@ function runCode() {
 </head>
 <body>
 ${bodyContent}
-<script>${files['emojis.js']}<\/script>
+<script>${emojisContent}<\/script>
 <script>${files['shapes.js']}<\/script>
 <script>${files['script.js']}<\/script>
 ${buildRestoreScript(state)}
@@ -188,7 +242,13 @@ document.addEventListener('mouseup', () => {
 });
 
 document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => switchTab(tab.dataset.file));
+  tab.addEventListener('click', (e) => {
+    if (e.target.id === 'solution-icon') {
+      toggleSolution();
+      return;
+    }
+    switchTab(tab.dataset.file);
+  });
 });
 
 runBtn.addEventListener('click', () => {
@@ -204,6 +264,7 @@ loadFiles()
   .then(() => {
     initEditor();
     updateButtonStates();
+    updateSolutionBtn();
     runCode();
   })
   .catch(err => {

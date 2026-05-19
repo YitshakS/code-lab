@@ -74,7 +74,6 @@ body {
 
 .tab.readonly {
   color: #666;
-  font-style: italic;
 }
 
 .tab.readonly.active {
@@ -91,6 +90,25 @@ body {
   height: 100% !important;
   font-size: 14px;
   font-family: 'Consolas', 'Courier New', monospace;
+}
+
+#solution-icon {
+  cursor: pointer;
+  opacity: 0.55;
+  display: inline-block;
+  transform: scaleY(0.75);
+  filter: saturate(0.6) brightness(0.9);
+  transition: opacity 0.2s, filter 0.2s;
+}
+
+#solution-icon:hover {
+  opacity: 0.85;
+  filter: saturate(0.8) brightness(1);
+}
+
+#solution-icon.active {
+  opacity: 1;
+  filter: saturate(1) brightness(1);
 }
 
 #editor-footer {
