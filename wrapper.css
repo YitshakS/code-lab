@@ -80,6 +80,40 @@ body {
   border-bottom-color: #666;
 }
 
+#mode-switch {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 5px;
+  vertical-align: middle;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #3c3c3c;
+}
+
+#exercise-icon, #solution-icon {
+  cursor: pointer;
+  padding: 1px 5px;
+  background: #252526;
+  line-height: 1.2;
+  opacity: 0.3;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+#exercise-icon {
+  padding: 3.1px 1px;
+}
+
+#solution-icon {
+  color: #cb801f;
+  font-size: 1.3em;
+  padding: 1px 2px;
+}
+
+#exercise-icon.active, #solution-icon.active {
+  opacity: 1;
+  background: #3c3c3c;
+}
+
 #editor-container {
   flex: 1;
   overflow: hidden;
@@ -90,25 +124,6 @@ body {
   height: 100% !important;
   font-size: 14px;
   font-family: 'Consolas', 'Courier New', monospace;
-}
-
-#solution-icon {
-  cursor: pointer;
-  opacity: 0.55;
-  display: inline-block;
-  transform: scaleY(0.75);
-  filter: saturate(0.6) brightness(0.9);
-  transition: opacity 0.2s, filter 0.2s;
-}
-
-#solution-icon:hover {
-  opacity: 0.85;
-  filter: saturate(0.8) brightness(1);
-}
-
-#solution-icon.active {
-  opacity: 1;
-  filter: saturate(1) brightness(1);
 }
 
 #editor-footer {

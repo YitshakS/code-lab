@@ -53,12 +53,13 @@ function onEditorChange() {
 const EDITABLE_FILES = ['emojis.js', 'shapes.js'];
 
 function updateSolutionBtn() {
-  const icon = document.getElementById('solution-icon');
+  const modeSwitch = document.getElementById('mode-switch');
   if (SOLUTION_MAP[activeFile]) {
-    icon.style.display = '';
-    icon.classList.toggle('active', showingSolution);
+    modeSwitch.style.display = '';
+    document.getElementById('exercise-icon').classList.toggle('active', !showingSolution);
+    document.getElementById('solution-icon').classList.toggle('active', showingSolution);
   } else {
-    icon.style.display = 'none';
+    modeSwitch.style.display = 'none';
   }
 }
 
@@ -72,7 +73,7 @@ function toggleSolution() {
     editor.on('change', onEditorChange);
     editor.setOption('readOnly', true);
     showingSolution = true;
-    if (autoRun) runCode();
+    runCode();
   } else {
     editor.off('change', onEditorChange);
     editor.setValue(studentSnapshot.value);
@@ -81,12 +82,13 @@ function toggleSolution() {
     editor.setOption('readOnly', false);
     showingSolution = false;
     studentSnapshot = null;
-    if (autoRun) runCode();
+    runCode();
   }
   updateSolutionBtn();
 }
 
 function switchTab(fileName) {
+  if (fileName === activeFile) return;
   if (showingSolution && studentSnapshot) {
     files[activeFile] = studentSnapshot.value;
     showingSolution = false;
@@ -244,7 +246,11 @@ document.addEventListener('mouseup', () => {
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', (e) => {
     if (e.target.id === 'solution-icon') {
-      toggleSolution();
+      if (!showingSolution) toggleSolution();
+      return;
+    }
+    if (e.target.id === 'exercise-icon') {
+      if (showingSolution) toggleSolution();
       return;
     }
     switchTab(tab.dataset.file);

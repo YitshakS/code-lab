@@ -187,20 +187,7 @@ document.getElementById('picker-close').addEventListener('click', () => {
   pickerOverlay.classList.remove('open');
 });
 
-function addEmoji(char) {
-  const span = document.createElement('span');
-  span.textContent = char;
-  span.classList.add('emoji-item');
-  span.addEventListener('click', () => {
-    emoji = char;
-    emojiBtn.textContent = char;
-    pickerOverlay.classList.remove('open');
-    drawShape();
-  });
-  emojiGrid.appendChild(span);
-}
-
-fillPicker();
+fillEmojiPicker();
 updateCellSize();
 updateControls();
 drawShape();
