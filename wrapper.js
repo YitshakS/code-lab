@@ -1,5 +1,6 @@
-const TAB_FILES = ['index.html', 'style.css', 'script.js', 'emojis.js', 'shapes.js'];
+const TAB_FILES = ['instructions.md', 'index.html', 'style.css', 'script.js', 'emojis.js', 'shapes.js'];
 const FILE_MODES = {
+  'instructions.md': null,
   'index.html': 'htmlmixed',
   'style.css': 'css',
   'script.js': 'javascript',
@@ -7,6 +8,7 @@ const FILE_MODES = {
   'shapes.js': 'javascript'
 };
 const FETCH_MAP = {
+  'instructions.md': 'loops/instructions.md',
   'index.html': 'loops/index.html',
   'style.css':  'loops/style.css',
   'script.js':  'loops/script.js',
@@ -17,7 +19,7 @@ const SOLUTION_MAP = { 'emojis.js': 'loops/emojis/solution.js' };
 
 const files = {};
 let editor;
-let activeFile = 'emojis.js';
+let activeFile = 'instructions.md';
 let showingSolution = false;
 let studentSnapshot = null;
 
@@ -93,6 +95,39 @@ function toggleSolution() {
   updateSolutionBtn();
 }
 
+let instructionsCodeMode = false;
+
+function updateInstructionsModeSwitch() {
+  const sw = document.getElementById('instructions-mode-switch');
+  const isInstructions = activeFile === 'instructions.md';
+  sw.style.display = isInstructions ? '' : 'none';
+  if (isInstructions) {
+    document.getElementById('read-icon').classList.toggle('active', !instructionsCodeMode);
+    document.getElementById('code-icon').classList.toggle('active', instructionsCodeMode);
+  }
+}
+
+function renderInstructions() {
+  const md = files['instructions.md'] || '';
+  const rendered = document.getElementById('instructions-rendered');
+  const cm = document.querySelector('.CodeMirror');
+
+  if (instructionsCodeMode) {
+    rendered.style.display = 'none';
+    cm.style.display = '';
+    editor.off('change', onEditorChange);
+    editor.setValue(md);
+    editor.clearHistory();
+    editor.setOption('mode', null);
+    editor.setOption('readOnly', true);
+  } else {
+    cm.style.display = 'none';
+    rendered.style.display = 'block';
+    rendered.innerHTML = marked.parse(md);
+  }
+  runSolution();
+}
+
 function switchTab(fileName) {
   if (fileName === activeFile) return;
   if (showingSolution && studentSnapshot) {
@@ -104,18 +139,31 @@ function switchTab(fileName) {
   }
   activeFile = fileName;
 
-  const isReadOnly = !EDITABLE_FILES.includes(fileName);
-  editor.off('change', onEditorChange);
-  editor.setValue(files[fileName]);
-  editor.clearHistory();
-  editor.on('change', onEditorChange);
-  editor.setOption('mode', FILE_MODES[fileName]);
-  editor.setOption('readOnly', isReadOnly);
+  const isInstructions = fileName === 'instructions.md';
+
+  if (!isInstructions) {
+    document.getElementById('instructions-rendered').style.display = 'none';
+    document.querySelector('.CodeMirror').style.display = '';
+    const isReadOnly = !EDITABLE_FILES.includes(fileName);
+    editor.off('change', onEditorChange);
+    editor.setValue(files[fileName]);
+    editor.clearHistory();
+    editor.on('change', onEditorChange);
+    editor.setOption('mode', FILE_MODES[fileName]);
+    editor.setOption('readOnly', isReadOnly);
+  }
 
   document.querySelectorAll('.tab').forEach(tab => {
     tab.classList.toggle('active', tab.dataset.file === fileName);
   });
   updateSolutionBtn();
+  updateInstructionsModeSwitch();
+
+  if (isInstructions) {
+    renderInstructions();
+  } else {
+    runCode();
+  }
 }
 
 function extractBody(html) {
@@ -168,6 +216,28 @@ function buildRestoreScript(state) {
   drawShape();
 })();
 <\/script>`;
+}
+
+function runSolution() {
+  const state = getIframeState();
+  const bodyContent = extractBody(files['index.html']);
+  const solutionContent = files[SOLUTION_MAP['emojis.js']] || files['emojis.js'];
+  const html = `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>${files['style.css']}</style>
+</head>
+<body>
+${bodyContent}
+<script>${solutionContent}<\/script>
+<script>${files['shapes.js']}<\/script>
+<script>${files['script.js']}<\/script>
+${buildRestoreScript(state)}
+</body>
+</html>`;
+  preview.srcdoc = html;
 }
 
 function runCode() {
@@ -259,6 +329,14 @@ document.querySelectorAll('.tab').forEach(tab => {
       if (showingSolution) toggleSolution();
       return;
     }
+    if (e.target.id === 'read-icon') {
+      if (instructionsCodeMode) { instructionsCodeMode = false; renderInstructions(); updateInstructionsModeSwitch(); }
+      return;
+    }
+    if (e.target.id === 'code-icon') {
+      if (!instructionsCodeMode) { instructionsCodeMode = true; renderInstructions(); updateInstructionsModeSwitch(); }
+      return;
+    }
     switchTab(tab.dataset.file);
   });
 });
@@ -277,7 +355,12 @@ loadFiles()
     initEditor();
     updateButtonStates();
     updateSolutionBtn();
-    runCode();
+    updateInstructionsModeSwitch();
+    if (activeFile === 'instructions.md') {
+      renderInstructions();
+    } else {
+      runCode();
+    }
   })
   .catch(err => {
     document.body.innerHTML = `<p style="color:red;padding:20px;">שגיאה בטעינת קבצי התרגיל: ${err.message}</p>`;

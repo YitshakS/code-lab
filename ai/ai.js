@@ -3,7 +3,7 @@ const EXERCISE_PROMPT_MAP = {
 };
 
 const EXERCISE_STATIC_FILES = {
-  'emojis.js': ['loops/script.js', 'loops/index.html']
+  'emojis.js': ['loops/instructions.md', 'loops/script.js', 'loops/index.html', 'loops/emojis/solution.js']
 };
 
 let systemPrompt = '';

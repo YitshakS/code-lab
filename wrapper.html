@@ -13,6 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="wrapper.css">
 </head>
 <body>
@@ -20,14 +21,16 @@
 
     <div id="editor-panel">
       <div id="tabs">
+        <button class="tab readonly active" data-file="instructions.md">📋 הוראות <span id="instructions-mode-switch"><span id="read-icon" class="active" title="מצב קריאה">📖</span><span id="code-icon" title="הצג קוד">📝</span></span></button>
         <button class="tab readonly" data-file="index.html">index.html &#x1F512;</button>
         <button class="tab readonly" data-file="style.css">style.css &#x1F512;</button>
         <button class="tab readonly" data-file="script.js">script.js &#x1F512;</button>
-        <button class="tab exercise active" data-file="emojis.js">emojis.js <span id="mode-switch" style="display:none"><span id="exercise-icon" title="מצב תרגיל">&#x270F;&#xFE0F;</span><span id="solution-icon" title="הצג פתרון">&#x1F441;</span></span></button>
+        <button class="tab exercise" data-file="emojis.js">emojis.js <span id="mode-switch" style="display:none"><span id="exercise-icon" title="מצב תרגיל">&#x270F;&#xFE0F;</span><span id="solution-icon" title="הצג פתרון">&#x1F441;</span></span></button>
         <button class="tab exercise" data-file="shapes.js">shapes.js &#x270F;&#xFE0F;</button>
       </div>
       <div id="editor-container">
         <textarea id="code-editor"></textarea>
+        <div id="instructions-rendered"></div>
       </div>
       <div id="editor-footer">
         <button id="ai-btn" title="עזרה מ-AI">💡</button>
