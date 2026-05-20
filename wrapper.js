@@ -6,8 +6,14 @@ const FILE_MODES = {
   'emojis.js': 'javascript',
   'shapes.js': 'javascript'
 };
-const EXERCISE_MAP = { 'emojis.js': 'emojis_exercise.js' };
-const SOLUTION_MAP = { 'emojis.js': 'emojis_solution.js' };
+const FETCH_MAP = {
+  'index.html': 'loops/index.html',
+  'style.css':  'loops/style.css',
+  'script.js':  'loops/script.js',
+  'emojis.js':  'loops/emojis/exercise.js',
+  'shapes.js':  'loops/shapes/exercise.js'
+};
+const SOLUTION_MAP = { 'emojis.js': 'loops/emojis/solution.js' };
 
 const files = {};
 let editor;
@@ -17,7 +23,7 @@ let studentSnapshot = null;
 
 async function loadFiles() {
   await Promise.all(TAB_FILES.map(async name => {
-    const fetchName = EXERCISE_MAP[name] || name;
+    const fetchName = FETCH_MAP[name] || name;
     const res = await fetch(fetchName);
     if (!res.ok) throw new Error(`Failed to load ${fetchName}`);
     files[name] = await res.text();

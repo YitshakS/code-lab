@@ -30,6 +30,7 @@
         <textarea id="code-editor"></textarea>
       </div>
       <div id="editor-footer">
+        <button id="ai-btn" title="עזרה מ-AI">💡</button>
         <div id="run-control">
           <span id="auto-label">רענון אוטומטי<br>בכל שינוי קוד</span>
           <button id="auto-btn">↺</button>
@@ -43,10 +44,23 @@
 
     <div id="preview-panel">
       <iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
+      <div id="ai-panel" dir="rtl">
+        <div id="ai-header">
+          <span>עזרה 💡</span>
+          <button id="ai-close">✕</button>
+        </div>
+        <div id="ai-messages"></div>
+        <div id="ai-input-area">
+          <textarea id="ai-input" placeholder="שאל שאלה..." rows="3"></textarea>
+          <button id="ai-send">שלח</button>
+        </div>
+      </div>
     </div>
 
   </div>
 
+  <script src="ai/ai_config.js"></script>
   <script src="wrapper.js"></script>
+  <script src="ai/ai.js"></script>
 </body>
 </html>

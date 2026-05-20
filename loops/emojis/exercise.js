@@ -20,13 +20,15 @@ function addEmojiToPicker(char) {
 }
 
 function fillEmojiPicker() {
-  let count = 0;
+  // דוגמא להוספת אמוג'י של כוכב לטבלת בחירת האמוג'ים
+  // עליך לעדכן את הקוד כך שיכניס את כל האמוג'ים שבין
+  // 0x231A
+  // ל
+  // 0x1FAFA
+  // כולל, לטבלת האמוג'ים
 
-  // כתוב כאן לולאה שעוברת על כל הטווח מ-0x231A עד 0x1FAFA
-  // לכל תו שעובר את isColorfulEmoji, קרא ל-addEmojiToPicker והגדל את count
-
-
-  document.getElementById('emoji-grid').insertAdjacentHTML('beforeend',
-    '<div style="width:100%;padding:4px 0;font-size:0.85em;color:#888;text-align:center;border-top:1px solid #ccc;margin:4px 0;flex-basis:100%">סה"כ צבעוניים: ' + count + '</div>'
-  );
+  const num = 0x2B50; // המספר 11088 בבסיס הקסדצימלי
+  const char = String.fromCodePoint(num); // Unicode המרת המספר לתו
+  if (isColorfulEmoji(char)) // אם התו הוא אמוג'י צבעוני
+    addEmojiToPicker(char); // הוספתו לטבלת האמוג'ים
 }

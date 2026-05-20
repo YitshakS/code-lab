@@ -20,17 +20,10 @@ function addEmojiToPicker(char) {
 }
 
 function fillEmojiPicker() {
-  let count = 0;
-
   for (let i = 0x231A; i <= 0x1FAFA; i++) {
     const char = String.fromCodePoint(i);
     if (isColorfulEmoji(char)) {
       addEmojiToPicker(char);
-      count++;
     }
   }
-
-  document.getElementById('emoji-grid').insertAdjacentHTML('beforeend',
-    '<div style="width:100%;padding:4px 0;font-size:0.85em;color:#888;text-align:center;border-top:1px solid #ccc;margin:4px 0;flex-basis:100%">סה"כ צבעוניים: ' + count + '</div>'
-  );
 }
