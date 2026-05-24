@@ -8,15 +8,8 @@ function drawRectangle1() {
 
   for (let row = 0; row < rowsNum; row++) {
     for (let col = 0; col < numCols; col++) {
-      if (selectedStyle === 'solid') {
-        shape += '*';
-      } else {
-        if (row < thickness || row >= rowsNum - thickness || col < thickness || col >= numCols - thickness) {
-          shape += '*';
-        } else {
-          shape += ' ';
-        }
-      }
+      const onBorder = row < thickness || row >= rowsNum - thickness || col < thickness || col >= numCols - thickness;
+      shape += (selectedStyle === 'solid' || onBorder) ? '*' : ' ';
     }
     shape += '\n';
   }
@@ -46,7 +39,6 @@ function drawRectangle2() {
   }
   return s;
 }
-
 
 // ◺
 function drawTriangle1() {
@@ -164,7 +156,7 @@ function drawTriangle4() {
 }
 
 // △
-function triangle5() {
+function drawTriangle5() {
   const rowsNum = parseInt(rowsInput.value) || 0;
   const selectedStyle = getSelectedStyle();
   const thickness = Math.max(1, parseInt(thicknessInput.value) || 1);
@@ -174,12 +166,12 @@ function triangle5() {
     const numSpaces = rowsNum - row - 1;
     const numStars = 2 * row + 1;
 
-    // Add spaces
+    // רווחים לפני המשולש
     for (let s = 0; s < numSpaces; s++) {
       shape += ' ';
     }
 
-    // Add stars
+    // תאי המשולש
     for (let col = 0; col < numStars; col++) {
       if (selectedStyle === 'solid') {
         shape += '*';
@@ -187,18 +179,13 @@ function triangle5() {
         const onBase = row >= rowsNum - thickness;
         const onLeftEdge = col < thickness;
         const onRightEdge = col >= numStars - thickness;
-        if (onBase || onLeftEdge || onRightEdge) {
-          shape += '*';
-        } else {
-          shape += ' ';
-        }
+        shape += (onBase || onLeftEdge || onRightEdge) ? '*' : ' ';
       }
     }
     shape += '\n';
   }
   return shape;
 }
-
 
 // ◯
 function drawCircle() {

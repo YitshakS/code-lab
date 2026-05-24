@@ -32,6 +32,9 @@ async function loadFiles() {
     if (!res.ok) throw new Error(`Failed to load ${fetchName}`);
     files[name] = await res.text();
   }));
+  const restoreRes = await fetch('loops/restore.js');
+  if (!restoreRes.ok) throw new Error('Failed to load loops/restore.js');
+  files['restore.js'] = await restoreRes.text();
   await Promise.all(Object.values(SOLUTION_MAP).map(async name => {
     const res = await fetch(name);
     if (!res.ok) throw new Error(`Failed to load ${name}`);
@@ -195,36 +198,16 @@ function getIframeState() {
 }
 
 function buildRestoreScript(state) {
-  if (!state || !state.shape) return '';
-  return `<script>
-(function() {
-  const s = ${JSON.stringify(state)};
-  const sel = id => document.getElementById(id);
-  sel('mode-toggle').checked   = s.darkMode;
-  sel('border-toggle').checked = s.border;
-  if (s.darkMode) document.body.classList.add('dark-mode');
-  if (s.border)   sel('canvas-panel').classList.add('show-border');
-  sel('shape-select').value    = s.shape;
-  sel('style-toggle').checked  = s.style;
-  sel('thickness-input').value = s.thickness;
-  sel('rows-input').value      = s.rows;
-  sel('cols-input').value      = s.cols;
-  sel('cell-size-slider').value = s.cellSize;
-  document.documentElement.style.setProperty('--cell-size', s.cellSize + 'px');
-  sel('cell-size-value').textContent = s.cellSize + 'px';
-  emoji = s.emoji;
-  sel('emoji-btn').textContent = s.emoji;
-  updateControls();
-  drawShape();
-})();
-<\/script>`;
+  if (state && state.shape) {
+    return `<script>restoreState(${JSON.stringify(state)});updateControls();drawShape();<\/script>`;
+  }
+  return `<script>updateControls();drawShape();<\/script>`;
 }
 
-function runSolution() {
+function buildAndRun(emojisContent, shapesContent) {
   const state = getIframeState();
   const bodyContent = extractBody(files['index.html']);
-  const solutionContent = files[SOLUTION_MAP['emojis.js']] || files['emojis.js'];
-  const html = `<!DOCTYPE html>
+  preview.srcdoc = `<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -233,46 +216,31 @@ function runSolution() {
 </head>
 <body>
 ${bodyContent}
-<script>${solutionContent}<\/script>
-<script>${files['shapes.js']}<\/script>
-<script>${files['script.js']}<\/script>
-${buildRestoreScript(state)}
-</body>
-</html>`;
-  preview.srcdoc = html;
-}
-
-function runCode() {
-  const state = getIframeState();
-  const bodyContent = extractBody(files['index.html']);
-
-  const emojisKey = (showingSolution && activeFile === 'emojis.js') ? 'emojis.js-solution' : 'emojis.js-exercise';
-  const emojisContent = editors[emojisKey] ? editors[emojisKey].getValue() : files['emojis.js'];
-
-  const shapesKey = (showingSolution && activeFile === 'shapes.js') ? 'shapes.js-solution' : 'shapes.js-exercise';
-  const shapesContent = editors[shapesKey] ? editors[shapesKey].getValue() : files['shapes.js'];
-
-  const html = `<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>${files['style.css']}</style>
-</head>
-<body>
-${bodyContent}
+<script>${files['restore.js']}<\/script>
 <script>${emojisContent}<\/script>
 <script>${shapesContent}<\/script>
 <script>${files['script.js']}<\/script>
 ${buildRestoreScript(state)}
 </body>
 </html>`;
+}
 
-  preview.srcdoc = html;
+function runSolution() {
+  buildAndRun(
+    files[SOLUTION_MAP['emojis.js']] || files['emojis.js'],
+    files['shapes.js']
+  );
+}
+
+function runCode() {
+  const emojisKey = (showingSolution && activeFile === 'emojis.js') ? 'emojis.js-solution' : 'emojis.js-exercise';
+  const emojisContent = editors[emojisKey] ? editors[emojisKey].getValue() : files['emojis.js'];
+  const shapesKey = (showingSolution && activeFile === 'shapes.js') ? 'shapes.js-solution' : 'shapes.js-exercise';
+  const shapesContent = editors[shapesKey] ? editors[shapesKey].getValue() : files['shapes.js'];
+  buildAndRun(emojisContent, shapesContent);
 }
 
 let autoRun = false;
-let debounceTimer = null;
 
 const autoBtn   = document.getElementById('auto-btn');
 const runBtn    = document.getElementById('run-btn');

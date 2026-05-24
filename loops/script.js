@@ -13,7 +13,6 @@ const canvasPanel = document.getElementById('canvas-panel');
 const cellSizeSlider = document.getElementById('cell-size-slider');
 const cellSizeValueSpan = document.getElementById('cell-size-value');
 const mainContainer = document.getElementById('main-container');
-const controlsPanel = document.getElementById('controls-panel');
 const splitter = document.getElementById('splitter');
 
 const darkModeToggle = document.getElementById('mode-toggle');
@@ -22,9 +21,17 @@ const emojiBtn = document.getElementById('emoji-btn');
 const pickerOverlay = document.getElementById('picker-overlay');
 const emojiGrid = document.getElementById('emoji-grid');
 
+emojiGrid.addEventListener('click', e => {
+  if (!e.target.classList.contains('emoji-item')) return;
+  emoji = e.target.textContent;
+  emojiBtn.textContent = emoji;
+  pickerOverlay.classList.remove('open');
+  drawShape();
+});
+
 let isDragging = false;
 
-splitter.addEventListener('mousedown', (e) => {
+splitter.addEventListener('mousedown', () => {
   isDragging = true;
   document.body.style.userSelect = 'none';
 });
@@ -74,19 +81,11 @@ styleToggle.addEventListener('change', () => {
 });
 
 borderToggle.addEventListener('change', () => {
-  if (borderToggle.checked) {
-    canvasPanel.classList.add('show-border');
-  } else {
-    canvasPanel.classList.remove('show-border');
-  }
+  canvasPanel.classList.toggle('show-border', borderToggle.checked);
 });
 
 darkModeToggle.addEventListener('change', () => {
-  if (darkModeToggle.checked) {
-    body.classList.add('dark-mode');
-  } else {
-    body.classList.remove('dark-mode');
-  }
+  body.classList.toggle('dark-mode', darkModeToggle.checked);
 });
 
 rowsInput.addEventListener('input', drawShape);
@@ -128,7 +127,6 @@ function updateControls() {
   if (isRect1 && !colsInput.value) colsInput.value = 10;
 }
 
-
 function drawShape() {
   clearCanvas();
   const selectedShape = shapeSelect.value;
@@ -140,7 +138,7 @@ function drawShape() {
     triangle2: drawTriangle2,
     triangle3: drawTriangle3,
     triangle4: drawTriangle4,
-    triangle5: triangle5,
+    triangle5: drawTriangle5,
     circle: drawCircle
   };
 
@@ -162,7 +160,7 @@ function renderShape(shapeString) {
       if (char === '*') {
         span.textContent = emoji;
       } else if (char === ' ') {
-        span.innerHTML = '&nbsp;';
+        span.textContent = ' ';
       }
       canvas.appendChild(span);
     }
@@ -184,5 +182,3 @@ emojiGrid.insertAdjacentHTML('beforeend',
   '<div style="width:100%;padding:4px 0;font-size:0.85em;color:#888;text-align:center;border-top:1px solid #ccc;margin:4px 0;flex-basis:100%">סה"כ ' + emojiGrid.querySelectorAll('.emoji-item').length + ' אמוג\'ים</div>'
 );
 updateCellSize();
-updateControls();
-drawShape();

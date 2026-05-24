@@ -10,12 +10,6 @@ function addEmojiToPicker(char, fragment) {
   const span = document.createElement('span');
   span.textContent = char;
   span.classList.add('emoji-item');
-  span.addEventListener('click', () => {
-    emoji = char;
-    emojiBtn.textContent = char;
-    pickerOverlay.classList.remove('open');
-    drawShape();
-  });
   fragment.appendChild(span);
 }
 
