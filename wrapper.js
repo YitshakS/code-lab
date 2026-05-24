@@ -16,13 +16,13 @@ const FETCH_MAP = {
   'shapes.js':  'loops/shapes/exercise.js'
 };
 const SOLUTION_MAP = { 'emojis.js': 'loops/emojis/solution.js' };
+const EDITABLE_FILES = ['emojis.js', 'shapes.js'];
 
 const files = {};
-let editor;
+const editors = {};
 let activeFile = 'instructions.md';
 let showingSolution = false;
-let studentSnapshot = null;
-const tabState = {};
+let instructionsCodeMode = false;
 
 async function loadFiles() {
   await Promise.all(TAB_FILES.map(async name => {
@@ -38,28 +38,79 @@ async function loadFiles() {
   }));
 }
 
-function initEditor() {
-  editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
-    mode: FILE_MODES[activeFile],
-    theme: 'dracula',
-    lineNumbers: true,
-    tabSize: 2,
-    indentWithTabs: false,
-    lineWrapping: false,
-    autofocus: true,
-  });
-  editor.setValue(files[activeFile]);
-  editor.clearHistory();
-
-  editor.on('change', onEditorChange);
-}
-
 function onEditorChange() {
   if (!autoRun) return;
   runCode();
 }
 
-const EDITABLE_FILES = ['emojis.js', 'shapes.js'];
+function createEditor(key, content, mode, readOnly) {
+  const container = document.createElement('div');
+  container.className = 'cm-instance';
+  container.style.display = 'none';
+  document.getElementById('editors-container').appendChild(container);
+
+  const cm = CodeMirror(container, {
+    value: content,
+    mode: mode,
+    theme: 'dracula',
+    lineNumbers: true,
+    tabSize: 2,
+    indentWithTabs: false,
+    lineWrapping: false,
+    readOnly: readOnly,
+  });
+
+  editors[key] = cm;
+  return cm;
+}
+
+function initEditors() {
+  document.getElementById('instructions-rendered').innerHTML = marked.parse(files['instructions.md']);
+  createEditor('instructions.md-code', files['instructions.md'], null, true);
+
+  for (const name of ['index.html', 'style.css', 'script.js']) {
+    createEditor(name, files[name], FILE_MODES[name], true);
+  }
+
+  for (const name of EDITABLE_FILES) {
+    const ex = createEditor(name + '-exercise', files[name], FILE_MODES[name], false);
+    ex.on('change', onEditorChange);
+    if (SOLUTION_MAP[name]) {
+      createEditor(name + '-solution', files[SOLUTION_MAP[name]], FILE_MODES[name], true);
+    }
+  }
+}
+
+function getActiveKey() {
+  if (activeFile === 'instructions.md') {
+    return instructionsCodeMode ? 'instructions.md-code' : null;
+  }
+  if (EDITABLE_FILES.includes(activeFile)) {
+    return showingSolution ? activeFile + '-solution' : activeFile + '-exercise';
+  }
+  return activeFile;
+}
+
+function hideActiveEditor() {
+  const key = getActiveKey();
+  if (key) {
+    editors[key].getWrapperElement().parentElement.style.display = 'none';
+  } else {
+    document.getElementById('instructions-rendered').style.display = 'none';
+  }
+}
+
+function showActiveEditor() {
+  const key = getActiveKey();
+  if (key) {
+    const cm = editors[key];
+    cm.getWrapperElement().parentElement.style.display = '';
+    cm.refresh();
+    cm.focus();
+  } else {
+    document.getElementById('instructions-rendered').style.display = 'block';
+  }
+}
 
 function updateSolutionBtn() {
   const modeSwitch = document.getElementById('mode-switch');
@@ -72,35 +123,6 @@ function updateSolutionBtn() {
   }
 }
 
-function toggleSolution() {
-  if (!SOLUTION_MAP[activeFile]) return;
-  if (!showingSolution) {
-    studentSnapshot = { value: editor.getValue(), history: editor.getHistory(), cursor: editor.getCursor() };
-    editor.off('change', onEditorChange);
-    editor.setValue(files[SOLUTION_MAP[activeFile]]);
-    editor.clearHistory();
-    editor.on('change', onEditorChange);
-    editor.setOption('readOnly', true);
-    showingSolution = true;
-    runCode();
-  } else {
-    editor.off('change', onEditorChange);
-    editor.setValue(studentSnapshot.value);
-    editor.setHistory(studentSnapshot.history);
-    editor.setCursor(studentSnapshot.cursor);
-    editor.scrollIntoView(studentSnapshot.cursor);
-    editor.on('change', onEditorChange);
-    editor.setOption('readOnly', false);
-    editor.focus();
-    showingSolution = false;
-    studentSnapshot = null;
-    runCode();
-  }
-  updateSolutionBtn();
-}
-
-let instructionsCodeMode = false;
-
 function updateInstructionsModeSwitch() {
   const sw = document.getElementById('instructions-mode-switch');
   const isInstructions = activeFile === 'instructions.md';
@@ -111,82 +133,20 @@ function updateInstructionsModeSwitch() {
   }
 }
 
-function renderInstructions() {
-  const md = files['instructions.md'] || '';
-  const rendered = document.getElementById('instructions-rendered');
-  const cm = document.querySelector('.CodeMirror');
-
-  if (instructionsCodeMode) {
-    rendered.style.display = 'none';
-    cm.style.display = '';
-    editor.off('change', onEditorChange);
-    editor.setValue(md);
-    editor.clearHistory();
-    editor.setOption('mode', null);
-    editor.setOption('readOnly', true);
-  } else {
-    cm.style.display = 'none';
-    rendered.style.display = 'block';
-    rendered.innerHTML = marked.parse(md);
-  }
-}
-
-function saveCurrentTabState() {
-  if (activeFile === 'instructions.md') return;
-  tabState[activeFile] = {
-    history: editor.getHistory(),
-    cursor: editor.getCursor(),
-    showingSolution,
-    snapshot: studentSnapshot,
-  };
-  if (showingSolution && studentSnapshot) {
-    files[activeFile] = studentSnapshot.value;
-  } else if (EDITABLE_FILES.includes(activeFile)) {
-    files[activeFile] = editor.getValue();
-  }
-}
-
-function restoreTabState(fileName) {
-  const state = tabState[fileName];
-  editor.off('change', onEditorChange);
-
-  if (state && state.showingSolution && SOLUTION_MAP[fileName]) {
-    editor.setValue(files[SOLUTION_MAP[fileName]]);
-    showingSolution = true;
-    studentSnapshot = state.snapshot;
-    editor.setOption('readOnly', true);
-  } else {
-    editor.setValue(files[fileName]);
-    showingSolution = false;
-    studentSnapshot = null;
-    editor.setOption('readOnly', !EDITABLE_FILES.includes(fileName));
-  }
-
-  if (state) {
-    editor.setHistory(state.history);
-    editor.setCursor(state.cursor);
-    editor.scrollIntoView(state.cursor);
-  } else {
-    editor.clearHistory();
-  }
-
-  editor.setOption('mode', FILE_MODES[fileName]);
-  editor.on('change', onEditorChange);
-  editor.focus();
+function toggleSolution() {
+  if (!SOLUTION_MAP[activeFile]) return;
+  hideActiveEditor();
+  showingSolution = !showingSolution;
+  showActiveEditor();
+  updateSolutionBtn();
+  runCode();
 }
 
 function switchTab(fileName) {
   if (fileName === activeFile) return;
-  saveCurrentTabState();
+  hideActiveEditor();
   activeFile = fileName;
-
-  const isInstructions = fileName === 'instructions.md';
-
-  if (!isInstructions) {
-    document.getElementById('instructions-rendered').style.display = 'none';
-    document.querySelector('.CodeMirror').style.display = '';
-    restoreTabState(fileName);
-  }
+  showActiveEditor();
 
   document.querySelectorAll('.tab').forEach(tab => {
     tab.classList.toggle('active', tab.dataset.file === fileName);
@@ -194,9 +154,7 @@ function switchTab(fileName) {
   updateSolutionBtn();
   updateInstructionsModeSwitch();
 
-  if (isInstructions) {
-    renderInstructions();
-  } else {
+  if (fileName !== 'instructions.md') {
     runCode();
   }
 }
@@ -222,7 +180,7 @@ function getIframeState() {
       cellSize: sel('cell-size-slider').value,
       darkMode: sel('mode-toggle').checked,
       border:   sel('border-toggle').checked,
-      emoji:    preview.contentWindow.emoji || '\u2B50',
+      emoji:    preview.contentWindow.emoji || '⭐',
     };
   } catch(e) { return null; }
 }
@@ -276,15 +234,14 @@ ${buildRestoreScript(state)}
 }
 
 function runCode() {
-  if (!showingSolution) {
-    files[activeFile] = editor.getValue();
-  }
-
   const state = getIframeState();
   const bodyContent = extractBody(files['index.html']);
-  const emojisContent = (showingSolution && activeFile === 'emojis.js')
-    ? editor.getValue()
-    : files['emojis.js'];
+
+  const emojisKey = (showingSolution && activeFile === 'emojis.js') ? 'emojis.js-solution' : 'emojis.js-exercise';
+  const emojisContent = editors[emojisKey] ? editors[emojisKey].getValue() : files['emojis.js'];
+
+  const shapesKey = (showingSolution && activeFile === 'shapes.js') ? 'shapes.js-solution' : 'shapes.js-exercise';
+  const shapesContent = editors[shapesKey] ? editors[shapesKey].getValue() : files['shapes.js'];
 
   const html = `<!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -296,7 +253,7 @@ function runCode() {
 <body>
 ${bodyContent}
 <script>${emojisContent}<\/script>
-<script>${files['shapes.js']}<\/script>
+<script>${shapesContent}<\/script>
 <script>${files['script.js']}<\/script>
 ${buildRestoreScript(state)}
 </body>
@@ -365,11 +322,21 @@ document.querySelectorAll('.tab').forEach(tab => {
       return;
     }
     if (e.target.id === 'read-icon') {
-      if (instructionsCodeMode) { instructionsCodeMode = false; renderInstructions(); updateInstructionsModeSwitch(); }
+      if (instructionsCodeMode) {
+        hideActiveEditor();
+        instructionsCodeMode = false;
+        showActiveEditor();
+        updateInstructionsModeSwitch();
+      }
       return;
     }
     if (e.target.id === 'code-icon') {
-      if (!instructionsCodeMode) { instructionsCodeMode = true; renderInstructions(); updateInstructionsModeSwitch(); }
+      if (!instructionsCodeMode) {
+        hideActiveEditor();
+        instructionsCodeMode = true;
+        showActiveEditor();
+        updateInstructionsModeSwitch();
+      }
       return;
     }
     switchTab(tab.dataset.file);
@@ -387,16 +354,12 @@ runBtn.addEventListener('click', () => {
 
 loadFiles()
   .then(() => {
-    initEditor();
+    initEditors();
     updateButtonStates();
     updateSolutionBtn();
     updateInstructionsModeSwitch();
-    if (activeFile === 'instructions.md') {
-      renderInstructions();
-      runSolution();
-    } else {
-      runCode();
-    }
+    showActiveEditor();
+    runSolution();
   })
   .catch(err => {
     document.body.innerHTML = `<p style="color:red;padding:20px;">שגיאה בטעינת קבצי התרגיל: ${err.message}</p>`;

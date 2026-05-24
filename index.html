@@ -12,7 +12,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="wrapper.css">
 </head>
@@ -21,7 +20,7 @@
 
     <div id="editor-panel">
       <div id="tabs">
-        <button class="tab readonly active" data-file="instructions.md">README.md <span id="instructions-mode-switch"><span id="read-icon" class="active" title="מצב קריאה">📖</span><span id="code-icon" title="הצג קוד">📝</span></span></button>
+        <button class="tab readonly active" data-file="instructions.md">README.md <span id="instructions-mode-switch"><span id="read-icon" class="active" title="מצב קריאה">&#x1F4D6;</span><span id="code-icon" title="הצג קוד">&#x1F4DD;</span></span></button>
         <button class="tab readonly" data-file="index.html">index.html &#x1F512;</button>
         <button class="tab readonly" data-file="style.css">style.css &#x1F512;</button>
         <button class="tab readonly" data-file="script.js">script.js &#x1F512;</button>
@@ -29,14 +28,14 @@
         <button class="tab exercise" data-file="shapes.js">shapes.js &#x270F;&#xFE0F;</button>
       </div>
       <div id="editor-container">
-        <textarea id="code-editor"></textarea>
+        <div id="editors-container"></div>
         <div id="instructions-rendered"></div>
       </div>
       <div id="editor-footer">
         <button id="ai-btn" title="עזרה מ-AI">💡</button>
         <div id="run-control">
           <span id="auto-label">רענון אוטומטי<br>בכל שינוי קוד</span>
-          <button id="auto-btn">↺</button>
+          <button id="auto-btn">&#x21BA;</button>
           <button id="run-btn">&#x25B6;</button>
           <span id="run-label">רענון בלחיצה<br>על הכפתור</span>
         </div>
