@@ -12,7 +12,6 @@ const borderToggle = document.getElementById('border-toggle');
 const canvasPanel = document.getElementById('canvas-panel');
 const cellSizeSlider = document.getElementById('cell-size-slider');
 const cellSizeValueSpan = document.getElementById('cell-size-value');
-const shapeDependentControls = document.getElementById('shape-dependent-controls');
 const mainContainer = document.getElementById('main-container');
 const controlsPanel = document.getElementById('controls-panel');
 const splitter = document.getElementById('splitter');
@@ -119,21 +118,14 @@ function setDisabled(el, on) {
 function updateControls() {
   const selectedShape = shapeSelect.value;
   const isHollow = getSelectedStyle() === 'hollow';
-  const noShape = !selectedShape;
 
-  if (noShape) clearCanvas();
+  setDisabled(thicknessGroup, !isHollow);
 
-  setDisabled(shapeDependentControls, noShape);
+  if (!rowsInput.value) rowsInput.value = 5;
 
-  if (!noShape) {
-    setDisabled(thicknessGroup, !isHollow);
-
-    if (!rowsInput.value) rowsInput.value = 5;
-
-    const isRect1 = selectedShape === 'rectangle1';
-    setDisabled(colsGroup, !isRect1);
-    if (isRect1 && !colsInput.value) colsInput.value = 10;
-  }
+  const isRect1 = selectedShape === 'rectangle1';
+  setDisabled(colsGroup, !isRect1);
+  if (isRect1 && !colsInput.value) colsInput.value = 10;
 }
 
 

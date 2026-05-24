@@ -22,6 +22,7 @@ let editor;
 let activeFile = 'instructions.md';
 let showingSolution = false;
 let studentSnapshot = null;
+const tabState = {};
 
 async function loadFiles() {
   await Promise.all(TAB_FILES.map(async name => {
@@ -74,7 +75,7 @@ function updateSolutionBtn() {
 function toggleSolution() {
   if (!SOLUTION_MAP[activeFile]) return;
   if (!showingSolution) {
-    studentSnapshot = { value: editor.getValue(), history: editor.getHistory() };
+    studentSnapshot = { value: editor.getValue(), history: editor.getHistory(), cursor: editor.getCursor() };
     editor.off('change', onEditorChange);
     editor.setValue(files[SOLUTION_MAP[activeFile]]);
     editor.clearHistory();
@@ -86,8 +87,11 @@ function toggleSolution() {
     editor.off('change', onEditorChange);
     editor.setValue(studentSnapshot.value);
     editor.setHistory(studentSnapshot.history);
+    editor.setCursor(studentSnapshot.cursor);
+    editor.scrollIntoView(studentSnapshot.cursor);
     editor.on('change', onEditorChange);
     editor.setOption('readOnly', false);
+    editor.focus();
     showingSolution = false;
     studentSnapshot = null;
     runCode();
@@ -125,18 +129,55 @@ function renderInstructions() {
     rendered.style.display = 'block';
     rendered.innerHTML = marked.parse(md);
   }
-  runSolution();
+}
+
+function saveCurrentTabState() {
+  if (activeFile === 'instructions.md') return;
+  tabState[activeFile] = {
+    history: editor.getHistory(),
+    cursor: editor.getCursor(),
+    showingSolution,
+    snapshot: studentSnapshot,
+  };
+  if (showingSolution && studentSnapshot) {
+    files[activeFile] = studentSnapshot.value;
+  } else if (EDITABLE_FILES.includes(activeFile)) {
+    files[activeFile] = editor.getValue();
+  }
+}
+
+function restoreTabState(fileName) {
+  const state = tabState[fileName];
+  editor.off('change', onEditorChange);
+
+  if (state && state.showingSolution && SOLUTION_MAP[fileName]) {
+    editor.setValue(files[SOLUTION_MAP[fileName]]);
+    showingSolution = true;
+    studentSnapshot = state.snapshot;
+    editor.setOption('readOnly', true);
+  } else {
+    editor.setValue(files[fileName]);
+    showingSolution = false;
+    studentSnapshot = null;
+    editor.setOption('readOnly', !EDITABLE_FILES.includes(fileName));
+  }
+
+  if (state) {
+    editor.setHistory(state.history);
+    editor.setCursor(state.cursor);
+    editor.scrollIntoView(state.cursor);
+  } else {
+    editor.clearHistory();
+  }
+
+  editor.setOption('mode', FILE_MODES[fileName]);
+  editor.on('change', onEditorChange);
+  editor.focus();
 }
 
 function switchTab(fileName) {
   if (fileName === activeFile) return;
-  if (showingSolution && studentSnapshot) {
-    files[activeFile] = studentSnapshot.value;
-    showingSolution = false;
-    studentSnapshot = null;
-  } else if (EDITABLE_FILES.includes(activeFile)) {
-    files[activeFile] = editor.getValue();
-  }
+  saveCurrentTabState();
   activeFile = fileName;
 
   const isInstructions = fileName === 'instructions.md';
@@ -144,13 +185,7 @@ function switchTab(fileName) {
   if (!isInstructions) {
     document.getElementById('instructions-rendered').style.display = 'none';
     document.querySelector('.CodeMirror').style.display = '';
-    const isReadOnly = !EDITABLE_FILES.includes(fileName);
-    editor.off('change', onEditorChange);
-    editor.setValue(files[fileName]);
-    editor.clearHistory();
-    editor.on('change', onEditorChange);
-    editor.setOption('mode', FILE_MODES[fileName]);
-    editor.setOption('readOnly', isReadOnly);
+    restoreTabState(fileName);
   }
 
   document.querySelectorAll('.tab').forEach(tab => {
@@ -358,6 +393,7 @@ loadFiles()
     updateInstructionsModeSwitch();
     if (activeFile === 'instructions.md') {
       renderInstructions();
+      runSolution();
     } else {
       runCode();
     }

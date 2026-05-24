@@ -27,78 +27,83 @@
         </div>
       </div>
 
-      <div class="control-group">
-        <label for="shape-select">צורה:</label>
-        <select id="shape-select" onchange="updateControls()">
-          <option value="">-- צורה --</option>
-          <option value="rectangle1">☐ ◻</option>
-          <option value="rectangle2">☒ ⊠</option>
-          <option value="triangle1">◺</option>
-          <option value="triangle2">◸</option>
-          <option value="triangle3">◹</option>
-          <option value="triangle4">◿</option>
-          <option value="triangle5">△</option>
-          <option value="circle">◯</option>
-        </select>
-      </div>
+      <fieldset>
+          <legend>צורה</legend>
 
-      <div id="shape-dependent-controls">
-        <div class="control-group">
-          <label>אימוג'י:</label>
-          <button id="emoji-btn">&#x2B50;</button>
-        </div>
+          <div class="control-group">
+            <label for="shape-select">צורה:</label>
+            <select id="shape-select" onchange="updateControls()">
+              <option value="rectangle1" selected>☐ ◻</option>
+              <option value="rectangle2">☒ ⊠</option>
+              <option value="triangle1">◺</option>
+              <option value="triangle2">◸</option>
+              <option value="triangle3">◹</option>
+              <option value="triangle4">◿</option>
+              <option value="triangle5">△</option>
+              <option value="circle">◯</option>
+            </select>
+          </div>
 
-        <div class="control-group" id="cell-size-group">
-          <label for="cell-size-slider">גודל תא:</label>
-          <input type="range" id="cell-size-slider" min="20" max="100" value="25">
-          <span id="cell-size-value">25px</span>
-        </div>
-
-        <div class="control-group style-and-thickness-group">
-          <div class="style-toggle-container">
-            <label for="border-toggle">גבול תא:</label>
-            <div class="style-toggle-row">
-              <span>הסתר</span>
-              <label class="switch">
-                <input type="checkbox" id="border-toggle">
-                <span class="slider"></span>
-              </label>
-              <span>הצג</span>
+          <div class="style-and-thickness-group rowcols-group">
+            <div class="control-group" id="rows-group">
+              <label for="rows-input">מספר שורות:</label>
+              <input type="number" id="rows-input" min="1" max="20" value="5">
+            </div>
+            <div class="control-group" id="cols-group">
+              <label for="cols-input">מספר עמודות:</label>
+              <input type="number" id="cols-input" min="1" max="20" value="10">
             </div>
           </div>
-        </div>
 
-        <div class="control-group style-and-thickness-group">
-          <div class="style-toggle-container">
-            <label for="style-toggle">מילוי:</label>
-            <div class="style-toggle-row">
-              <span>חלול</span>
-              <label class="switch">
-                <input type="checkbox" id="style-toggle">
-                <span class="slider"></span>
-              </label>
-              <span>מלא</span>
+          <div class="control-group style-and-thickness-group">
+            <div class="style-toggle-container">
+              <label for="style-toggle">מילוי:</label>
+              <div class="style-toggle-row">
+                <span>חלול</span>
+                <label class="switch">
+                  <input type="checkbox" id="style-toggle">
+                  <span class="slider"></span>
+                </label>
+                <span>מלא</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="control-group" id="thickness-group">
-          <label for="thickness-input">עובי:</label>
-          <input type="number" id="thickness-input" min="1" max="5" value="1">
-        </div>
-
-        <div class="style-and-thickness-group rowcols-group">
-          <div class="control-group" id="rows-group">
-            <label for="rows-input">מספר שורות:</label>
-            <input type="number" id="rows-input" min="1" max="20" value="5">
+          <div class="control-group" id="thickness-group">
+            <label for="thickness-input">עובי:</label>
+            <input type="number" id="thickness-input" min="1" max="5" value="1">
           </div>
-          <div class="control-group" id="cols-group">
-            <label for="cols-input">מספר עמודות:</label>
-            <input type="number" id="cols-input" min="1" max="20" value="10">
-          </div>
-        </div>
+        </fieldset>
 
-      </div>
+        <fieldset>
+          <legend>תא</legend>
+
+          <div class="control-group">
+            <label>אימוג'י:</label>
+            <button id="emoji-btn">&#x2B50;</button>
+          </div>
+
+          <div class="control-group style-and-thickness-group">
+            <div class="style-toggle-container">
+              <label for="border-toggle">גבול:</label>
+              <div class="style-toggle-row">
+                <span>הסתר</span>
+                <label class="switch">
+                  <input type="checkbox" id="border-toggle">
+                  <span class="slider"></span>
+                </label>
+                <span>הצג</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-group" id="cell-size-group">
+            <label for="cell-size-slider">גודל:</label>
+            <input type="range" id="cell-size-slider" min="20" max="100" value="25">
+            <span id="cell-size-value">25px</span>
+          </div>
+        </fieldset>
+
     </div>
 
     <div id="splitter"></div>

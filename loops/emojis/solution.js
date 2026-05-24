@@ -6,7 +6,7 @@ function isColorfulEmoji(char) {
     ![0x1F6D8, 0x1FA8A, 0x1FA8E, 0x1FAC8, 0x1FACD, 0x1FAEA, 0x1FAEF].includes(cp);
 }
 
-function addEmojiToPicker(char) {
+function addEmojiToPicker(char, fragment) {
   const span = document.createElement('span');
   span.textContent = char;
   span.classList.add('emoji-item');
@@ -16,14 +16,16 @@ function addEmojiToPicker(char) {
     pickerOverlay.classList.remove('open');
     drawShape();
   });
-  emojiGrid.appendChild(span);
+  fragment.appendChild(span);
 }
 
 function fillEmojiPicker() {
+  const fragment = new DocumentFragment();
   for (let i = 0x231A; i <= 0x1FAFA; i++) {
     const char = String.fromCodePoint(i);
     if (isColorfulEmoji(char)) {
-      addEmojiToPicker(char);
+      addEmojiToPicker(char, fragment);
     }
   }
+  emojiGrid.appendChild(fragment); // שליחת טבלת האמוג'ים לדף
 }
