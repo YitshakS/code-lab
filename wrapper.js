@@ -23,6 +23,7 @@ const editors = {};
 let activeFile = 'instructions.md';
 let showingSolution = false;
 let instructionsCodeMode = false;
+let savedReadmeSelection = null;
 
 async function loadFiles() {
   await Promise.all(TAB_FILES.map(async name => {
@@ -96,6 +97,8 @@ function hideActiveEditor() {
   if (key) {
     editors[key].getWrapperElement().parentElement.style.display = 'none';
   } else {
+    const sel = window.getSelection();
+    savedReadmeSelection = sel.rangeCount > 0 ? sel.getRangeAt(0).cloneRange() : null;
     document.getElementById('instructions-rendered').style.display = 'none';
   }
 }
@@ -109,6 +112,12 @@ function showActiveEditor() {
     cm.focus();
   } else {
     document.getElementById('instructions-rendered').style.display = 'block';
+    if (savedReadmeSelection) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedReadmeSelection);
+      savedReadmeSelection = null;
+    }
   }
 }
 
