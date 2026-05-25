@@ -1,4 +1,4 @@
-var emoji = '⭐';
+let emoji = '⭐';
 const canvas = document.getElementById('canvas');
 const shapeSelect = document.getElementById('shape-select');
 const thicknessGroup = document.getElementById('thickness-group');
@@ -130,6 +130,10 @@ function updateControls() {
 function drawShape() {
   clearCanvas();
   const selectedShape = shapeSelect.value;
+  const rows      = parseInt(rowsInput.value)      || 0;
+  const cols      = parseInt(colsInput.value)      || 0;
+  const isSolid   = getSelectedStyle() === 'solid';
+  const thickness = Math.max(1, parseInt(thicknessInput.value) || 1);
 
   const shapeMap = {
     rectangle1: drawRectangle1,
@@ -144,7 +148,10 @@ function drawShape() {
 
   const drawFunc = shapeMap[selectedShape];
   if (drawFunc) {
-    renderShape(drawFunc());
+    const args = selectedShape === 'rectangle1'
+      ? [rows, cols, isSolid, thickness]
+      : [rows, isSolid, thickness];
+    renderShape(drawFunc(...args));
   }
 }
 
