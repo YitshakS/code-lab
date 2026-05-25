@@ -201,10 +201,9 @@ function drawCircle() {
     for (let x = 0; x < size; x++) {
       const d = Math.hypot(x - r, y - r); // מרחק מהמרכז
       if (style === 'solid') {
-        s += (d < r) ? '*' : ' ';
+        s += (d < r + 0.5) ? '*' : ' ';
       } else {
-        const innerRadius = r - t;
-        s += (d > innerRadius && d < r + 0.5) ? '*' : ' ';
+        s += (d >= r - t + 0.5 && d < r + 0.5) ? '*' : ' ';
       }
     }
     s += '\n';
