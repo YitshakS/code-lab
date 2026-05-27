@@ -146,13 +146,8 @@ function updateModeControl() {
 }
 
 function updateInstructionsModeSwitch() {
-  const sw = document.getElementById('instructions-mode-switch');
-  const isInstructions = activeFile === 'instructions.md';
-  sw.style.display = isInstructions ? '' : 'none';
-  if (isInstructions) {
-    document.getElementById('read-icon').classList.toggle('active', !instructionsCodeMode);
-    document.getElementById('code-icon').classList.toggle('active', instructionsCodeMode);
-  }
+  document.getElementById('read-icon').classList.toggle('active', !instructionsCodeMode);
+  document.getElementById('code-icon').classList.toggle('active', instructionsCodeMode);
 }
 
 function setMode(newMode) {
@@ -290,6 +285,7 @@ document.addEventListener('mouseup', () => {
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', (e) => {
     if (e.target.id === 'read-icon') {
+      if (activeFile !== 'instructions.md') switchTab('instructions.md');
       if (instructionsCodeMode) {
         hideActiveEditor();
         instructionsCodeMode = false;
@@ -299,6 +295,7 @@ document.querySelectorAll('.tab').forEach(tab => {
       return;
     }
     if (e.target.id === 'code-icon') {
+      if (activeFile !== 'instructions.md') switchTab('instructions.md');
       if (!instructionsCodeMode) {
         hideActiveEditor();
         instructionsCodeMode = true;

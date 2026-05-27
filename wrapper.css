@@ -93,16 +93,23 @@ body {
 
 #read-icon, #code-icon {
   cursor: pointer;
-  padding: 1px 4px;
   background: #252526;
   line-height: 1.2;
-  opacity: 0.3;
-  transition: opacity 0.15s, background 0.15s;
+  transition: background 0.15s;
 }
 
 #read-icon.active, #code-icon.active {
-  opacity: 1;
   background: #3c3c3c;
+}
+
+#read-icon {
+  color: #cb801f;
+  font-size: 1.3em;
+  padding: 1px 2px;
+}
+
+#code-icon {
+  padding: 4px 3px;
 }
 
 #editor-container {
