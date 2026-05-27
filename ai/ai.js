@@ -36,10 +36,31 @@ async function loadAIPrompts() {
 }
 
 function getStudentCode() {
-  if (typeof editor !== 'undefined' && !showingSolution) {
-    return editor.getValue();
+  if (mode === 'solution' || !EDITABLE_FILES.includes(activeFile)) return '';
+  const key = activeFile + '-exercise';
+  return editors[key] ? editors[key].getValue() : '';
+}
+
+async function callAPI(contents, fullSystem) {
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${AI_CONFIG.model}:generateContent?key=${AI_CONFIG.apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: fullSystem }] },
+        contents,
+        generationConfig: {}
+      })
+    }
+  );
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error?.message || 'שגיאת API');
   }
-  return '';
+  const data = await res.json();
+  const parts = data.candidates[0].content.parts;
+  return parts.filter(p => !p.thought).map(p => p.text).join('') || parts[0].text;
 }
 
 async function callGemini(userText) {
@@ -53,26 +74,20 @@ async function callGemini(userText) {
   const windowed = conversationHistory.slice(-AI_CONFIG.historyWindow);
   const fullSystem = systemPrompt + (exercisePrompt ? '\n\n---\n\n' + exercisePrompt : '');
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${AI_CONFIG.model}:generateContent?key=${AI_CONFIG.apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: fullSystem }] },
-        contents: windowed,
-        generationConfig: {}
-      })
+  let aiText;
+  for (let attempt = 0; attempt <= 2; attempt++) {
+    try {
+      aiText = await callAPI(windowed, fullSystem);
+      break;
+    } catch (e) {
+      if (attempt < 2 && e.message.includes('high demand')) {
+        await new Promise(r => setTimeout(r, 4000));
+        continue;
+      }
+      throw e;
     }
-  );
-
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error?.message || 'שגיאת API');
   }
 
-  const data = await res.json();
-  const aiText = data.candidates[0].content.parts[0].text;
   conversationHistory.push({ role: 'model', parts: [{ text: aiText }] });
   return aiText;
 }
