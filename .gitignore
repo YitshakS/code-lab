@@ -2,3 +2,4 @@
 *.png
 *.log
 .playwright-mcp/
+ai/ai_config.js
