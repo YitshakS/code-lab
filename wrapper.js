@@ -21,7 +21,7 @@ const EDITABLE_FILES = ['emojis.js', 'shapes.js'];
 const files = {};
 const editors = {};
 let activeFile = 'instructions.md';
-const showingSolution = {};
+let mode = 'solution'; // 'solution' | 'auto' | 'paused'
 let instructionsCodeMode = false;
 let savedReadmeSelection = null;
 
@@ -43,9 +43,9 @@ async function loadFiles() {
 }
 
 function onEditorChange() {
-  if (!autoRun) return;
-  runCode();
+  if (mode === 'auto') runCode();
 }
+
 
 function createEditor(key, content, mode, readOnly) {
   const container = document.createElement('div');
@@ -103,7 +103,7 @@ function getActiveKey() {
     return instructionsCodeMode ? 'instructions.md-code' : null;
   }
   if (EDITABLE_FILES.includes(activeFile)) {
-    return showingSolution[activeFile] ? activeFile + '-solution' : activeFile + '-exercise';
+    return mode === 'solution' ? activeFile + '-solution' : activeFile + '-exercise';
   }
   return activeFile;
 }
@@ -137,15 +137,12 @@ function showActiveEditor() {
   }
 }
 
-function updateSolutionBtn() {
-  document.querySelectorAll('.tab.exercise').forEach(tab => {
-    const file = tab.dataset.file;
-    const modeSwitch = tab.querySelector('.mode-switch');
-    if (!modeSwitch) return;
-    modeSwitch.style.display = SOLUTION_MAP[file] ? '' : 'none';
-    tab.querySelector('.exercise-icon').classList.toggle('active', !showingSolution[file]);
-    tab.querySelector('.solution-icon').classList.toggle('active', !!showingSolution[file]);
-  });
+function updateModeControl() {
+  const isMyCode = mode !== 'solution';
+  document.getElementById('mode-my-code').classList.toggle('active', isMyCode);
+  document.getElementById('play-btn').classList.toggle('active', mode === 'auto');
+  document.getElementById('pause-btn').classList.toggle('active', mode === 'paused');
+  document.getElementById('mode-solution').classList.toggle('active', mode === 'solution');
 }
 
 function updateInstructionsModeSwitch() {
@@ -158,13 +155,15 @@ function updateInstructionsModeSwitch() {
   }
 }
 
-function toggleSolution() {
-  if (!SOLUTION_MAP[activeFile]) return;
-  hideActiveEditor();
-  showingSolution[activeFile] = !showingSolution[activeFile];
-  showActiveEditor();
-  updateSolutionBtn();
-  runCode();
+function setMode(newMode) {
+  const wasMyCode = mode !== 'solution';
+  const isMyCode = newMode !== 'solution';
+  const needsEditorSwitch = EDITABLE_FILES.includes(activeFile) && wasMyCode !== isMyCode;
+  if (needsEditorSwitch) hideActiveEditor();
+  mode = newMode;
+  if (needsEditorSwitch) showActiveEditor();
+  updateModeControl();
+  if (mode !== 'paused') runCode();
 }
 
 function switchTab(fileName) {
@@ -176,7 +175,7 @@ function switchTab(fileName) {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.classList.toggle('active', tab.dataset.file === fileName);
   });
-  updateSolutionBtn();
+  updateModeControl();
   updateInstructionsModeSwitch();
 
   if (fileName !== 'instructions.md') {
@@ -246,32 +245,18 @@ function runSolution() {
 }
 
 function runCode() {
-  const emojisKey = showingSolution['emojis.js'] ? 'emojis.js-solution' : 'emojis.js-exercise';
+  const isSolution = mode === 'solution';
+  const emojisKey = isSolution ? 'emojis.js-solution' : 'emojis.js-exercise';
   const emojisContent = editors[emojisKey] ? editors[emojisKey].getValue() : files['emojis.js'];
-  const shapesKey = showingSolution['shapes.js'] ? 'shapes.js-solution' : 'shapes.js-exercise';
+  const shapesKey = isSolution ? 'shapes.js-solution' : 'shapes.js-exercise';
   const shapesContent = editors[shapesKey] ? editors[shapesKey].getValue() : files['shapes.js'];
   buildAndRun(emojisContent, shapesContent);
 }
 
-let autoRun = false;
-
-const autoBtn   = document.getElementById('auto-btn');
-const runBtn    = document.getElementById('run-btn');
-const autoLabel = document.getElementById('auto-label');
-const runLabel  = document.getElementById('run-label');
-
-function updateButtonStates() {
-  autoBtn.classList.toggle('active',   autoRun);
-  runBtn.classList.toggle('inactive',  autoRun);
-  autoLabel.classList.toggle('active', autoRun);
-  runLabel.classList.toggle('active',  !autoRun);
-}
-
-autoBtn.addEventListener('click', () => {
-  if (autoRun) return;
-  autoRun = true;
-  updateButtonStates();
-});
+document.getElementById('mode-my-code').addEventListener('click', () => setMode('auto'));
+document.getElementById('play-btn').addEventListener('click', () => setMode('auto'));
+document.getElementById('pause-btn').addEventListener('click', () => setMode('paused'));
+document.getElementById('mode-solution').addEventListener('click', () => setMode('solution'));
 
 const splitter = document.getElementById('splitter');
 const editorPanel = document.getElementById('editor-panel');
@@ -301,21 +286,9 @@ document.addEventListener('mouseup', () => {
   preview.style.pointerEvents = '';
 });
 
-document.getElementById('tabs').addEventListener('click', (e) => {
-  if (e.target.classList.contains('solution-icon')) {
-    const file = e.target.closest('.tab').dataset.file;
-    if (file !== activeFile) switchTab(file);
-    if (!showingSolution[activeFile]) toggleSolution();
-  } else if (e.target.classList.contains('exercise-icon')) {
-    const file = e.target.closest('.tab').dataset.file;
-    if (file !== activeFile) switchTab(file);
-    if (showingSolution[activeFile]) toggleSolution();
-  }
-});
 
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', (e) => {
-    if (e.target.classList.contains('solution-icon') || e.target.classList.contains('exercise-icon')) return;
     if (e.target.id === 'read-icon') {
       if (instructionsCodeMode) {
         hideActiveEditor();
@@ -338,20 +311,10 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-runBtn.addEventListener('click', () => {
-  if (autoRun) {
-    autoRun = false;
-    updateButtonStates();
-  } else {
-    runCode();
-  }
-});
-
 loadFiles()
   .then(() => {
     initEditors();
-    updateButtonStates();
-    updateSolutionBtn();
+    updateModeControl();
     updateInstructionsModeSwitch();
     showActiveEditor();
     runSolution();

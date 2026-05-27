@@ -25,8 +25,8 @@
         <button class="tab readonly" data-file="index.html">index.html &#x1F512;</button>
         <button class="tab readonly" data-file="style.css">style.css &#x1F512;</button>
         <button class="tab readonly" data-file="script.js">script.js &#x1F512;</button>
-        <button class="tab exercise" data-file="emojis.js">emojis.js <span class="mode-switch"><span class="exercise-icon active" title="מצב תרגיל">&#x270F;&#xFE0F;</span><span class="solution-icon" title="הצג פתרון">&#x1F441;</span></span></button>
-        <button class="tab exercise" data-file="shapes.js">shapes.js <span class="mode-switch"><span class="exercise-icon active" title="מצב תרגיל">&#x270F;&#xFE0F;</span><span class="solution-icon" title="הצג פתרון">&#x1F441;</span></span></button>
+        <button class="tab exercise" data-file="emojis.js">emojis.js</button>
+        <button class="tab exercise" data-file="shapes.js">shapes.js</button>
       </div>
       <div id="editor-container">
         <div id="editors-container"></div>
@@ -34,11 +34,14 @@
       </div>
       <div id="editor-footer">
         <button id="ai-btn" title="עזרה מ-AI">💡</button>
-        <div id="run-control">
-          <span id="auto-label">רענון אוטומטי<br>בכל שינוי קוד</span>
-          <button id="auto-btn">&#x21BA;</button>
-          <button id="run-btn">&#x25B6;</button>
-          <span id="run-label">רענון בלחיצה<br>על הכפתור</span>
+        <div id="mode-control">
+          <div id="mode-my-code-group">
+            <div id="play-pause-group">
+              <span id="play-btn">&#x25B6;</span>
+              <span id="pause-btn">&#x23F8;</span>
+            </div><span id="mode-my-code">הצג והרץ<br>קוד שלי</span>
+          </div>
+          <span id="mode-solution" class="active">הצג והרץ<br>קוד פתרון</span>
         </div>
       </div>
     </div>
