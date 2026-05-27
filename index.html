@@ -12,6 +12,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/runmode/runmode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="wrapper.css">
 </head>
@@ -24,8 +25,8 @@
         <button class="tab readonly" data-file="index.html">index.html &#x1F512;</button>
         <button class="tab readonly" data-file="style.css">style.css &#x1F512;</button>
         <button class="tab readonly" data-file="script.js">script.js &#x1F512;</button>
-        <button class="tab exercise" data-file="emojis.js">emojis.js <span id="mode-switch" style="display:none"><span id="exercise-icon" title="מצב תרגיל">&#x270F;&#xFE0F;</span><span id="solution-icon" title="הצג פתרון">&#x1F441;</span></span></button>
-        <button class="tab exercise" data-file="shapes.js">shapes.js &#x270F;&#xFE0F;</button>
+        <button class="tab exercise" data-file="emojis.js">emojis.js <span class="mode-switch"><span class="exercise-icon active" title="מצב תרגיל">&#x270F;&#xFE0F;</span><span class="solution-icon" title="הצג פתרון">&#x1F441;</span></span></button>
+        <button class="tab exercise" data-file="shapes.js">shapes.js <span class="mode-switch"><span class="exercise-icon active" title="מצב תרגיל">&#x270F;&#xFE0F;</span><span class="solution-icon" title="הצג פתרון">&#x1F441;</span></span></button>
       </div>
       <div id="editor-container">
         <div id="editors-container"></div>

@@ -15,13 +15,13 @@ const FETCH_MAP = {
   'emojis.js':  'loops/emojis/exercise.js',
   'shapes.js':  'loops/shapes/exercise.js'
 };
-const SOLUTION_MAP = { 'emojis.js': 'loops/emojis/solution.js' };
+const SOLUTION_MAP = { 'emojis.js': 'loops/emojis/solution.js', 'shapes.js': 'loops/shapes/solution.js' };
 const EDITABLE_FILES = ['emojis.js', 'shapes.js'];
 
 const files = {};
 const editors = {};
 let activeFile = 'instructions.md';
-let showingSolution = false;
+const showingSolution = {};
 let instructionsCodeMode = false;
 let savedReadmeSelection = null;
 
@@ -68,8 +68,21 @@ function createEditor(key, content, mode, readOnly) {
   return cm;
 }
 
+function highlightCodeBlocks() {
+  const modeMap = { 'language-js': 'javascript', 'language-javascript': 'javascript', 'language-css': 'css', 'language-html': 'htmlmixed' };
+  document.querySelectorAll('#instructions-rendered pre code').forEach(block => {
+    const mode = Object.entries(modeMap).find(([cls]) => block.classList.contains(cls))?.[1];
+    if (!mode) return;
+    const code = block.textContent;
+    block.innerHTML = '';
+    CodeMirror.runMode(code, mode, block);
+    block.classList.add('cm-s-dracula');
+  });
+}
+
 function initEditors() {
   document.getElementById('instructions-rendered').innerHTML = marked.parse(files['instructions.md']);
+  highlightCodeBlocks();
   createEditor('instructions.md-code', files['instructions.md'], null, true);
 
   for (const name of ['index.html', 'style.css', 'script.js']) {
@@ -90,7 +103,7 @@ function getActiveKey() {
     return instructionsCodeMode ? 'instructions.md-code' : null;
   }
   if (EDITABLE_FILES.includes(activeFile)) {
-    return showingSolution ? activeFile + '-solution' : activeFile + '-exercise';
+    return showingSolution[activeFile] ? activeFile + '-solution' : activeFile + '-exercise';
   }
   return activeFile;
 }
@@ -125,14 +138,14 @@ function showActiveEditor() {
 }
 
 function updateSolutionBtn() {
-  const modeSwitch = document.getElementById('mode-switch');
-  if (SOLUTION_MAP[activeFile]) {
-    modeSwitch.style.display = '';
-    document.getElementById('exercise-icon').classList.toggle('active', !showingSolution);
-    document.getElementById('solution-icon').classList.toggle('active', showingSolution);
-  } else {
-    modeSwitch.style.display = 'none';
-  }
+  document.querySelectorAll('.tab.exercise').forEach(tab => {
+    const file = tab.dataset.file;
+    const modeSwitch = tab.querySelector('.mode-switch');
+    if (!modeSwitch) return;
+    modeSwitch.style.display = SOLUTION_MAP[file] ? '' : 'none';
+    tab.querySelector('.exercise-icon').classList.toggle('active', !showingSolution[file]);
+    tab.querySelector('.solution-icon').classList.toggle('active', !!showingSolution[file]);
+  });
 }
 
 function updateInstructionsModeSwitch() {
@@ -148,7 +161,7 @@ function updateInstructionsModeSwitch() {
 function toggleSolution() {
   if (!SOLUTION_MAP[activeFile]) return;
   hideActiveEditor();
-  showingSolution = !showingSolution;
+  showingSolution[activeFile] = !showingSolution[activeFile];
   showActiveEditor();
   updateSolutionBtn();
   runCode();
@@ -228,14 +241,14 @@ ${buildRestoreScript(state)}
 function runSolution() {
   buildAndRun(
     files[SOLUTION_MAP['emojis.js']] || files['emojis.js'],
-    files['shapes.js']
+    files[SOLUTION_MAP['shapes.js']] || files['shapes.js']
   );
 }
 
 function runCode() {
-  const emojisKey = (showingSolution && activeFile === 'emojis.js') ? 'emojis.js-solution' : 'emojis.js-exercise';
+  const emojisKey = showingSolution['emojis.js'] ? 'emojis.js-solution' : 'emojis.js-exercise';
   const emojisContent = editors[emojisKey] ? editors[emojisKey].getValue() : files['emojis.js'];
-  const shapesKey = (showingSolution && activeFile === 'shapes.js') ? 'shapes.js-solution' : 'shapes.js-exercise';
+  const shapesKey = showingSolution['shapes.js'] ? 'shapes.js-solution' : 'shapes.js-exercise';
   const shapesContent = editors[shapesKey] ? editors[shapesKey].getValue() : files['shapes.js'];
   buildAndRun(emojisContent, shapesContent);
 }
@@ -288,16 +301,21 @@ document.addEventListener('mouseup', () => {
   preview.style.pointerEvents = '';
 });
 
+document.getElementById('tabs').addEventListener('click', (e) => {
+  if (e.target.classList.contains('solution-icon')) {
+    const file = e.target.closest('.tab').dataset.file;
+    if (file !== activeFile) switchTab(file);
+    if (!showingSolution[activeFile]) toggleSolution();
+  } else if (e.target.classList.contains('exercise-icon')) {
+    const file = e.target.closest('.tab').dataset.file;
+    if (file !== activeFile) switchTab(file);
+    if (showingSolution[activeFile]) toggleSolution();
+  }
+});
+
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', (e) => {
-    if (e.target.id === 'solution-icon') {
-      if (!showingSolution) toggleSolution();
-      return;
-    }
-    if (e.target.id === 'exercise-icon') {
-      if (showingSolution) toggleSolution();
-      return;
-    }
+    if (e.target.classList.contains('solution-icon') || e.target.classList.contains('exercise-icon')) return;
     if (e.target.id === 'read-icon') {
       if (instructionsCodeMode) {
         hideActiveEditor();
