@@ -42,8 +42,11 @@ async function loadFiles() {
   }));
 }
 
+let debounceTimer = null;
 function onEditorChange() {
-  if (mode === 'auto') runCode();
+  if (mode !== 'auto') return;
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(runCode, 400);
 }
 
 
