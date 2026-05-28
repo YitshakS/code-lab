@@ -2,4 +2,5 @@
 *.png
 *.log
 .playwright-mcp/
-ai/ai_config.js
+ai/compare_models.js
+ai/worker-deploy/
