@@ -81,6 +81,34 @@ body {
 }
 
 
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #3c3c3c;
+  color: #ddd;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+  direction: rtl;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 1000;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+}
+
 #instructions-mode-switch {
   display: inline-flex;
   align-items: center;
@@ -169,8 +197,9 @@ body {
   background: #252526;
   border-top: 1px solid #3c3c3c;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
+  gap: 8px;
   flex-shrink: 0;
 }
 

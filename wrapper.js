@@ -146,6 +146,9 @@ function updateModeControl() {
   document.getElementById('play-btn').classList.toggle('active', mode === 'auto');
   document.getElementById('pause-btn').classList.toggle('active', mode === 'paused');
   document.getElementById('mode-solution').classList.toggle('active', mode === 'solution');
+  document.querySelectorAll('.exercise-mode-icon').forEach(icon => {
+    icon.textContent = isMyCode ? '✏️' : '🔒';
+  });
 }
 
 function updateInstructionsModeSwitch() {
