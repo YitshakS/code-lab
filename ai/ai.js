@@ -2,8 +2,11 @@ const EXERCISE_PROMPT_MAP = {
   'emojis.js': 'loops/emojis/prompt.md'
 };
 
-const EXERCISE_STATIC_FILES = {
-  'emojis.js': ['loops/instructions.md', 'loops/script.js', 'loops/index.html', 'loops/emojis/solution.js']
+const COMMON_FILES = ['loops/instructions.md', 'loops/script.js', 'loops/index.html'];
+
+const EXERCISE_SOLUTION_MAP = {
+  'emojis.js': 'loops/emojis/solution.js',
+  'shapes.js': 'loops/shapes/solution.js'
 };
 
 let systemPrompt = '';
@@ -14,21 +17,24 @@ let isLoading = false;
 async function loadAIPrompts() {
   try {
     const exerciseFile = EXERCISE_PROMPT_MAP[activeFile] || null;
-    const staticFiles = EXERCISE_STATIC_FILES[activeFile] || [];
+    const solutionFile = EXERCISE_SOLUTION_MAP[activeFile] || null;
 
-    const fetches = [fetch('ai/ai_system.md')];
+    const fetches = [fetch('ai/ai_system.md'), ...COMMON_FILES.map(f => fetch(f))];
     if (exerciseFile) fetches.push(fetch(exerciseFile));
-    staticFiles.forEach(f => fetches.push(fetch(f)));
+    if (solutionFile) fetches.push(fetch(solutionFile));
 
     const responses = await Promise.all(fetches);
     const texts = await Promise.all(responses.map(r => r.text()));
 
     systemPrompt = texts[0];
-    let idx = 1;
-    exercisePrompt = exerciseFile ? texts[idx++] : '';
+    COMMON_FILES.forEach((name, i) => {
+      systemPrompt += `\n\n---\n\n### ${name}:\n\`\`\`js\n${texts[1 + i]}\n\`\`\``;
+    });
 
-    for (let i = 0; i < staticFiles.length; i++) {
-      exercisePrompt += `\n\n---\n\n### ${staticFiles[i]}:\n\`\`\`js\n${texts[idx++]}\n\`\`\``;
+    let idx = 1 + COMMON_FILES.length;
+    exercisePrompt = exerciseFile ? texts[idx++] : '';
+    if (solutionFile) {
+      exercisePrompt += `\n\n---\n\n### ${solutionFile}:\n\`\`\`js\n${texts[idx++]}\n\`\`\``;
     }
   } catch (e) {
     console.error('Failed to load AI prompts:', e);
