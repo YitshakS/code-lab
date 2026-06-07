@@ -185,7 +185,8 @@ document.getElementById('picker-close').addEventListener('click', () => {
 });
 
 fillEmojiPicker();
-emojiGrid.insertAdjacentHTML('beforeend',
-  '<div style="width:100%;padding:4px 0;font-size:0.85em;color:#888;text-align:center;border-top:1px solid #ccc;margin:4px 0;flex-basis:100%">סה"כ ' + emojiGrid.querySelectorAll('.emoji-item').length + ' אמוג\'ים</div>'
-);
+const emojiCount = document.createElement('div');
+emojiCount.className = 'emoji-count';
+emojiCount.textContent = `סה"כ ${emojiGrid.querySelectorAll('.emoji-item').length} אמוג'ים`;
+emojiGrid.appendChild(emojiCount);
 updateCellSize();

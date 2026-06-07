@@ -1,0 +1,207 @@
+body {
+	direction: rtl; /* טקסט מימין לשמאל */
+}
+
+.directionLtr {
+	direction: ltr;
+}
+
+.displayBlock {
+	display: block;
+}
+
+.displayNone {
+	display: none;
+}
+
+.fadeIn {
+	/*	position: fixed; */
+	animation: fadeIn 1s linear forwards;
+	opacity: 0;
+}
+
+@keyframes fadeIn {
+	100% {
+		opacity: 1;
+	}
+}
+
+.fadeOut {
+	display: none;
+	/*	position: fixed;
+	animation: fadeOut 1s linear forwards;
+    opacity: 0; */
+}
+
+@keyframes fadeOut {
+	0% {
+		opacity: 1;
+	}
+}
+
+.marginRight0 {
+	margin-right: 0;
+}
+
+.verticalAlignMiddle {
+	vertical-align: middle;
+}
+
+.width40 {
+	width: 40px;
+}
+
+.menuTable {
+	/* border:1px solid black; */
+	/* fieldset הגובה הכרחי כדי לשמור על גובה אחיד של שני ה
+	   'אבל הוא יכול להיות 0. זה עדיין לא פותר את הבעיה באייג */
+	height: 0;
+}
+
+fieldset {
+	border: 1px solid #ddd;
+	padding: 0 1.4em 1.4em 1.4em;
+	margin: 0 0 1.5em 0;
+	border-radius: 8px;
+	margin: 0 5px;
+	height: 100%;
+}
+
+legend {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+.tdFieldset1 {
+	width: 35%;
+	height: 100%;
+}
+
+.tdFieldset2 {
+	width: 65%;
+	height: 100%;
+}
+
+.button {
+	width: 85px;
+	height: 25px;
+	-webkit-border-radius: 16px;
+	-moz-border-radius: 16px;
+	border-radius: 16px;
+	border: 1px solid #ccc;
+	position: relative;
+	/* Label */
+	color: #fff;
+	text-shadow: rgba(10, 10, 10, 0.5) 1px 2px 2px;
+	text-align: center;
+	vertical-align: middle;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.aqua {
+	/* FF 3.5+ */
+	background-color: rgba(60, 132, 198, 0.8);
+	background-image: -webkit-gradient(
+		linear,
+		0% 0%,
+		0% 90%,
+		from(rgba(28, 91, 155, 0.8)),
+		to(rgba(108, 191, 255, 0.9))
+	);
+	border-top-color: #8ba2c1;
+	border-right-color: #5890bf;
+	border-bottom-color: #4f93ca;
+	border-left-color: #768fa5;
+	-webkit-box-shadow: rgba(66, 140, 240, 0.5) 0px 10px 16px;
+	box-shadow: rgba(66, 140, 240, 0.5) 0px 10px 16px;
+	-moz-box-shadow: rgba(66, 140, 240, 0.5) 0px 10px 16px;
+}
+
+.button .glare {
+	position: absolute;
+	top: 0;
+	left: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	height: 1px;
+	width: 65px;
+	padding: 5px 0;
+	background-color: rgba(255, 255, 255, 0.25);
+	background-image: -webkit-gradient(
+		linear,
+		0% 0%,
+		0% 95%,
+		from(rgba(255, 255, 255, 0.7)),
+		to(rgba(255, 255, 255, 0))
+	);
+}
+
+.arrContainer {
+	/*	position: absolute;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	margin-top: 60px;
+	bottom: 0; */
+	direction: ltr;
+	text-align: right;
+	position: absolute;
+}
+
+.cell {
+	/*	top: 0;
+	left: 0;
+	overflow: hidden;
+	position: absolute;
+	display: inherit; */
+	direction: ltr; /* מספר משמאל לימין אחרת מינוס יופיע מימין */
+	border-color: DarkGray;
+	border-style: solid;
+	border-width: 1px;
+	width: 24px; /* רוחב ברירת מחדל של תא כשנבחרה אפשרות של הזנת ערכים ידנית */
+	font-family: Consolas; /* 'Courier New', Courier, monospace; :גופן שבו כל התווים באותו הרוחב. גופנים נוספים כאלה, שאינם ברירת מחדל בכרום */
+	padding: 2px 2px 2px 2px;
+	position: relative;
+}
+
+.arrow {
+	/*	color: Lime; */
+	/*  text-shadow: -1px -2px #000, 1px -2px #000, -1px 1px #000, 1px 1px #000; */
+	/*	-webkit-text-fill-color: Lime; */
+	-webkit-text-stroke-width: 0.6px;
+	-webkit-text-stroke-color: Black;
+
+	-webkit-transform: scale(2, 1);
+	-moz-transform: scale(2, 1);
+	-ms-transform: scale(2, 1);
+	-o-transform: scale(2, 1);
+	transform: scale(2, 1);
+
+	font-size: 21px;
+	position: absolute;
+	transition: all 1s;
+}
+
+.sortedArray {
+	-webkit-text-fill-color: Lime;
+	-webkit-text-stroke-width: 0.6px;
+	-webkit-text-stroke-color: Black;
+	font-size: 14px;
+}
+
+.CSSVALID {
+	display: none;
+	position: fixed;
+	bottom: 10px;
+	left: 50%;
+}
+
+.HTML5VALID {
+	display: none;
+	position: fixed;
+	bottom: 50px;
+	left: 50%;
+}

@@ -1,0 +1,9 @@
+{
+  "tabs": [
+    { "name": "README.md",  "type": "readme",   "mode": null },
+    { "name": "index.html", "type": "readonly", "mode": "htmlmixed" },
+    { "name": "scripts.js", "type": "readonly", "mode": "javascript" },
+    { "name": "styles.css", "type": "readonly", "mode": "css" }
+  ],
+  "extraFiles": ["index.html"]
+}

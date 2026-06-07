@@ -20,7 +20,7 @@ body.dark-mode {
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Alef', Arial, sans-serif;
   background-color: var(--bg-color);
   padding: 20px;
   color: var(--text-color);
@@ -338,4 +338,15 @@ input:checked + .slider:before {
 
 .emoji-item:hover {
   background: var(--border-color);
+}
+
+.emoji-count {
+  width: 100%;
+  padding: 4px 0;
+  font-size: 0.85em;
+  color: #888;
+  text-align: center;
+  border-top: 1px solid #ccc;
+  margin: 4px 0;
+  flex-basis: 100%;
 }

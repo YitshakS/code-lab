@@ -2,7 +2,7 @@ const EXERCISE_PROMPT_MAP = {
   'emojis.js': 'loops/emojis/prompt.md'
 };
 
-const COMMON_FILES = ['loops/instructions.md', 'loops/script.js', 'loops/index.html'];
+const COMMON_FILES = ['loops/README.md', 'loops/script.js', 'loops/index.html'];
 
 const EXERCISE_SOLUTION_MAP = {
   'emojis.js': 'loops/emojis/solution.js',
@@ -179,4 +179,4 @@ function initAI() {
   });
 }
 
-initAI();
+// initAI() is called by wrapper.js after topic config and files are loaded

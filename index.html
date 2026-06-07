@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>תרגיל לולאות</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>📚</text></svg>">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
@@ -14,20 +15,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/runmode/runmode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link rel="stylesheet" href="wrapper.css?v=3">
+  <link rel="stylesheet" href="wrapper.css?v=4">
 </head>
 <body>
   <div id="wrapper-container">
 
     <div id="editor-panel">
-      <div id="tabs">
-        <button class="tab readonly active" data-file="instructions.md">README.md <span id="instructions-mode-switch"><span id="code-icon" data-tooltip="הצג קוד">&#x1F512;</span><span id="read-icon" class="active" data-tooltip="מצב קריאה">&#x1F441;</span></span></button>
-        <button class="tab readonly" data-file="index.html">index.html &#x1F512;</button>
-        <button class="tab readonly" data-file="style.css">style.css &#x1F512;</button>
-        <button class="tab readonly" data-file="script.js">script.js &#x1F512;</button>
-        <button class="tab exercise" data-file="emojis.js">emojis.js <span class="exercise-mode-icon">&#x1F512;</span></button>
-        <button class="tab exercise" data-file="shapes.js">shapes.js <span class="exercise-mode-icon">&#x1F512;</span></button>
-      </div>
+      <div id="tabs"></div>
       <div id="editor-container">
         <div id="editors-container"></div>
         <div id="instructions-rendered"></div>
@@ -65,8 +59,8 @@
 
   </div>
 
-  <script src="ai/ai_config.js?v=3"></script>
-  <script src="wrapper.js?v=3"></script>
-  <script src="ai/ai.js?v=3"></script>
+  <script src="ai/ai_config.js?v=4"></script>
+  <script src="wrapper.js?v=4"></script>
+  <script src="ai/ai.js?v=4"></script>
 </body>
 </html>

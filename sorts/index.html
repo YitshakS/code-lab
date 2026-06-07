@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+	<title>מיונים</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<script src="scripts.js"></script>
+</head>
+
+<body>
+	<table class="menuTable">
+		<tr>
+			<td valign="top" class="tdFieldset1">
+				<fieldset id="fieldset1">
+					<legend>מאפייני מערך:</legend>
+					<table>
+						<tr>
+							<td>צבע רקע תאי המערך</td>
+							<td><input type="color" value="#64dbcc" id="inputsColor1" class="width40"></td>
+							<td>&emsp;צבע גבול שני תאים שמושווים</td>
+							<td><input type="color" value="#ff0000" id="inputsColor3" class="width40"></td>
+						</tr>
+						<tr>
+							<td>צבע גופן תאי המערך</td>
+							<td><input type="color" value="#000000" id="inputsColor2" class="width40"></td>
+							<td>&emsp;צבע החץ</td>
+							<td><input type="color" value="#00FF00" id="inputsColor4" class="width40"></td>
+					<!--	<td>&emsp;צבע גבול תת מערך שמופעלת עליו רקורסיה</td>
+							<td><input type="color" value="#008000" id="inputsColor4" class="width40"></td>	-->
+						</tr>
+						<tr>
+							<td>
+								<br/>
+								<input class="marginRight0" type="radio" name="values" id="manually">הזנת ערכים ידנית
+							</td>
+							<td>
+							</td>
+							<td><br/>&emsp;מספר איברי המערך</td>
+							<td><br/><input type="number" value="10" min="5" max="20" id="inputsNum" class="directionLtr width40"></td>
+						</tr>
+						<tr>
+							<td>
+								<input class="marginRight0" type="radio" name="values" id="random" checked="checked">הגרלת ערכים
+							</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>ספרות אחרי הנקודה</td>
+							<td><input type="number" id="point" class="directionLtr width40" value="0" min="0"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>ערך מינימלי</td>
+							<td><input type="number" id="min" class="directionLtr width40" value="1"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>ערך מקסימלי</td>
+							<td><input type="number" id="max" class="directionLtr width40" value="10"></td>
+							<td></td>
+							<td><button type="button" id="btnCreateArray" class="button aqua"><div class="glare"></div>צור מערך</button></td>
+							<!--
+				input.style.width = document.getElementById("inputsWidth").value.toString() + "px"; // רוחב התא
+				<td>&emsp;רוחב כל איבר בפיקסלים</td>
+				<td><input type="number" value="40" min="5" max="20" id="inputsWidth" class="directionLtr width40"></td>
+		-->
+						</tr>
+					</table>
+				</fieldset>
+			</td>
+			<td valign="top" class="tdFieldset2">
+				<fieldset id="fieldset2" disabled>
+					<legend>מאפייני מיון:</legend>
+					שם המיון
+					<select id="selectSort">
+						<option value="bubble" selected="selected">Bubble - בועות/החלפה</option>
+						<option value="selection">Selection - בחירה</option>
+						<option value="insertion">Insertion - הכנסה</option>
+						<option value="merge">Merge - מיזוג</option>
+						<option value="quick">Quick - מהיר</option>
+						<option value="all">כל המיונים</option>
+					</select>
+					<!--
+			<td><input type="radio" name="speed" checked="checked">מהירות קבועה
+			<td valign="top"><input type="radio" name="speed">צעד אחר צעד</td>
+		-->
+					&emsp;לאט<input type="range" class="verticalAlignMiddle" id="speed">מהר &emsp;
+					<button type="button" id="btnSort" class="button"><div class="glare"></div>מיין</button>
+					<br/><br/>תאור:
+					<div id="bubbleExplanation" class="fadeIn">
+						<ul>
+							<li>משווים כל איבר עם האיבר הבא אחריו. אם מוצאים איבר שגדול מהבא אחריו מחליפים ביניהם</li>
+							<li>כל איטרציה דוחפת קדימה למקומו את האיבר הכי גדול ויוצרת מיון מהסוף</li>
+							<li>לכן בכל איטרציה נתחיל מהאיבר הראשון עד האיבר במקום האחד לפני האיבר האחרון שדחפנו באיטרציה הקודמת (יסומן בחץ)</li>
+							<li>חוזרים על התהליך עד שבאיטרציה שלמה לא נמצאים שני איברים שאחד מהם גדול מהבא אחריו</li>
+						</ul>
+					</div>
+					<div id="selectionExplanation" class="displayNone">
+						<ul>
+							<li>מחפשים מהאיבר הראשון עד האחרון את האיבר הקטן ביותר ומחליפים אותו עם האיבר הראשון</li>
+							<li>מחפשים מהאיבר השני עד האחרון את האיבר הקטן ביותר ומחליפים אותו עם האיבר השני</li>
+							<li>ממשיכים באותה השיטה עד סוף המערך</li>
+							<li>כל איטרציה דוחפת אחורה למקומו את האיבר הכי קטן ויוצרת מיון מההתחלה</li>
+							<li>לכן בכל איטרציה נתחיל מהאיבר במקום האחד אחרי המקום שממנו התחלנו לבדוק בפעם הקודמת (יסומן בחץ)</li>
+						</ul>
+					</div>
+					<div id="insertionExplanation" class="displayNone">
+						<ul>
+							<li>לוקחים את האיבר השני, סורקים אחורה עד שנתקלים באיבר קטן או שווה לו, דוחפים מקום אחד קדימה את כל האיברים שנסרקו ומכניסים אותו לפניהם</li>
+							<li>לוקחים את האיבר השלישי, סורקים אחורה עד שנתקלים באיבר קטן או שווה לו, דוחפים מקום אחד קדימה את כל האיברים שנסרקו ומכניסים אותו לפניהם</li>
+							<li>ממשיכים באותה השיטה עד סוף המערך</li>
+							<li>כל איטרציה דוחפת אחורה למקומו את האיבר שנלקח ויוצרת מיון מההתחלה</li>
+							<li>לכן בכל איטרציה נקח את האיבר במקום האחד אחרי המקום שממנו לקחנו בפעם הקודמת (יסומן בחץ) ולכן סורקים אחורה רק עד שנתקלים באיבר קטן או שווה</li>
+							<li>(אם האיבר שלקחנו קטן מכל אלה שלפניו, הסריקה תגיע עד תחילת המערך, כולם יודחפו והוא יוכנס לפניהם)</li>
+							<li>ניתן לשפר את הסריקה ולבצעה בעזרת חיפוש בינארי, אך בגלל הדחיפות סיבוכיות המיון תשאר כפי שהיא</li>
+						</ul>
+					</div>
+					<div id="mergeExplanation" class="displayNone">
+						<ul>
+							<li>ניתן למזג שני מערכים שכל אחד מהם ממוין, למערך אחד ממוין, באופן הבא: כל עוד יש שני מערכים, נשווה בין שני האיברים הראשונים שלהם, נסיר את הקטן מביניהם ונוסיפו למערך הממוזג (אם שני האיברים הראשונים שווים נסיר את שניהם ונוסיפם למערך הממוזג). אם המערכים לא באותו האורך, כשישאר רק מערך אחד, נסירו ונוסיפו למערך הממוזג</li>
+							<br/>
+							<li>מחלקים כל מערך בחצי (במקרה שכמות התאים אי זוגית צד אחד יכלול תא אחד יותר)</li>
+							<li>חוזרים על התהליך ברקורסיה. תנאי עצירה הוא כשלא ניתן לחלק תת מערך כי הוא מכיל רק איבר אחד (איבר אחד הוא ממוין)</li>
+							<li>בנסיגה לאחור של הרקורסיות, ממזגים כל שני חצאים שחילקנו</li>
+							<li>בניגוד למיונים הלא רקורסיביים, בהם דאגנו להכניס כל איבר למקומו מבלי להתחשב בהזזות מיותרות של איברים אחרים, במיון זה אנו מנסים להתחשב בכל הזזה של כל איבר, לקרב אותו כמה שיותר למקומו ובכך לחסוך הזזות והשוואות מיותרות</li>
+						</ul>
+					</div>
+					<div id="quickExplanation" class="displayNone">
+						<ul>
+							<li>בוחרים איבר אקראי (מכונה "pivot" ובעברית "ציר")</li>
+							<li>מעבירים את כל האיברים הקטנים ממנו לפניו והגדולים ממנו לאחריו (מבלי למיין ביניהם)</li>
+							<li>חוזרים על הפעולה הנ"ל באופן רקורסיבי על תת המערך הכולל רק את האיברים שהעברנו כעת לפניו וכן באופן רקורסיבי על תת המערך הכולל רק את האיברים שהעברנו כעת לאחריו</li>
+							<li>תנאי עצירה הוא כשלא ניתן לחלק תת מערך כי הוא מכיל רק איבר אחד (איבר אחד הוא ממוין). המיון יסתיים כשלא ניתן לחלק עוד אף מערך</li>
+							<li>כל איטרציה תביא את איבר הציר למקומו (יסומן בחץ), אך בניגוד למיונים הלא רקורסיביים, במיון זה אנו לוקחים בחשבון גם את ההזזות של שאר האיברים שבאותה האיטרציה, כך שיקרבו אותם למקומותיהם ובכך לחסוך מהלכים מיותרים בהמשך</li>
+						</ul>
+					</div>
+					<div id="allExplanation" class="displayNone">
+					</div>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+	<br/>
+	<button type="button" id="btnReload" class="button aqua"><div class="glare"></div>נקה נתונים</button>
+	<div id="labelOriginal" class="displayNone">
+		<br/>
+		<span><b>המערך המקורי</b></span>
+		<br/>
+		<span id="arrOriginal" class="arrContainer"></span>
+	</div>
+	<div id="labelBubble" class="displayNone">
+		<br/><br/>
+		<span><b>מיון בועות/החלפה</b></span>
+		<br/>
+		<span>השוואות: </span>
+		<span id="compBubble"></span>
+		<br/>
+		<span>החלפות: </span>
+		<span id="swapBubble"></span>
+		<br/>
+		<span id="endBubble" class="displayNone">
+			<span class="sortedArray">&#10004;</span> <span>המערך ממוין</span>
+		</span>
+		<br/>
+		<span id="arrBubble" class="arrContainer"></span>
+	</div>
+	<div id="labelSelection" class="displayNone">
+		<br/><br/>
+		<span><b>מיון בחירה</b></span>
+		<br/>
+		<span>השוואות: </span>
+		<span id="compSelection"></span>
+		<br/>
+		<span>החלפות: </span>
+		<span id="swapSelection"></span>
+		<br/>
+		<span id="endSelection" class="displayNone">
+			<span class="sortedArray">&#10004;</span> <span>המערך ממוין</span>
+		</span>
+		<br/>
+		<span id="arrSelection" class="arrContainer"></span>
+	</div>
+	<div id="labelInsertion" class="displayNone">
+		<br/><br/>
+		<span><b>מיון הכנסה</b></span>
+		<br/>
+		<span>השוואות: </span>
+		<span id="compInsertion"></span>
+		<br/>
+		<span>החלפות: </span>
+		<span id="swapInsertion"></span>
+		<br/>
+		<span id="endInsertion" class="displayNone">
+			<span class="sortedArray">&#10004;</span> <span>המערך ממוין</span>
+		</span>
+		<br/>
+		<span id="arrInsertion" class="arrContainer"></span>
+	</div>
+	<div id="labelMerge" class="displayNone">
+		<br/><br/>
+		<span><b>מיון מיזוג</b></span>
+		<br/>
+		<span>השוואות: </span>
+		<span id="compMerge"></span>
+		<br/>
+		<span>החלפות: </span>
+		<span id="swapMerge"></span>
+		<br/>
+		<span id="endMerge" class="displayNone">
+			<span class="sortedArray">&#10004;</span> <span>המערך ממוין</span>
+		</span>
+		<br/>
+		<span id="arrMerge" class="arrContainer"></span>
+	</div>
+	<div id="labelQuick" class="displayNone">
+		<br/><br/>
+		<span><b>מיון מהיר</b></span>
+		<br/>
+		<span>השוואות: </span>
+		<span id="compQuick"></span>
+		<br/>
+		<span>החלפות: </span>
+		<span id="swapQuick"></span>
+		<br/>
+		<span id="endQuick" class="displayNone">
+			<span class="sortedArray">&#10004;</span> <span>המערך ממוין</span>
+		</span>
+		<br/>
+		<span id="arrQuick" class="arrContainer"></span>
+	</div>
+
+</body>
+
+</html>

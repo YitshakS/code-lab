@@ -1,0 +1,10 @@
+{
+  "tabs": [
+    { "name": "README.md",  "type": "readme",    "mode": null },
+    { "name": "index.html", "type": "readonly",  "mode": "htmlmixed" },
+    { "name": "style.css",  "type": "readonly",  "mode": "css" },
+    { "name": "script.js",  "type": "readonly",  "mode": "javascript" },
+    { "name": "emojis.js",  "type": "exercise",  "mode": "javascript", "fetch": "emojis/exercise.js", "solution": "emojis/solution.js" },
+    { "name": "shapes.js",  "type": "exercise",  "mode": "javascript", "fetch": "shapes/exercise.js", "solution": "shapes/solution.js" }
+  ]
+}
