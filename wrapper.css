@@ -18,6 +18,11 @@ body {
   height: 100vh;
 }
 
+body.has-site-header #wrapper-container {
+  height: calc(100vh - 44px);
+  margin-top: 44px;
+}
+
 #editor-panel {
   width: 45%;
   min-width: 200px;

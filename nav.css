@@ -1,0 +1,53 @@
+#site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #3c3c3c;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 9999;
+  direction: rtl;
+}
+
+#site-logo {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.05em;
+  font-weight: bold;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 1px;
+}
+
+#site-logo:hover {
+  color: #4CAF50;
+}
+
+#site-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-item {
+  color: #999;
+  text-decoration: none;
+  font-family: Arial, sans-serif;
+  font-size: 0.9em;
+  padding: 5px 12px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-item:hover {
+  background: #2e2e2e;
+  color: #ddd;
+}
+
+.nav-item.active {
+  background: #2a4a2a;
+  color: #4CAF50;
+}

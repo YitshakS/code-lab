@@ -6,7 +6,7 @@ let SOLUTION_MAP = {};
 let EDITABLE_FILES = [];
 
 const topic = new URLSearchParams(window.location.search).get('topic') || 'loops';
-const topicPrefix = topic + '/';
+const topicPrefix = topic + '/code/';
 
 const files = {};
 const editors = {};

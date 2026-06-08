@@ -1,12 +1,12 @@
 const EXERCISE_PROMPT_MAP = {
-  'emojis.js': 'loops/emojis/prompt.md'
+  'emojis.js': 'loops/code/emojis/prompt.md'
 };
 
-const COMMON_FILES = ['loops/README.md', 'loops/script.js', 'loops/index.html'];
+const COMMON_FILES = ['loops/code/README.md', 'loops/code/script.js', 'loops/code/index.html'];
 
 const EXERCISE_SOLUTION_MAP = {
-  'emojis.js': 'loops/emojis/solution.js',
-  'shapes.js': 'loops/shapes/solution.js'
+  'emojis.js': 'loops/code/emojis/solution.js',
+  'shapes.js': 'loops/code/shapes/solution.js'
 };
 
 let systemPrompt = '';
