@@ -1,9 +1,12 @@
 (function () {
   const currentTopic = new URLSearchParams(window.location.search).get('topic');
 
+  const scriptSrc = document.currentScript?.src || '';
+  const base = scriptSrc.replace(/nav\.js.*$/, '');
+
   const style = document.createElement('link');
   style.rel = 'stylesheet';
-  style.href = '/nav.css';
+  style.href = base + 'nav.css';
   document.head.appendChild(style);
 
   function buildHeader(topics) {
@@ -33,7 +36,7 @@
   }
 
   function init() {
-    fetch('/topics.json')
+    fetch(base + 'topics.json')
       .then(r => r.json())
       .then(buildHeader)
       .catch(() => {});
