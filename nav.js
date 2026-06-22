@@ -15,7 +15,7 @@
 
     const logo = document.createElement('a');
     logo.id = 'site-logo';
-    logo.href = '/';
+    logo.href = base;
     logo.textContent = 'Code Lab';
 
     const nav = document.createElement('nav');
@@ -23,7 +23,7 @@
 
     topics.forEach(t => {
       const a = document.createElement('a');
-      a.href = `/?topic=${t.id}`;
+      a.href = `${base}?topic=${t.id}`;
       a.className = 'nav-item' + (t.id === currentTopic ? ' active' : '');
       a.textContent = t.title;
       nav.appendChild(a);
