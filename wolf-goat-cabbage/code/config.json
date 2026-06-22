@@ -1,0 +1,6 @@
+{
+  "tabs": [
+    { "name": "README.md",  "type": "readme",   "mode": null },
+    { "name": "index.html", "type": "readonly", "mode": "htmlmixed" }
+  ]
+}

@@ -1,4 +1,5 @@
 [
   { "id": "loops", "title": "לולאות", "icon": "🔁" },
-  { "id": "sorts", "title": "מיונים", "icon": "📊" }
+  { "id": "sorts", "title": "מיונים", "icon": "📊" },
+  { "id": "wolf-goat-cabbage", "title": "CSS State Machine", "icon": "⛵" }
 ]
