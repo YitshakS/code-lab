@@ -148,54 +148,35 @@
         100% { transform: translate(0px,    0px); }
       }
 
-      /* ימין: איכר+עז — ממצב התחלה */
-      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .🐺🥦--🧑‍🌾🐐 .board-side:last-child .entity { animation: arrive-right 1.6s; }
-      /* ימין: רק איכר — מ-🧑‍🌾🐺🥦--🐐 (עז כבר שם) */
-      #🐺🥦--🧑‍🌾🐐2:checked ~ .wrapper .🐺🥦--🧑‍🌾🐐 .board-side:last-child > :first-child .entity { animation: arrive-right 1.6s; }
-
-      /* ימין: איכר+זאב — מ-🧑‍🌾🐺🥦--🐐 (עז כבר שם) */
+      /* ימין: איכר+עז — שניהם זזו */
+      .🐺🥦--🧑‍🌾🐐 .board-side:last-child .entity { animation: arrive-right 1.6s; }
+      /* ימין: איכר+זאב זזו, עז כבר שם */
       .🥦--🧑‍🌾🐺🐐 .board-side:last-child > :nth-child(-n+2) .entity { animation: arrive-right 1.6s; }
+      /* ימין: איכר+כרוב זזו, עז כבר שם */
+      .🐺--🧑‍🌾🐐🥦 .board-side:last-child > :nth-child(1) .entity,
+      .🐺--🧑‍🌾🐐🥦 .board-side:last-child > :nth-child(3) .entity { animation: arrive-right 1.6s; }
+      /* ימין: רק איכר (מסלול מרובה) */
+      .🐐--🧑‍🌾🐺🥦 .board-side:last-child > :first-child .entity { animation: arrive-right 1.6s; }
 
-      /* ימין: איכר+כרוב — מ-🧑‍🌾🐺🥦--🐐 */
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .🐺--🧑‍🌾🐐🥦 .board-side:last-child > :nth-child(1) .entity,
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .🐺--🧑‍🌾🐐🥦 .board-side:last-child > :nth-child(3) .entity { animation: arrive-right 1.6s; }
-      /* ימין: איכר+עז — מ-🧑‍🌾🐺🐐--🥦 (כרוב כבר שם) */
-      #🐺--🧑‍🌾🐐🥦2:checked ~ .wrapper .🐺--🧑‍🌾🐐🥦 .board-side:last-child > :nth-child(-n+2) .entity { animation: arrive-right 1.6s; }
-
-      /* ימין: איכר+כרוב — מ-🧑‍🌾🐐🥦--🐺 (זאב כבר שם) */
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .🐐--🧑‍🌾🐺🥦 .board-side:last-child > :nth-child(1) .entity,
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .🐐--🧑‍🌾🐺🥦 .board-side:last-child > :nth-child(3) .entity { animation: arrive-right 1.6s; }
-      /* ימין: איכר+זאב — מ-🧑‍🌾🐺🐐--🥦 (כרוב כבר שם) */
-      #🐐--🧑‍🌾🐺🥦2:checked ~ .wrapper .🐐--🧑‍🌾🐺🥦 .board-side:last-child > :nth-child(-n+2) .entity { animation: arrive-right 1.6s; }
-
-      /* שמאל: איכר+עז — מ-🥦--🧑‍🌾🐺🐐 (כרוב כבר שם) */
-      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .🧑‍🌾🐐🥦--🐺 .board-side:first-child > :nth-child(-n+2) .entity { animation: arrive-left 1.6s; }
-      /* שמאל: איכר+כרוב — מ-🐐--🧑‍🌾🐺🥦 (עז כבר שם) */
-      #🧑‍🌾🐐🥦--🐺2:checked ~ .wrapper .🧑‍🌾🐐🥦--🐺 .board-side:first-child > :nth-child(1) .entity,
-      #🧑‍🌾🐐🥦--🐺2:checked ~ .wrapper .🧑‍🌾🐐🥦--🐺 .board-side:first-child > :nth-child(3) .entity { animation: arrive-left 1.6s; }
-
-      /* שמאל: רק איכר */
+      /* שמאל: איכר+עז זזו, כרוב כבר שם */
+      .🧑‍🌾🐐🥦--🐺 .board-side:first-child > :nth-child(-n+2) .entity { animation: arrive-left 1.6s; }
+      /* שמאל: רק איכר (מסלול מרובה) */
       .🧑‍🌾🐺🥦--🐐 .board-side:first-child > :first-child .entity,
+      .🧑‍🌾🐺🐐--🥦 .board-side:first-child > :first-child .entity,
       .🧑‍🌾🐐--🐺🥦  .board-side:first-child > :first-child .entity { animation: arrive-left 1.6s; }
-
-      /* שמאל: איכר+זאב — מ-🐐--🧑‍🌾🐺🥦 (כרוב כבר שם) */
-      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .🧑‍🌾🐺🐐--🥦 .board-side:first-child > :nth-child(-n+2) .entity { animation: arrive-left 1.6s; }
-      /* שמאל: איכר+עז — מ-🐺--🧑‍🌾🐐🥦 (זאב כבר שם) */
-      #🧑‍🌾🐺🐐--🥦2:checked ~ .wrapper .🧑‍🌾🐺🐐--🥦 .board-side:first-child > :nth-child(1) .entity,
-      #🧑‍🌾🐺🐐--🥦2:checked ~ .wrapper .🧑‍🌾🐺🐐--🥦 .board-side:first-child > :nth-child(3) .entity { animation: arrive-left 1.6s; }
 
       /* פסילה — ימין: כל הגיעו */
       .🐺🐐🥦--🧑‍🌾  .board-side:last-child  .entity,
       .🐺🐐--🧑‍🌾🥦  .board-side:last-child  .entity,
       .🐐🥦--🧑‍🌾🐺  .board-side:last-child  .entity { animation: arrive-right 1.6s; }
-      /* פסילה — שמאל: רק איכר */
+      /* פסילה — שמאל: רק איכר (כרוב/זאב כבר שם) */
       .🧑‍🌾🥦--🐺🐐  .board-side:first-child .entity:first-child,
       .🧑‍🌾🐺--🐐🥦  .board-side:first-child .entity:first-child { animation: arrive-left 1.6s; }
 
-      /* התחלה (חזרה בלבד): איכר+עז (1+3) */
+      /* התחלה (חזרה בלבד): איכר+עז זזו (1+3), זאב+כרוב כבר שמאל */
       #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .🧑‍🌾🐺🐐🥦--empty .board-side:first-child > :nth-child(1) .entity,
       #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .🧑‍🌾🐺🐐🥦--empty .board-side:first-child > :nth-child(3) .entity { animation: arrive-left 1.6s; }
-      /* ניצחון: איכר+עז (1+3) */
+      /* ניצחון: איכר+עז זזו (1+3), זאב+כרוב כבר ימין — bare divs */
       .empty--🧑‍🌾🐺🐐🥦 .board-side:last-child > .entity:nth-child(1),
       .empty--🧑‍🌾🐺🐐🥦 .board-side:last-child > .entity:nth-child(3) { animation: arrive-right 1.6s; }
 
@@ -254,8 +235,6 @@
       /* חזרה למצב התחלה — מוצג עם אנימציה */
       #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .boat          { left: var(--boat-left); }
       #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .🧑‍🌾🐺🐐🥦--empty { display: flex; }
-      #🧑‍🌾🐺🐐🥦--reset:checked ~ .wrapper .boat          { left: var(--boat-left); }
-      #🧑‍🌾🐺🐐🥦--reset:checked ~ .wrapper .🧑‍🌾🐺🐐🥦--empty { display: flex; }
 
       #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .boat       { left: var(--boat-right); }
       #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .🐺🥦--🧑‍🌾🐐 { display: flex; }
@@ -304,22 +283,6 @@
       #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .boat      { left: var(--boat-left); }
       #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .🧑‍🌾🐺--🐐🥦 { display: flex; }
       #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper #end-goat  { display: flex; }
-
-      /* מסלולים משניים — אותו לוח, אנימציה שונה */
-      #🐺🥦--🧑‍🌾🐐2:checked ~ .wrapper .boat       { left: var(--boat-right); }
-      #🐺🥦--🧑‍🌾🐐2:checked ~ .wrapper .🐺🥦--🧑‍🌾🐐 { display: flex; }
-
-      #🐺--🧑‍🌾🐐🥦2:checked ~ .wrapper .boat       { left: var(--boat-right); }
-      #🐺--🧑‍🌾🐐🥦2:checked ~ .wrapper .🐺--🧑‍🌾🐐🥦 { display: flex; }
-
-      #🧑‍🌾🐐🥦--🐺2:checked ~ .wrapper .boat       { left: var(--boat-left); }
-      #🧑‍🌾🐐🥦--🐺2:checked ~ .wrapper .🧑‍🌾🐐🥦--🐺 { display: flex; }
-
-      #🧑‍🌾🐺🐐--🥦2:checked ~ .wrapper .boat       { left: var(--boat-left); }
-      #🧑‍🌾🐺🐐--🥦2:checked ~ .wrapper .🧑‍🌾🐺🐐--🥦 { display: flex; }
-
-      #🐐--🧑‍🌾🐺🥦2:checked ~ .wrapper .boat       { left: var(--boat-right); }
-      #🐐--🧑‍🌾🐺🥦2:checked ~ .wrapper .🐐--🧑‍🌾🐺🥦 { display: flex; }
     </style>
   </head>
 
@@ -329,7 +292,6 @@
 
     <!-- ===== STATE RADIO INPUTS ===== -->
     <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--empty" />
-    <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--reset" />
     <input type="radio" name="state" id="🐺🥦--🧑‍🌾🐐" />
     <input type="radio" name="state" id="🧑‍🌾🐺🥦--🐐" />
     <input type="radio" name="state" id="🥦--🧑‍🌾🐺🐐" />
@@ -344,12 +306,6 @@
     <input type="radio" name="state" id="🧑‍🌾🥦--🐺🐐" />
     <input type="radio" name="state" id="🐐🥦--🧑‍🌾🐺" />
     <input type="radio" name="state" id="🧑‍🌾🐺--🐐🥦" />
-    <!-- מסלולים משניים: אותו state, מסלול שונה → אנימציה שונה -->
-    <input type="radio" name="state" id="🐺🥦--🧑‍🌾🐐2" />
-    <input type="radio" name="state" id="🐺--🧑‍🌾🐐🥦2" />
-    <input type="radio" name="state" id="🧑‍🌾🐐🥦--🐺2" />
-    <input type="radio" name="state" id="🧑‍🌾🐺🐐--🥦2" />
-    <input type="radio" name="state" id="🐐--🧑‍🌾🐺🥦2" />
 
     <div class="wrapper">
       <!-- ===== SCENE ===== -->
@@ -461,7 +417,7 @@
 
         <div class="game-board 🧑‍🌾🐺🥦--🐐">
           <div class="board-side">
-            <label for="🐺🥦--🧑‍🌾🐐2"><div class="entity">🧑‍🌾</div></label>
+            <label for="🐺🥦--🧑‍🌾🐐"><div class="entity">🧑‍🌾</div></label>
             <label for="🥦--🧑‍🌾🐺🐐"><div class="entity">🐺</div></label>
             <label for="🐺--🧑‍🌾🐐🥦"><div class="entity">🥦</div></label>
           </div>
@@ -490,7 +446,7 @@
           <div class="board-gap"></div>
           <div class="board-side">
             <label for="🧑‍🌾🐺--🐐🥦"><div class="entity">🧑‍🌾</div></label>
-            <label for="🧑‍🌾🐺🐐--🥦2"><div class="entity">🐐</div></label>
+            <label for="🧑‍🌾🐺🐐--🥦"><div class="entity">🐐</div></label>
             <label for="🧑‍🌾🐺🥦--🐐"><div class="entity">🥦</div></label>
           </div>
         </div>
@@ -510,8 +466,8 @@
         <div class="game-board 🧑‍🌾🐺🐐--🥦">
           <div class="board-side">
             <label for="🐺🐐--🧑‍🌾🥦"><div class="entity">🧑‍🌾</div></label>
-            <label for="🐐--🧑‍🌾🐺🥦2"><div class="entity">🐺</div></label>
-            <label for="🐺--🧑‍🌾🐐🥦2"><div class="entity">🐐</div></label>
+            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity">🐺</div></label>
+            <label for="🐺--🧑‍🌾🐐🥦"><div class="entity">🐐</div></label>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
@@ -527,7 +483,7 @@
           <div class="board-side">
             <label for="🧑‍🌾🐐--🐺🥦"><div class="entity">🧑‍🌾</div></label>
             <label for="🧑‍🌾🐺🐐--🥦"><div class="entity">🐺</div></label>
-            <label for="🧑‍🌾🐐🥦--🐺2"><div class="entity">🥦</div></label>
+            <label for="🧑‍🌾🐐🥦--🐺"><div class="entity">🥦</div></label>
           </div>
         </div>
 
@@ -549,22 +505,22 @@
       <div class="moves-panel">
         <div class="movement-buttons" id="end-win">
           <div class="end-msg win">🎉 ניצחת! כולם חצו לגדה ימין בשלום</div>
-          <label for="🧑‍🌾🐺🐐🥦--reset" class="btn">🔄 שחק שוב</label>
+          <label for="🧑‍🌾🐺🐐🥦--empty" class="btn">🔄 שחק שוב</label>
         </div>
 
         <div class="movement-buttons" id="end-both">
           <div class="end-msg lose">😱 השארת את כולם לבד — הזאב אכל את העז והעז אכלה את הכרוב!</div>
-          <label for="🧑‍🌾🐺🐐🥦--reset" class="btn">🔄 שחק שוב</label>
+          <label for="🧑‍🌾🐺🐐🥦--empty" class="btn">🔄 שחק שוב</label>
         </div>
 
         <div class="movement-buttons" id="end-wolf">
           <div class="end-msg lose">😱 הזאב אכל את העז — השארת אותם לבד!</div>
-          <label for="🧑‍🌾🐺🐐🥦--reset" class="btn">🔄 שחק שוב</label>
+          <label for="🧑‍🌾🐺🐐🥦--empty" class="btn">🔄 שחק שוב</label>
         </div>
 
         <div class="movement-buttons" id="end-goat">
           <div class="end-msg lose">😱 העז אכלה את הכרוב — השארת אותם לבד!</div>
-          <label for="🧑‍🌾🐺🐐🥦--reset" class="btn">🔄 שחק שוב</label>
+          <label for="🧑‍🌾🐺🐐🥦--empty" class="btn">🔄 שחק שוב</label>
         </div>
       </div>
       <!-- /moves-panel -->

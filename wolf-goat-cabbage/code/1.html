@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>זאב, עז וכרוב</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+      input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+  
+      body {
+        font-family: "Segoe UI", sans-serif;
+        min-height: 100vh;
+        background: linear-gradient(to bottom, #87ceeb 55%, #3d8b37 55%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        padding: 20px;
+      }
+  
+      h1 { color: #fff; font-size: 1.8rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+      .subtitle { color: rgba(255,255,255,0.9); font-size: 0.85rem; text-align: center; }
+  
+      /* ===== SCENE ===== */
+      .scene {
+        direction: ltr;
+        width: min(700px, 95vw);
+        height: 220px;
+        display: flex;
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      }
+  
+      .bank {
+        flex: 1;
+        background: linear-gradient(to bottom, #c9a96e, #8b6331);
+        padding: 10px 6px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+  
+      .bank-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: rgba(255,255,255,0.9);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      }
+  
+      .river {
+        width: 130px;
+        flex-shrink: 0;
+        background: linear-gradient(to bottom, #1e90de, #0c6dad);
+        position: relative;
+        overflow: hidden;
+      }
+  
+      .river::before, .river::after {
+        content: "";
+        position: absolute;
+        left: -50%; width: 200%; height: 12px;
+        background: rgba(255,255,255,0.18);
+        border-radius: 50%;
+        animation: wave 3s linear infinite;
+      }
+      .river::before { top: 55px; }
+      .river::after  { top: 90px; animation-delay: 1.5s; }
+  
+      @keyframes wave {
+        from { transform: translateX(0); }
+        to   { transform: translateX(50%); }
+      }
+  
+      /* ===== BOAT ===== */
+      .boat {
+        position: absolute;
+        bottom: 18px;
+        width: 80px; height: 44px;
+        background: linear-gradient(to bottom, #9b6b42, #5e3d1e);
+        border-radius: 8px 8px 28px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+        z-index: 10;
+        transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+  
+      /* ===== ENTITY BOARDS ===== */
+      .board {
+        position: absolute; inset: 0;
+        display: none;
+        pointer-events: none;
+      }
+  
+      .board-side {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        gap: 6px;
+        padding: 28px 8px 8px;
+      }
+  
+      .board-gap { width: 130px; flex-shrink: 0; }
+  
+      .entity {
+        width: 46px; height: 46px;
+        background: rgba(255,255,255,0.92);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      }
+  
+      @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        25%      { transform: translateX(-8px); }
+        75%      { transform: translateX(8px); }
+      }
+  
+      /* entity עם רקע אדום — מסמן מי נאכל */
+      .entity.danger { background: rgba(255,100,100,0.92); animation: shake 0.5s ease; }
+  
+      /* הודעת ניצחון / הפסד מתחת לסצנה */
+      .win-msg {
+        display: none;
+        width: min(700px, 95vw);
+        padding: 12px 20px;
+        background: rgba(20,160,50,0.85);
+        border-radius: 10px;
+        color: white; font-size: 1rem; font-weight: 600;
+        text-align: center;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+      }
+  
+      .lose-msg {
+        display: none;
+        width: min(700px, 95vw);
+        padding: 12px 20px;
+        background: rgba(180,30,30,0.85);
+        border-radius: 10px;
+        color: white; font-size: 1rem; font-weight: 600;
+        text-align: center;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+        animation: shake 0.5s ease;
+      }
+  
+      /* ===== MOVES PANEL ===== */
+      .moves-panel {
+        width: min(700px, 95vw);
+        display: flex; flex-direction: column;
+        gap: 8px; align-items: center;
+      }
+  
+      .moves { display: none; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  
+      .btn {
+        padding: 9px 16px;
+        background: rgba(255,255,255,0.18);
+        border: 2px solid rgba(255,255,255,0.55);
+        border-radius: 8px;
+        color: white; cursor: pointer;
+        font-size: 0.88rem; font-weight: 600;
+        backdrop-filter: blur(6px);
+        transition: background 0.2s, transform 0.1s;
+        user-select: none;
+      }
+      .btn:hover { background: rgba(255,255,255,0.32); transform: translateY(-2px); }
+  
+  
+      /* ================================================================
+         STATE MACHINE — CSS בלבד
+         כל radio שנבחר חושף את הלוח, הסירה והכפתורים המתאימים
+  
+         פורמט הערות: שמאל | ימין
+         f=חקלאי  w=זאב  g=עז  c=כרוב
+         החקלאי תמיד בצד שבו הסירה נמצאת
+         ================================================================ */
+  
+      :root {
+        --boat-left:  calc(28.5% - 40px);
+        --boat-right: calc(80% - 40px);
+      }
+  
+      /*
+      f = farmer 🧑‍🌾
+      w = wolf 🐺
+      g = goat 🐐
+      c = cabbage 🥦
+      */
+  
+      /* 🧑‍🌾🐺🐐🥦 | */
+      #fwgc--empty:checked ~ .wrapper .boat { left: var(--boat-left); }
+      #fwgc--empty:checked ~ .wrapper #bfwgc--empty { display: flex; }
+      #fwgc--empty:checked ~ .wrapper #mfwgc--empty { display: flex; }
+  
+      /* 🐺🥦 | 🧑‍🌾🐐 */
+      #wc--fg:checked ~ .wrapper .boat { left: var(--boat-right); }
+      #wc--fg:checked ~ .wrapper #bwc--fg { display: flex; }
+      #wc--fg:checked ~ .wrapper #mwc--fg { display: flex; }
+  
+      /* 🧑‍🌾🐺🥦 | 🐐 */
+      #fwc--g:checked ~ .wrapper .boat { left: var(--boat-left); }
+      #fwc--g:checked ~ .wrapper #bfwc--g { display: flex; }
+      #fwc--g:checked ~ .wrapper #mfwc--g { display: flex; }
+  
+      /* 🥦 | 🧑‍🌾🐺🐐 */
+      #c--fwg:checked ~ .wrapper .boat { left: var(--boat-right); }
+      #c--fwg:checked ~ .wrapper #bc--fwg { display: flex; }
+      #c--fwg:checked ~ .wrapper #mc--fwg { display: flex; }
+  
+      /* 🐺 | 🧑‍🌾🐐🥦 */
+      #w--fgc:checked ~ .wrapper .boat { left: var(--boat-right); }
+      #w--fgc:checked ~ .wrapper #bw--fgc { display: flex; }
+      #w--fgc:checked ~ .wrapper #mw--fgc { display: flex; }
+  
+      /* 🧑‍🌾🐐🥦 | 🐺 */
+      #fgc--w:checked ~ .wrapper .boat { left: var(--boat-left); }
+      #fgc--w:checked ~ .wrapper #bfgc--w { display: flex; }
+      #fgc--w:checked ~ .wrapper #mfgc--w { display: flex; }
+  
+      /* 🧑‍🌾🐺🐐 | 🥦 */
+      #fwg--c:checked ~ .wrapper .boat { left: var(--boat-left); }
+      #fwg--c:checked ~ .wrapper #bfwg--c { display: flex; }
+      #fwg--c:checked ~ .wrapper #mfwg--c { display: flex; }
+  
+      /* 🐐 | 🧑‍🌾🐺🥦 */
+      #g--fwc:checked ~ .wrapper .boat { left: var(--boat-right); }
+      #g--fwc:checked ~ .wrapper #bg--fwc { display: flex; }
+      #g--fwc:checked ~ .wrapper #mg--fwc { display: flex; }
+  
+      /* 🧑‍🌾🐐 | 🐺🥦 */
+      #fg--wc:checked ~ .wrapper .boat { left: var(--boat-left); }
+      #fg--wc:checked ~ .wrapper #bfg--wc { display: flex; }
+      #fg--wc:checked ~ .wrapper #mfg--wc { display: flex; }
+  
+      /* ניצחון */
+  
+      /* | 🧑‍🌾🐺🐐🥦 */
+      #win:checked ~ .wrapper .boat    { left: var(--boat-right); }
+      #win:checked ~ .wrapper #bwin    { display: flex; }
+      #win:checked ~ .wrapper #win-msg { display: block; }
+      #win:checked ~ .wrapper #mend    { display: flex; }
+  
+      /* מצבי הפסד */
+  
+      /* 🐺🐐🥦 | 🧑‍🌾 */
+      #lose-wolf--wgc-f:checked ~ .wrapper .boat          { left: var(--boat-right); }
+      #lose-wolf--wgc-f:checked ~ .wrapper #blose-wolf--wgc-f { display: flex; }
+      #lose-wolf--wgc-f:checked ~ .wrapper #lose-wolf-msg { display: block; }
+      #lose-wolf--wgc-f:checked ~ .wrapper #mend          { display: flex; }
+  
+      /* 🐺🐐 | 🧑‍🌾🥦 */
+      #lose-wolf--wg-fc:checked ~ .wrapper .boat          { left: var(--boat-right); }
+      #lose-wolf--wg-fc:checked ~ .wrapper #blose-wolf--wg-fc { display: flex; }
+      #lose-wolf--wg-fc:checked ~ .wrapper #lose-wolf-msg { display: block; }
+      #lose-wolf--wg-fc:checked ~ .wrapper #mend          { display: flex; }
+  
+      /* 🧑‍🌾🥦 | 🐺🐐 */
+      #lose-wolf--fc-wg:checked ~ .wrapper .boat          { left: var(--boat-left); }
+      #lose-wolf--fc-wg:checked ~ .wrapper #blose-wolf--fc-wg { display: flex; }
+      #lose-wolf--fc-wg:checked ~ .wrapper #lose-wolf-msg { display: block; }
+      #lose-wolf--fc-wg:checked ~ .wrapper #mend          { display: flex; }
+  
+      /* 🐐🥦 | 🧑‍🌾🐺 */
+      #lose-goat--gc-fw:checked ~ .wrapper .boat          { left: var(--boat-right); }
+      #lose-goat--gc-fw:checked ~ .wrapper #blose-goat--gc-fw { display: flex; }
+      #lose-goat--gc-fw:checked ~ .wrapper #lose-goat-msg { display: block; }
+      #lose-goat--gc-fw:checked ~ .wrapper #mend          { display: flex; }
+  
+      /* 🧑‍🌾🐺 | 🐐🥦  — עז אכלה כרוב (מ-w--fgc + לבד) */
+      #lose-goat--fw-gc:checked ~ .wrapper .boat          { left: var(--boat-left); }
+      #lose-goat--fw-gc:checked ~ .wrapper #blose-goat--fw-gc { display: flex; }
+      #lose-goat--fw-gc:checked ~ .wrapper #lose-goat-msg { display: block; }
+      #lose-goat--fw-gc:checked ~ .wrapper #mend          { display: flex; }
+    </style>
+  </head>
+<body>
+
+<h1>🌊 זאב, עז וכרוב</h1>
+<p class="subtitle">קח את כולם לגדה ימין בשלום — ללא JS, רק CSS</p>
+
+<!-- ===== STATE RADIO INPUTS ===== -->
+<input type="radio" name="g" id="fwgc--empty" checked>
+<input type="radio" name="g" id="wc--fg">
+<input type="radio" name="g" id="fwc--g">
+<input type="radio" name="g" id="c--fwg">
+<input type="radio" name="g" id="w--fgc">
+<input type="radio" name="g" id="fgc--w">
+<input type="radio" name="g" id="fwg--c">
+<input type="radio" name="g" id="g--fwc">
+<input type="radio" name="g" id="fg--wc">
+<input type="radio" name="g" id="win">
+<input type="radio" name="g" id="lose-wolf--wgc-f">
+<input type="radio" name="g" id="lose-wolf--wg-fc">
+<input type="radio" name="g" id="lose-wolf--fc-wg">
+<input type="radio" name="g" id="lose-goat--gc-fw">
+<input type="radio" name="g" id="lose-goat--fw-gc">
+
+<div class="wrapper">
+
+  <!-- ===== SCENE ===== -->
+  <div class="scene">
+    <div class="bank"><span class="bank-label">גדה שמאל ← התחלה</span></div>
+    <div class="river"></div>
+    <div class="bank"><span class="bank-label">גדה ימין ← יעד</span></div>
+
+    <div class="boat">⛵</div>
+
+    <!-- | 🧑‍🌾🐺🐐🥦 -->
+    <div class="board" id="bwin">
+      <div class="board-side"></div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div><div class="entity">🐺</div>
+        <div class="entity">🐐</div><div class="entity">🥦</div>
+      </div>
+    </div>
+    <!-- 🐺🐐🥦 | 🧑‍🌾 — זאב אכל עז -->
+    <div class="board" id="blose-wolf--wgc-f">
+      <div class="board-side">
+        <div class="entity danger">🐺</div>
+        <div class="entity danger">🐐</div>
+        <div class="entity">🥦</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div>
+      </div>
+    </div>
+
+    <!-- 🐺🐐 | 🧑‍🌾🥦 — זאב אכל עז -->
+    <div class="board" id="blose-wolf--wg-fc">
+      <div class="board-side">
+        <div class="entity danger">🐺</div>
+        <div class="entity danger">🐐</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div>
+        <div class="entity">🥦</div>
+      </div>
+    </div>
+
+    <!-- 🧑‍🌾🥦 | 🐺🐐 — זאב אכל עז -->
+    <div class="board" id="blose-wolf--fc-wg">
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div>
+        <div class="entity">🥦</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity danger">🐺</div>
+        <div class="entity danger">🐐</div>
+      </div>
+    </div>
+
+    <!-- 🐐🥦 | 🧑‍🌾🐺 — עז אכלה כרוב -->
+    <div class="board" id="blose-goat--gc-fw">
+      <div class="board-side">
+        <div class="entity danger">🐐</div>
+        <div class="entity danger">🥦</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div>
+        <div class="entity">🐺</div>
+      </div>
+    </div>
+
+    <!-- 🧑‍🌾🐺 | 🐐🥦 — עז אכלה כרוב -->
+    <div class="board" id="blose-goat--fw-gc">
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div>
+        <div class="entity">🐺</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity danger">🐐</div>
+        <div class="entity danger">🥦</div>
+      </div>
+    </div>
+
+    <!-- 🧑‍🌾🐺🐐🥦 | -->
+    <div class="board" id="bfwgc--empty">
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div><div class="entity">🐺</div>
+        <div class="entity">🐐</div><div class="entity">🥦</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side"></div>
+    </div>
+
+    <!-- 🐺🥦 | 🧑‍🌾🐐 -->
+    <div class="board" id="bwc--fg">
+      <div class="board-side">
+        <div class="entity">🐺</div><div class="entity">🥦</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div><div class="entity">🐐</div>
+      </div>
+    </div>
+
+    <!-- 🧑‍🌾🐺🥦 | 🐐 -->
+    <div class="board" id="bfwc--g">
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div><div class="entity">🐺</div><div class="entity">🥦</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity">🐐</div>
+      </div>
+    </div>
+
+    <!-- 🥦 | 🧑‍🌾🐺🐐 -->
+    <div class="board" id="bc--fwg">
+      <div class="board-side"><div class="entity">🥦</div></div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div><div class="entity">🐺</div><div class="entity">🐐</div>
+      </div>
+    </div>
+
+    <!-- 🐺 | 🧑‍🌾🐐🥦 -->
+    <div class="board" id="bw--fgc">
+      <div class="board-side"><div class="entity">🐺</div></div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div><div class="entity">🐐</div><div class="entity">🥦</div>
+      </div>
+    </div>
+
+    <!-- 🧑‍🌾🐐🥦 | 🐺 -->
+    <div class="board" id="bfgc--w">
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div><div class="entity">🐐</div><div class="entity">🥦</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side"><div class="entity">🐺</div></div>
+    </div>
+
+    <!-- 🧑‍🌾🐺🐐 | 🥦 -->
+    <div class="board" id="bfwg--c">
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div><div class="entity">🐺</div><div class="entity">🐐</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side"><div class="entity">🥦</div></div>
+    </div>
+
+    <!-- 🐐 | 🧑‍🌾🐺🥦 -->
+    <div class="board" id="bg--fwc">
+      <div class="board-side"><div class="entity">🐐</div></div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div><div class="entity">🐺</div><div class="entity">🥦</div>
+      </div>
+    </div>
+
+    <!-- 🧑‍🌾🐐 | 🐺🥦 -->
+    <div class="board" id="bfg--wc">
+      <div class="board-side">
+        <div class="entity">🧑‍🌾</div><div class="entity">🐐</div>
+      </div>
+      <div class="board-gap"></div>
+      <div class="board-side">
+        <div class="entity">🐺</div><div class="entity">🥦</div>
+      </div>
+    </div>
+  </div><!-- /scene -->
+
+  <div class="win-msg" id="win-msg">🎉 כל הכבוד, ניצחת! הצלחת להעביר את כולם מעבר לנהר</div>
+  <div class="lose-msg" id="lose-wolf-msg">😱 העז אכלה את הכרוב והזאב אכל את העז — השארת אותם לבד!</div>
+  <div class="lose-msg" id="lose-goat-msg">😱 העז אכלה את הכרוב — השארת אותם לבד!</div>
+
+  <!-- ===== MOVES PANEL ===== -->
+  <div class="moves-panel">
+
+    <!-- 🧑‍🌾🐺🐐🥦 | -->
+    <div class="moves" id="mfwgc--empty">
+      <label for="wc--fg"            class="btn">לקחת 🐐 עז →</label>
+      <label for="lose-goat--gc-fw"  class="btn">לקחת 🐺 זאב →</label>
+      <label for="lose-wolf--wg-fc"  class="btn">לקחת 🥦 כרוב →</label>
+      <label for="lose-wolf--wgc-f"  class="btn">לנסוע לבד →</label>
+    </div>
+
+    <!-- 🐺🥦 | 🧑‍🌾🐐 -->
+    <div class="moves" id="mwc--fg">
+      <label for="fwc--g" class="btn">← לנסוע לבד</label>
+      <label for="fwgc--empty" class="btn">← להחזיר 🐐 עז</label>
+    </div>
+
+    <!-- 🧑‍🌾🐺🥦 | 🐐 -->
+    <div class="moves" id="mfwc--g">
+      <label for="c--fwg" class="btn">לקחת 🐺 זאב →</label>
+      <label for="w--fgc" class="btn">לקחת 🥦 כרוב →</label>
+      <label for="wc--fg" class="btn">לנסוע לבד →</label>
+    </div>
+
+    <!-- 🥦 | 🧑‍🌾🐺🐐 -->
+    <div class="moves" id="mc--fwg">
+      <label for="fgc--w"  class="btn">← להחזיר 🐐 עז</label>
+      <label for="fwc--g"  class="btn">← להחזיר 🐺 זאב</label>
+      <label for="lose-wolf--fc-wg" class="btn">← לחזור לבד</label>
+    </div>
+
+    <!-- 🐺 | 🧑‍🌾🐐🥦 -->
+    <div class="moves" id="mw--fgc">
+      <label for="fwg--c"           class="btn">← להחזיר 🐐 עז</label>
+      <label for="fwc--g"           class="btn">← להחזיר 🥦 כרוב</label>
+      <label for="lose-goat--fw-gc" class="btn">← לחזור לבד</label>
+    </div>
+
+    <!-- 🧑‍🌾🐐🥦 | 🐺 -->
+    <div class="moves" id="mfgc--w">
+      <label for="g--fwc"           class="btn">לקחת 🥦 כרוב →</label>
+      <label for="c--fwg"           class="btn">לקחת 🐐 עז →</label>
+      <label for="lose-goat--gc-fw" class="btn">לנסוע לבד →</label>
+    </div>
+
+    <!-- 🧑‍🌾🐺🐐 | 🥦 -->
+    <div class="moves" id="mfwg--c">
+      <label for="g--fwc"           class="btn">לקחת 🐺 זאב →</label>
+      <label for="w--fgc"           class="btn">לקחת 🐐 עז →</label>
+      <label for="lose-wolf--wg-fc" class="btn">לנסוע לבד →</label>
+    </div>
+
+    <!-- 🐐 | 🧑‍🌾🐺🥦 -->
+    <div class="moves" id="mg--fwc">
+      <label for="fg--wc"  class="btn">← לחזור לבד</label>
+      <label for="fwg--c"  class="btn">← להחזיר 🐺 זאב</label>
+      <label for="fgc--w"  class="btn">← להחזיר 🥦 כרוב</label>
+    </div>
+
+    <!-- 🧑‍🌾🐐 | 🐺🥦 -->
+    <div class="moves" id="mfg--wc">
+      <label for="win"     class="btn">לקחת 🐐 עז → 🎉</label>
+      <label for="g--fwc"  class="btn">לנסוע לבד →</label>
+    </div>
+
+    <div class="moves" id="mend">
+      <label for="fwgc--empty" class="btn">🔄 שחק שוב</label>
+    </div>
+
+  </div><!-- /moves-panel -->
+</div><!-- /wrapper -->
+
+</body>
+</html>

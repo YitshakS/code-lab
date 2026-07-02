@@ -134,70 +134,152 @@
 
       .entity.danger { background: rgba(255,100,100,0.92); animation: shake 0.5s ease; }
 
-      /* ===== ARRIVAL ANIMATIONS ===== */
-      @keyframes arrive-right {
-        0%   { transform: translate(-415px, 0px);   animation-timing-function: ease-in; }
-        25%  { transform: translate(-121px, 129px); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
-        75%  { transform: translate(-71px,  129px); animation-timing-function: ease-out; }
-        100% { transform: translate(0px,    0px); }
+      /* ===== VISUAL ENTITIES (animated layer) ===== */
+      .v-entity {
+        position: absolute;
+        top: 28px; left: 0;
+        width: 46px; height: 46px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.92);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.35rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        pointer-events: none;
+        z-index: 8;
+        transition: transform 0.8s ease-in-out, background 0.3s;
       }
-      @keyframes arrive-left {
-        0%   { transform: translate(415px,  0px);   animation-timing-function: ease-in; }
-        25%  { transform: translate(345px,  129px); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
-        75%  { transform: translate(295px,  129px); animation-timing-function: ease-out; }
-        100% { transform: translate(0px,    0px); }
+
+      /* Hide original entity visuals; labels remain as invisible click targets */
+      .game-board .entity { opacity: 0; }
+      .game-board label { cursor: pointer; }
+
+      @keyframes v-shake {
+        0%,100% { translate: 0; }
+        25%      { translate: -8px; }
+        75%      { translate: 8px; }
       }
 
-      /* ימין: איכר+עז — ממצב התחלה */
-      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .🐺🥦--🧑‍🌾🐐 .board-side:last-child .entity { animation: arrive-right 1.6s; }
-      /* ימין: רק איכר — מ-🧑‍🌾🐺🥦--🐐 (עז כבר שם) */
-      #🐺🥦--🧑‍🌾🐐2:checked ~ .wrapper .🐺🥦--🧑‍🌾🐐 .board-side:last-child > :first-child .entity { animation: arrive-right 1.6s; }
+      /* ===== FARMER ===== */
+      .wrapper:not(:has(input[name="state"]:checked)) .v-farmer,
+      #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .v-farmer,
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .v-farmer,
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .v-farmer,
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .v-farmer,
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper .v-farmer,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-farmer,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-farmer
+      { transform: translateX(8px); }
 
-      /* ימין: איכר+זאב — מ-🧑‍🌾🐺🥦--🐐 (עז כבר שם) */
-      .🥦--🧑‍🌾🐺🐐 .board-side:last-child > :nth-child(-n+2) .entity { animation: arrive-right 1.6s; }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .v-farmer,
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .v-farmer,
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .v-farmer,
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .v-farmer,
+      #empty--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .v-farmer,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-farmer,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-farmer,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-farmer
+      { transform: translateX(423px); }
 
-      /* ימין: איכר+כרוב — מ-🧑‍🌾🐺🥦--🐐 */
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .🐺--🧑‍🌾🐐🥦 .board-side:last-child > :nth-child(1) .entity,
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .🐺--🧑‍🌾🐐🥦 .board-side:last-child > :nth-child(3) .entity { animation: arrive-right 1.6s; }
-      /* ימין: איכר+עז — מ-🧑‍🌾🐺🐐--🥦 (כרוב כבר שם) */
-      #🐺--🧑‍🌾🐐🥦2:checked ~ .wrapper .🐺--🧑‍🌾🐐🥦 .board-side:last-child > :nth-child(-n+2) .entity { animation: arrive-right 1.6s; }
+      /* ===== WOLF ===== */
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .v-wolf,
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .v-wolf,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-wolf,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-wolf
+      { transform: translateX(8px); }
 
-      /* ימין: איכר+כרוב — מ-🧑‍🌾🐐🥦--🐺 (זאב כבר שם) */
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .🐐--🧑‍🌾🐺🥦 .board-side:last-child > :nth-child(1) .entity,
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .🐐--🧑‍🌾🐺🥦 .board-side:last-child > :nth-child(3) .entity { animation: arrive-right 1.6s; }
-      /* ימין: איכר+זאב — מ-🧑‍🌾🐺🐐--🥦 (כרוב כבר שם) */
-      #🐐--🧑‍🌾🐺🥦2:checked ~ .wrapper .🐐--🧑‍🌾🐺🥦 .board-side:last-child > :nth-child(-n+2) .entity { animation: arrive-right 1.6s; }
+      .wrapper:not(:has(input[name="state"]:checked)) .v-wolf,
+      #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .v-wolf,
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .v-wolf,
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .v-wolf,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-wolf
+      { transform: translateX(60px); }
 
-      /* שמאל: איכר+עז — מ-🥦--🧑‍🌾🐺🐐 (כרוב כבר שם) */
-      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .🧑‍🌾🐐🥦--🐺 .board-side:first-child > :nth-child(-n+2) .entity { animation: arrive-left 1.6s; }
-      /* שמאל: איכר+כרוב — מ-🐐--🧑‍🌾🐺🥦 (עז כבר שם) */
-      #🧑‍🌾🐐🥦--🐺2:checked ~ .wrapper .🧑‍🌾🐐🥦--🐺 .board-side:first-child > :nth-child(1) .entity,
-      #🧑‍🌾🐐🥦--🐺2:checked ~ .wrapper .🧑‍🌾🐐🥦--🐺 .board-side:first-child > :nth-child(3) .entity { animation: arrive-left 1.6s; }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .v-wolf,
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper .v-wolf,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-wolf
+      { transform: translateX(423px); }
 
-      /* שמאל: רק איכר */
-      .🧑‍🌾🐺🥦--🐐 .board-side:first-child > :first-child .entity,
-      .🧑‍🌾🐐--🐺🥦  .board-side:first-child > :first-child .entity { animation: arrive-left 1.6s; }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .v-wolf,
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .v-wolf,
+      #empty--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .v-wolf,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-wolf
+      { transform: translateX(475px); }
 
-      /* שמאל: איכר+זאב — מ-🐐--🧑‍🌾🐺🥦 (כרוב כבר שם) */
-      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .🧑‍🌾🐺🐐--🥦 .board-side:first-child > :nth-child(-n+2) .entity { animation: arrive-left 1.6s; }
-      /* שמאל: איכר+עז — מ-🐺--🧑‍🌾🐐🥦 (זאב כבר שם) */
-      #🧑‍🌾🐺🐐--🥦2:checked ~ .wrapper .🧑‍🌾🐺🐐--🥦 .board-side:first-child > :nth-child(1) .entity,
-      #🧑‍🌾🐺🐐--🥦2:checked ~ .wrapper .🧑‍🌾🐺🐐--🥦 .board-side:first-child > :nth-child(3) .entity { animation: arrive-left 1.6s; }
+      /* ===== GOAT ===== */
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .v-goat,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-goat
+      { transform: translateX(8px); }
 
-      /* פסילה — ימין: כל הגיעו */
-      .🐺🐐🥦--🧑‍🌾  .board-side:last-child  .entity,
-      .🐺🐐--🧑‍🌾🥦  .board-side:last-child  .entity,
-      .🐐🥦--🧑‍🌾🐺  .board-side:last-child  .entity { animation: arrive-right 1.6s; }
-      /* פסילה — שמאל: רק איכר */
-      .🧑‍🌾🥦--🐺🐐  .board-side:first-child .entity:first-child,
-      .🧑‍🌾🐺--🐐🥦  .board-side:first-child .entity:first-child { animation: arrive-left 1.6s; }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper .v-goat,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-goat,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-goat
+      { transform: translateX(60px); }
 
-      /* התחלה (חזרה בלבד): איכר+עז (1+3) */
-      #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .🧑‍🌾🐺🐐🥦--empty .board-side:first-child > :nth-child(1) .entity,
-      #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .🧑‍🌾🐺🐐🥦--empty .board-side:first-child > :nth-child(3) .entity { animation: arrive-left 1.6s; }
-      /* ניצחון: איכר+עז (1+3) */
-      .empty--🧑‍🌾🐺🐐🥦 .board-side:last-child > .entity:nth-child(1),
-      .empty--🧑‍🌾🐺🐐🥦 .board-side:last-child > .entity:nth-child(3) { animation: arrive-right 1.6s; }
+      .wrapper:not(:has(input[name="state"]:checked)) .v-goat,
+      #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .v-goat
+      { transform: translateX(112px); }
+
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-goat
+      { transform: translateX(423px); }
+
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .v-goat,
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-goat
+      { transform: translateX(475px); }
+
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .v-goat,
+      #empty--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .v-goat
+      { transform: translateX(527px); }
+
+      /* ===== CABBAGE ===== */
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .v-cabbage
+      { transform: translateX(8px); }
+
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .v-cabbage,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-cabbage,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-cabbage
+      { transform: translateX(60px); }
+
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .v-cabbage,
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .v-cabbage,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-cabbage
+      { transform: translateX(112px); }
+
+      .wrapper:not(:has(input[name="state"]:checked)) .v-cabbage,
+      #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .v-cabbage
+      { transform: translateX(164px); }
+
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .v-cabbage
+      { transform: translateX(423px); }
+
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper .v-cabbage,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-cabbage,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-cabbage
+      { transform: translateX(475px); }
+
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .v-cabbage,
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .v-cabbage
+      { transform: translateX(527px); }
+
+      #empty--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .v-cabbage
+      { transform: translateX(579px); }
+
+      /* ===== DANGER STATES ===== */
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-wolf,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-goat,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-cabbage,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-wolf,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-wolf,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-goat,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-goat,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-cabbage,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-cabbage
+      { background: rgba(255,100,100,0.92); animation: v-shake 0.5s 0.8s ease; }
 
       /* ===== הודעות ניצחון / הפסד ===== */
       .end-msg {
@@ -254,8 +336,6 @@
       /* חזרה למצב התחלה — מוצג עם אנימציה */
       #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .boat          { left: var(--boat-left); }
       #🧑‍🌾🐺🐐🥦--empty:checked ~ .wrapper .🧑‍🌾🐺🐐🥦--empty { display: flex; }
-      #🧑‍🌾🐺🐐🥦--reset:checked ~ .wrapper .boat          { left: var(--boat-left); }
-      #🧑‍🌾🐺🐐🥦--reset:checked ~ .wrapper .🧑‍🌾🐺🐐🥦--empty { display: flex; }
 
       #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .boat       { left: var(--boat-right); }
       #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .🐺🥦--🧑‍🌾🐐 { display: flex; }
@@ -304,22 +384,6 @@
       #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .boat      { left: var(--boat-left); }
       #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .🧑‍🌾🐺--🐐🥦 { display: flex; }
       #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper #end-goat  { display: flex; }
-
-      /* מסלולים משניים — אותו לוח, אנימציה שונה */
-      #🐺🥦--🧑‍🌾🐐2:checked ~ .wrapper .boat       { left: var(--boat-right); }
-      #🐺🥦--🧑‍🌾🐐2:checked ~ .wrapper .🐺🥦--🧑‍🌾🐐 { display: flex; }
-
-      #🐺--🧑‍🌾🐐🥦2:checked ~ .wrapper .boat       { left: var(--boat-right); }
-      #🐺--🧑‍🌾🐐🥦2:checked ~ .wrapper .🐺--🧑‍🌾🐐🥦 { display: flex; }
-
-      #🧑‍🌾🐐🥦--🐺2:checked ~ .wrapper .boat       { left: var(--boat-left); }
-      #🧑‍🌾🐐🥦--🐺2:checked ~ .wrapper .🧑‍🌾🐐🥦--🐺 { display: flex; }
-
-      #🧑‍🌾🐺🐐--🥦2:checked ~ .wrapper .boat       { left: var(--boat-left); }
-      #🧑‍🌾🐺🐐--🥦2:checked ~ .wrapper .🧑‍🌾🐺🐐--🥦 { display: flex; }
-
-      #🐐--🧑‍🌾🐺🥦2:checked ~ .wrapper .boat       { left: var(--boat-right); }
-      #🐐--🧑‍🌾🐺🥦2:checked ~ .wrapper .🐐--🧑‍🌾🐺🥦 { display: flex; }
     </style>
   </head>
 
@@ -329,7 +393,6 @@
 
     <!-- ===== STATE RADIO INPUTS ===== -->
     <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--empty" />
-    <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--reset" />
     <input type="radio" name="state" id="🐺🥦--🧑‍🌾🐐" />
     <input type="radio" name="state" id="🧑‍🌾🐺🥦--🐐" />
     <input type="radio" name="state" id="🥦--🧑‍🌾🐺🐐" />
@@ -344,12 +407,6 @@
     <input type="radio" name="state" id="🧑‍🌾🥦--🐺🐐" />
     <input type="radio" name="state" id="🐐🥦--🧑‍🌾🐺" />
     <input type="radio" name="state" id="🧑‍🌾🐺--🐐🥦" />
-    <!-- מסלולים משניים: אותו state, מסלול שונה → אנימציה שונה -->
-    <input type="radio" name="state" id="🐺🥦--🧑‍🌾🐐2" />
-    <input type="radio" name="state" id="🐺--🧑‍🌾🐐🥦2" />
-    <input type="radio" name="state" id="🧑‍🌾🐐🥦--🐺2" />
-    <input type="radio" name="state" id="🧑‍🌾🐺🐐--🥦2" />
-    <input type="radio" name="state" id="🐐--🧑‍🌾🐺🥦2" />
 
     <div class="wrapper">
       <!-- ===== SCENE ===== -->
@@ -461,7 +518,7 @@
 
         <div class="game-board 🧑‍🌾🐺🥦--🐐">
           <div class="board-side">
-            <label for="🐺🥦--🧑‍🌾🐐2"><div class="entity">🧑‍🌾</div></label>
+            <label for="🐺🥦--🧑‍🌾🐐"><div class="entity">🧑‍🌾</div></label>
             <label for="🥦--🧑‍🌾🐺🐐"><div class="entity">🐺</div></label>
             <label for="🐺--🧑‍🌾🐐🥦"><div class="entity">🥦</div></label>
           </div>
@@ -490,7 +547,7 @@
           <div class="board-gap"></div>
           <div class="board-side">
             <label for="🧑‍🌾🐺--🐐🥦"><div class="entity">🧑‍🌾</div></label>
-            <label for="🧑‍🌾🐺🐐--🥦2"><div class="entity">🐐</div></label>
+            <label for="🧑‍🌾🐺🐐--🥦"><div class="entity">🐐</div></label>
             <label for="🧑‍🌾🐺🥦--🐐"><div class="entity">🥦</div></label>
           </div>
         </div>
@@ -510,8 +567,8 @@
         <div class="game-board 🧑‍🌾🐺🐐--🥦">
           <div class="board-side">
             <label for="🐺🐐--🧑‍🌾🥦"><div class="entity">🧑‍🌾</div></label>
-            <label for="🐐--🧑‍🌾🐺🥦2"><div class="entity">🐺</div></label>
-            <label for="🐺--🧑‍🌾🐐🥦2"><div class="entity">🐐</div></label>
+            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity">🐺</div></label>
+            <label for="🐺--🧑‍🌾🐐🥦"><div class="entity">🐐</div></label>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
@@ -527,7 +584,7 @@
           <div class="board-side">
             <label for="🧑‍🌾🐐--🐺🥦"><div class="entity">🧑‍🌾</div></label>
             <label for="🧑‍🌾🐺🐐--🥦"><div class="entity">🐺</div></label>
-            <label for="🧑‍🌾🐐🥦--🐺2"><div class="entity">🥦</div></label>
+            <label for="🧑‍🌾🐐🥦--🐺"><div class="entity">🥦</div></label>
           </div>
         </div>
 
@@ -542,6 +599,10 @@
             <div class="entity">🥦</div>
           </div>
         </div>
+        <div class="v-entity v-farmer">🧑‍🌾</div>
+        <div class="v-entity v-wolf">🐺</div>
+        <div class="v-entity v-goat">🐐</div>
+        <div class="v-entity v-cabbage">🥦</div>
       </div>
       <!-- /scene -->
 
@@ -549,22 +610,22 @@
       <div class="moves-panel">
         <div class="movement-buttons" id="end-win">
           <div class="end-msg win">🎉 ניצחת! כולם חצו לגדה ימין בשלום</div>
-          <label for="🧑‍🌾🐺🐐🥦--reset" class="btn">🔄 שחק שוב</label>
+          <label for="🧑‍🌾🐺🐐🥦--empty" class="btn">🔄 שחק שוב</label>
         </div>
 
         <div class="movement-buttons" id="end-both">
           <div class="end-msg lose">😱 השארת את כולם לבד — הזאב אכל את העז והעז אכלה את הכרוב!</div>
-          <label for="🧑‍🌾🐺🐐🥦--reset" class="btn">🔄 שחק שוב</label>
+          <label for="🧑‍🌾🐺🐐🥦--empty" class="btn">🔄 שחק שוב</label>
         </div>
 
         <div class="movement-buttons" id="end-wolf">
           <div class="end-msg lose">😱 הזאב אכל את העז — השארת אותם לבד!</div>
-          <label for="🧑‍🌾🐺🐐🥦--reset" class="btn">🔄 שחק שוב</label>
+          <label for="🧑‍🌾🐺🐐🥦--empty" class="btn">🔄 שחק שוב</label>
         </div>
 
         <div class="movement-buttons" id="end-goat">
           <div class="end-msg lose">😱 העז אכלה את הכרוב — השארת אותם לבד!</div>
-          <label for="🧑‍🌾🐺🐐🥦--reset" class="btn">🔄 שחק שוב</label>
+          <label for="🧑‍🌾🐺🐐🥦--empty" class="btn">🔄 שחק שוב</label>
         </div>
       </div>
       <!-- /moves-panel -->
