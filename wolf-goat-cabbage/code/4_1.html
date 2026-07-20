@@ -1,3 +1,5 @@
+<!-- עם אנימצית מעברים -->
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
   <head>
@@ -97,11 +99,12 @@
 
       /* ===== BOAT ===== */
       :root {
-        --boat-left:  calc(28.5% - 40px);
-        --boat-right: calc(80% - 40px);
+        --boat-left:  285px;
+        --boat-right: 335px;
       }
       .boat {
-        display: none;
+        display: flex;
+        left: calc(var(--boat-left) + var(--b-farmer,0) * (var(--boat-right) - var(--boat-left)));
         position: absolute;
         bottom: 18px;
         width: 80px;
@@ -113,29 +116,7 @@
         font-size: 1.4rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.35);
         z-index: 10;
-      }
-      .boat-left {
-        left: var(--boat-left);
-        transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      .boat-right {
-        left: var(--boat-right);
-        transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      @starting-style {
-        .boat-left  { left: var(--boat-right); }
-        .boat-right { left: var(--boat-left); }
-      }
-      #init:checked ~ .wrapper .boat-left {
-        display: flex;
-        left: calc(28.5% - 40px);
-        transition: none;
-      }
-      #init:checked ~ .wrapper .board.🧑‍🌾🐺🐐🥦-- { display: flex; }
-      #init:checked ~ .wrapper .start-btn { display: flex; }
-      .start-btn {
-        display: none;
-        justify-content: center;
+        transition: left 0.8s 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .board {
@@ -144,14 +125,32 @@
         display: none;
         pointer-events: none;
       }
+
+      .board label {
+        pointer-events: auto;
+        display: contents;
+      }
+      .board label .entity {
+        cursor: pointer;
+        transition: background 0.15s, transform 0.15s;
+      }
+      .board label:hover .entity {
+        background: rgba(255,255,255,0.75);
+        transform: scale(1.1);
+      }
+
       .board-side {
         flex: 1;
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(4, 46px);
         align-content: flex-start;
         gap: 6px;
         padding: 28px 8px 8px;
       }
+      .board-side .farmer  { grid-column: 1; }
+      .board-side .wolf    { grid-column: 2; }
+      .board-side .goat    { grid-column: 3; }
+      .board-side .cabbage { grid-column: 4; }
       .board-gap {
         width: 130px;
         flex-shrink: 0;
@@ -181,11 +180,78 @@
         animation: shake 0.5s ease;
       }
 
+      .v-entity {
+        position: absolute;
+        top: 28px;
+        left: 0;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.92);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        pointer-events: none;
+        z-index: 8;
+        transition: transform 0.8s ease-in-out, background 0.3s;
+      }
+
+      /* Hide original entity visuals; labels remain as invisible click targets */
+      .board .entity { opacity: 0; }
+      .board label { cursor: pointer; }
+
+      @keyframes v-shake {
+        0%,100% { translate: 0; }
+        25%      { translate: -8px; }
+        75%      { translate: 8px; }
+      }
+
+      /* fixed slot folded into base; --b-<entity> (inherited from .wrapper) toggles bank */
+      .v-entity.farmer { transform: translateX(calc(var(--b-farmer,0)*415px + 8px)); }
+      .v-entity.wolf { transform: translateX(calc(var(--b-wolf,0)*415px + 60px)); }
+      .v-entity.goat { transform: translateX(calc(var(--b-goat,0)*415px + 112px)); }
+      .v-entity.cabbage { transform: translateX(calc(var(--b-cabbage,0)*415px + 164px)); }
+
+      /* one line per state = who crossed to the right: */
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { --b-cabbage:1; }
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { --b-goat:1; }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { --b-wolf:1; }
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { --b-farmer:1; }
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { --b-goat:1; --b-cabbage:1; }
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { --b-wolf:1; --b-cabbage:1; }
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { --b-farmer:1; --b-cabbage:1; }
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { --b-wolf:1; --b-goat:1; }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { --b-farmer:1; --b-goat:1; }
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { --b-farmer:1; --b-wolf:1; }
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { --b-farmer:1; --b-goat:1; --b-cabbage:1; }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { --b-farmer:1; --b-wolf:1; --b-cabbage:1; }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { --b-farmer:1; --b-wolf:1; --b-goat:1; }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { --b-farmer:1; --b-wolf:1; --b-goat:1; --b-cabbage:1; }
+
+      /* ===== DANGER STATES ===== */
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-entity.wolf,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-entity.goat,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-entity.cabbage,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-entity.wolf,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-entity.goat,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-entity.wolf,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-entity.goat,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-entity.goat,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-entity.cabbage,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-entity.goat,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-entity.cabbage
+       {
+        background: rgba(255,100,100,0.92);
+        animation: v-shake 0.5s 0.8s ease;
+      }
+
       .end-msg {
         display: none;
-        width: min(700px, 95vw);
-        padding: 12px;
-        border-radius: 10px;
+        width: 100%;
+        padding: 10px 16px;
+        border-radius: 8px;
         color: white;
         font-size: 1rem;
         font-weight: 600;
@@ -236,7 +302,10 @@
         transform: translateY(-2px);
       }
 
-      /* CSS STATE MACHINE */
+      .board.🧑‍🌾🐺🐐🥦-- { display: flex; }
+      :root:has(input[name="state"]:checked) .🧑‍🌾🐺🐐🥦-- { display: none; }
+
+      /* boat position is handled globally via --b-farmer; here just reveal each state's board */
       #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper .🧑‍🌾🐺🐐🥦--,
       #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .🧑‍🌾🐺🐐--🥦,
       #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .🧑‍🌾🐺🥦--🐐,
@@ -252,7 +321,6 @@
       #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .🐐--🧑‍🌾🐺🥦,
       #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .🥦--🧑‍🌾🐺🐐,
       #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .--🧑‍🌾🐺🐐🥦 { display: flex; }
-
     </style>
   </head>
   <body>
@@ -260,7 +328,6 @@
     <p class="subtitle">רק אתה יכול להסיע את הסירה ורק אחד יכול להצטרף אליך<br>אל תשאיר לבד את הזאב עם הכבש ואת הכבש עם הכרוב<br>העבר את כולם מהגדה השמאלית לימנית</p>
 
     <!-- ===== STATE RADIO INPUTS ===== -->
-    <input type="radio" name="state" id="init" checked />
     <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--" />
     <input type="radio" name="state" id="🧑‍🌾🐺🐐--🥦" />
     <input type="radio" name="state" id="🧑‍🌾🐺🥦--🐐" />
@@ -285,15 +352,14 @@
         <div class="river"></div>
         <div class="bank"><span class="bank-label">גדה ימין</span></div>
 
-        <div class="boat boat-left 🧑‍🌾🐺🐐🥦-- 🧑‍🌾🐺🐐--🥦 🧑‍🌾🐺🥦--🐐 🧑‍🌾🐐🥦--🐺 🧑‍🌾🐺--🐐🥦 🧑‍🌾🐐--🐺🥦 🧑‍🌾🥦--🐺🐐">⛵</div>
-        <div class="boat boat-right 🐺🐐🥦--🧑‍🌾 🐺🐐--🧑‍🌾🥦 🐺🥦--🧑‍🌾🐐 🐐🥦--🧑‍🌾🐺 🐺--🧑‍🌾🐐🥦 🐐--🧑‍🌾🐺🥦 🥦--🧑‍🌾🐺🐐 --🧑‍🌾🐺🐐🥦">⛵</div>
+        <div class="boat">⛵</div>
 
         <div class="board 🧑‍🌾🐺🐐🥦--">
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐐</div>
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🐺🐐🥦--🧑‍🌾"><div class="entity farmer">🧑‍🌾</div></label>
+            <label for="🐐🥦--🧑‍🌾🐺"><div class="entity wolf">🐺</div></label>
+            <label for="🐺🥦--🧑‍🌾🐐"><div class="entity goat">🐐</div></label>
+            <label for="🐺🐐--🧑‍🌾🥦"><div class="entity cabbage">🥦</div></label>
           </div>
           <div class="board-gap"></div>
           <div class="board-side"></div>
@@ -301,157 +367,161 @@
 
         <div class="board 🧑‍🌾🐺🐐--🥦">
           <div class="board-side">
-            <div class="entity">🐐</div>
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🐺🐐--🧑‍🌾🥦"><div class="entity farmer">🧑‍🌾</div></label>
+            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity wolf">🐺</div></label>
+            <label for="🐺--🧑‍🌾🐐🥦"><div class="entity goat">🐐</div></label>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🥦</div>
+            <div class="entity cabbage">🥦</div>
           </div>
         </div>
 
         <div class="board 🧑‍🌾🐺🥦--🐐">
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🐺🥦--🧑‍🌾🐐"><div class="entity farmer">🧑‍🌾</div></label>
+            <label for="🥦--🧑‍🌾🐺🐐"><div class="entity wolf">🐺</div></label>
+            <label for="🐺--🧑‍🌾🐐🥦"><div class="entity cabbage">🥦</div></label>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🐐</div>
+            <div class="entity goat">🐐</div>
           </div>
         </div>
 
         <div class="board 🧑‍🌾🐐🥦--🐺">
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐐</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🐐🥦--🧑‍🌾🐺"><div class="entity farmer">🧑‍🌾</div></label>
+            <label for="🥦--🧑‍🌾🐺🐐"><div class="entity goat">🐐</div></label>
+            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity cabbage">🥦</div></label>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🐺</div>
+            <div class="entity wolf">🐺</div>
           </div>
         </div>
 
         <div class="board 🐺🐐🥦--🧑‍🌾">
           <div class="board-side">
-            <div class="entity danger">🥦</div>
-            <div class="entity danger">🐐</div>
-            <div class="entity danger">🐺</div>
+            <div class="entity danger wolf">🐺</div>
+            <div class="entity danger goat">🐐</div>
+            <div class="entity danger cabbage">🥦</div>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🧑‍🌾</div>
+            <div class="entity farmer">🧑‍🌾</div>
           </div>
         </div>
 
         <div class="board 🧑‍🌾🐺--🐐🥦">
           <div class="board-side">
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
+            <div class="entity farmer">🧑‍🌾</div>
+            <div class="entity wolf">🐺</div>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity danger">🥦</div>
-            <div class="entity danger">🐐</div>
+            <div class="entity danger goat">🐐</div>
+            <div class="entity danger cabbage">🥦</div>
           </div>
         </div>
 
         <div class="board 🧑‍🌾🐐--🐺🥦">
           <div class="board-side">
-            <div class="entity">🐐</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity farmer">🧑‍🌾</div></label>
+            <label for="--🧑‍🌾🐺🐐🥦"><div class="entity goat">🐐</div></label>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐺</div>
+            <div class="entity wolf">🐺</div>
+            <div class="entity cabbage">🥦</div>
           </div>
         </div>
+        <div class="v-entity cabbage">🥦</div>
+        <div class="v-entity goat">🐐</div>
+        <div class="v-entity farmer">🧑‍🌾</div>
+        <div class="v-entity wolf">🐺</div>
 
         <div class="board 🐺🐐--🧑‍🌾🥦">
           <div class="board-side">
-            <div class="entity danger">🐐</div>
-            <div class="entity danger">🐺</div>
+            <div class="entity danger wolf">🐺</div>
+            <div class="entity danger goat">🐐</div>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🧑‍🌾</div>
+            <div class="entity farmer">🧑‍🌾</div>
+            <div class="entity cabbage">🥦</div>
           </div>
         </div>
 
         <div class="board 🧑‍🌾🥦--🐺🐐">
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🧑‍🌾</div>
+            <div class="entity farmer">🧑‍🌾</div>
+            <div class="entity cabbage">🥦</div>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity danger">🐐</div>
-            <div class="entity danger">🐺</div>
+            <div class="entity danger wolf">🐺</div>
+            <div class="entity danger goat">🐐</div>
           </div>
         </div>
 
         <div class="board 🐺🥦--🧑‍🌾🐐">
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐺</div>
+            <div class="entity wolf">🐺</div>
+            <div class="entity cabbage">🥦</div>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🐐</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🧑‍🌾🐺🥦--🐐"><div class="entity farmer">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🐐🥦--"><div class="entity goat">🐐</div></label>
           </div>
         </div>
 
         <div class="board 🐐🥦--🧑‍🌾🐺">
           <div class="board-side">
-            <div class="entity danger">🥦</div>
-            <div class="entity danger">🐐</div>
+            <div class="entity danger goat">🐐</div>
+            <div class="entity danger cabbage">🥦</div>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
+            <div class="entity farmer">🧑‍🌾</div>
+            <div class="entity wolf">🐺</div>
           </div>
         </div>
 
         <div class="board 🐺--🧑‍🌾🐐🥦">
           <div class="board-side">
-            <div class="entity">🐺</div>
+            <div class="entity wolf">🐺</div>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐐</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🧑‍🌾🐺--🐐🥦"><div class="entity farmer">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🐐--🥦"><div class="entity goat">🐐</div></label>
+            <label for="🧑‍🌾🐺🥦--🐐"><div class="entity cabbage">🥦</div></label>
           </div>
         </div>
 
         <div class="board 🐐--🧑‍🌾🐺🥦">
           <div class="board-side">
-            <div class="entity">🐐</div>
+            <div class="entity goat">🐐</div>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🧑‍🌾🐐--🐺🥦"><div class="entity farmer">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🐐--🥦"><div class="entity wolf">🐺</div></label>
+            <label for="🧑‍🌾🐐🥦--🐺"><div class="entity cabbage">🥦</div></label>
           </div>
         </div>
 
         <div class="board 🥦--🧑‍🌾🐺🐐">
           <div class="board-side">
-            <div class="entity">🥦</div>
+            <div class="entity cabbage">🥦</div>
           </div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🐐</div>
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🧑‍🌾🥦--🐺🐐"><div class="entity farmer">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🥦--🐐"><div class="entity wolf">🐺</div></label>
+            <label for="🧑‍🌾🐐🥦--🐺"><div class="entity goat">🐐</div></label>
           </div>
         </div>
 
@@ -459,85 +529,24 @@
           <div class="board-side"></div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐐</div>
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
+            <div class="entity farmer">🧑‍🌾</div>
+            <div class="entity wolf">🐺</div>
+            <div class="entity goat">🐐</div>
+            <div class="entity cabbage">🥦</div>
           </div>
         </div>
-
       </div>
       <!-- /scene -->
-
-      <!-- ===== MOVES PANEL ===== -->
-      <!-- <div class="move-panel"> -->
-
-      <div class="🧑‍🌾🐺🐐🥦-- btn-move">
-        <label for="🐺🐐--🧑‍🌾🥦" class="btn">➡️ 🥦 לקחת כרוב</label>
-        <label for="🐺🥦--🧑‍🌾🐐" class="btn">➡️ 🐐 לקחת עז</label>
-        <label for="🐐🥦--🧑‍🌾🐺" class="btn">➡️ 🐺 לקחת זאב</label>
-        <label for="🐺🐐🥦--🧑‍🌾" class="btn">➡️ 🧑‍🌾 לנסוע לבד</label>
-      </div>
-
-      <div class="🧑‍🌾🐺🐐--🥦 btn-move">
-        <label for="🐺--🧑‍🌾🐐🥦" class="btn">➡️ 🐐 לקחת עז</label>
-        <label for="🐐--🧑‍🌾🐺🥦" class="btn">➡️ 🐺 לקחת זאב</label>
-        <label for="🐺🐐--🧑‍🌾🥦" class="btn">➡️ 🧑‍🌾 לנסוע לבד</label>
-      </div>
-
-      <div class="🧑‍🌾🐺🥦--🐐 btn-move">
-        <label for="🐺--🧑‍🌾🐐🥦" class="btn">➡️ 🥦 לקחת כרוב</label>
-        <label for="🥦--🧑‍🌾🐺🐐" class="btn">➡️ 🐺 לקחת זאב</label>
-        <label for="🐺🥦--🧑‍🌾🐐" class="btn">➡️ 🧑‍🌾 לנסוע לבד</label>
-      </div>
-
-      <div class="🧑‍🌾🐐🥦--🐺 btn-move">
-        <label for="🐐--🧑‍🌾🐺🥦" class="btn">➡️ 🥦 לקחת כרוב</label>
-        <label for="🥦--🧑‍🌾🐺🐐" class="btn">➡️ 🐐 לקחת עז</label>
-        <label for="🐐🥦--🧑‍🌾🐺" class="btn">➡️ 🧑‍🌾 לנסוע לבד</label>
-      </div>
-
-      <div class="🧑‍🌾🐐--🐺🥦 btn-move">
-        <label for="--🧑‍🌾🐺🐐🥦" class="btn">➡️ 🐐 לקחת עז</label>
-        <label for="🐐--🧑‍🌾🐺🥦" class="btn">➡️ 🧑‍🌾 לנסוע לבד</label>
-      </div>
-
-      <div class="🐺🥦--🧑‍🌾🐐 btn-move">
-        <label for="🧑‍🌾🐺🐐🥦--" class="btn">להחזיר עז 🐐 ⬅️</label>
-        <label for="🧑‍🌾🐺🥦--🐐" class="btn">לחזור לבד 🧑‍🌾 ⬅️</label>
-      </div>
-
-      <div class="🐺--🧑‍🌾🐐🥦 btn-move">
-        <label for="🧑‍🌾🐺🥦--🐐" class="btn">להחזיר כרוב 🥦 ⬅️</label>
-        <label for="🧑‍🌾🐺🐐--🥦" class="btn">להחזיר עז 🐐 ⬅️</label>
-        <label for="🧑‍🌾🐺--🐐🥦" class="btn">לחזור לבד 🧑‍🌾 ⬅️</label>
-      </div>
-
-      <div class="🐐--🧑‍🌾🐺🥦 btn-move">
-        <label for="🧑‍🌾🐐🥦--🐺" class="btn">להחזיר כרוב 🥦 ⬅️</label>
-        <label for="🧑‍🌾🐺🐐--🥦" class="btn">להחזיר זאב 🐺 ⬅️</label>
-        <label for="🧑‍🌾🐐--🐺🥦" class="btn">לחזור לבד 🧑‍🌾 ⬅️</label>
-      </div>
-
-      <div class="🥦--🧑‍🌾🐺🐐 btn-move">
-        <label for="🧑‍🌾🐐🥦--🐺" class="btn">להחזיר עז 🐐 ⬅️</label>
-        <label for="🧑‍🌾🐺🥦--🐐" class="btn">להחזיר זאב 🐺 ⬅️</label>
-        <label for="🧑‍🌾🥦--🐺🐐" class="btn">לחזור לבד 🧑‍🌾 ⬅️</label>
-      </div>
 
       <div class="end-msg lose 🧑‍🌾🐺--🐐🥦 🐐🥦--🧑‍🌾🐺">העז אכלה את הכרוב — השארת אותם לבד! 😱</div>
       <div class="end-msg lose 🐺🐐--🧑‍🌾🥦 🧑‍🌾🥦--🐺🐐">הזאב אכל את העז — השארת אותם לבד! 😱</div>
       <div class="end-msg lose 🐺🐐🥦--🧑‍🌾">העז אכלה את הכרוב והזאב אכל את העז — השארת אותם לבד! 😱</div>
       <div class="end-msg win --🧑‍🌾🐺🐐🥦">🎉 ניצחת! הצלחת להעביר את כולם לגדה הימנית</div>
 
-      <div class="start-btn">
-        <label for="🧑‍🌾🐺🐐🥦--" class="btn">▶ התחל משחק</label>
-      </div>
-
       <div class="btn-move 🐺🐐--🧑‍🌾🥦 🧑‍🌾🥦--🐺🐐 🧑‍🌾🐺--🐐🥦 🐐🥦--🧑‍🌾🐺 🐺🐐🥦--🧑‍🌾 --🧑‍🌾🐺🐐🥦">
-        <label for="init" class="btn">🔄 שחק שוב</label>
+        <label for="🧑‍🌾🐺🐐🥦--" class="btn">🔄 שחק שוב</label>
       </div>
-
     </div>
+    <!-- /wrapper -->
   </body>
 </html>

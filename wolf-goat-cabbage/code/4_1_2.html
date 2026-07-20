@@ -1,4 +1,5 @@
-<!-- לא צורך בכפתורי ניווט -->
+<!-- עם אנימצית מעברים, כולל צמצום רווחים -->
+<!-- כמו 4_1_1 רק סדר כפתורים הפוך -->
 
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -99,8 +100,11 @@
 
       /* ===== BOAT ===== */
       :root {
-        --boat-left:  calc(28.5% - 40px);
-        --boat-right: calc(80% - 40px);
+        --boat-left:  285px;
+        --boat-right: 335px;
+        /* מיקומי הישויות לפי גדה (שמאל/ימין) ומשבצת 1-4 */
+        --slot-left-1: translateX(8px); --slot-left-2: translateX(60px); --slot-left-3: translateX(112px); --slot-left-4: translateX(164px);
+        --slot-right-1: translateX(423px); --slot-right-2: translateX(475px); --slot-right-3: translateX(527px); --slot-right-4: translateX(579px);
       }
       .boat {
         display: flex;
@@ -116,7 +120,7 @@
         font-size: 1.4rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.35);
         z-index: 10;
-        transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: left 0.8s 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .board {
@@ -176,6 +180,124 @@
         animation: shake 0.5s ease;
       }
 
+      /* ===== VISUAL ENTITIES (animated layer) ===== */
+      .v-entity {
+        position: absolute;
+        top: 28px;
+        left: 0;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.92);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        pointer-events: none;
+        z-index: 8;
+        transition: transform 0.8s ease-in-out, background 0.3s;
+      }
+
+      /* Hide original entity visuals; labels remain as invisible click targets */
+      .board .entity { opacity: 0; }
+      .board label { cursor: pointer; }
+
+      @keyframes v-shake {
+        0%,100% { translate: 0; }
+        25%      { translate: -8px; }
+        75%      { translate: 8px; }
+      }
+
+      /* ===== FARMER ===== */
+      .wrapper:not(:has(input[name="state"]:checked)) .v-farmer,
+      #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper .v-farmer { transform: var(--slot-left-4); }
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .v-farmer,
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .v-farmer,
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .v-farmer { transform: var(--slot-left-3); }
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-farmer { transform: var(--slot-right-1); }
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-farmer,
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper .v-farmer,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-farmer { transform: var(--slot-left-2); }
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-farmer,
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .v-farmer,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-farmer { transform: var(--slot-right-2); }
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .v-farmer,
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .v-farmer,
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .v-farmer { transform: var(--slot-right-3); }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .v-farmer { transform: var(--slot-right-4); }
+
+      /* ===== WOLF ===== */
+      .wrapper:not(:has(input[name="state"]:checked)) .v-wolf,
+      #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper .v-wolf,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-wolf { transform: var(--slot-left-3); }
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .v-wolf,
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .v-wolf,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-wolf,
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .v-wolf { transform: var(--slot-left-2); }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .v-wolf,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-wolf { transform: var(--slot-right-1); }
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-wolf,
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .v-wolf { transform: var(--slot-left-1); }
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper .v-wolf,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-wolf,
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .v-wolf,
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .v-wolf { transform: var(--slot-right-2); }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .v-wolf { transform: var(--slot-right-3); }
+
+      /* ===== GOAT ===== */
+      .wrapper:not(:has(input[name="state"]:checked)) .v-goat,
+      #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .v-goat,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-goat,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-goat { transform: var(--slot-left-2); }
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper .v-goat,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-goat,
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .v-goat { transform: var(--slot-left-1); }
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-goat,
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .v-goat,
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .v-goat { transform: var(--slot-right-1); }
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-goat,
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .v-goat,
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .v-goat { transform: var(--slot-right-2); }
+
+      /* ===== CABBAGE ===== */
+      .wrapper:not(:has(input[name="state"]:checked)) .v-cabbage,
+      #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper .v-cabbage,
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .v-cabbage,
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .v-cabbage,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-cabbage,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-cabbage,
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .v-cabbage,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-cabbage,
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .v-cabbage { transform: var(--slot-left-1); }
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .v-cabbage,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-cabbage,
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper .v-cabbage,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-cabbage,
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .v-cabbage,
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .v-cabbage,
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .v-cabbage { transform: var(--slot-right-1); }
+
+      /* ===== DANGER STATES ===== */
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-wolf,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-goat,
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .v-cabbage,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-wolf,
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-wolf,
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .v-goat,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-goat,
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .v-cabbage,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-goat,
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .v-cabbage
+       {
+        background: rgba(255,100,100,0.92);
+        animation: v-shake 0.5s 0.8s ease;
+      }
+
       .end-msg {
         display: none;
         width: 100%;
@@ -231,7 +353,12 @@
         transform: translateY(-2px);
       }
 
-      /* CSS STATE MACHINE */
+
+
+      /* לוח ההתחלה גלוי כברירת מחדל; מוסתר כשאיזשהו radio נבחר */
+      .board.🧑‍🌾🐺🐐🥦-- { display: flex; }
+      :root:has(input[name="state"]:checked) .🧑‍🌾🐺🐐🥦-- { display: none; }
+
       #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper { .🧑‍🌾🐺🐐🥦-- { display: flex; } }
       #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { .🧑‍🌾🐺🐐--🥦 { display: flex; } }
       #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { .🧑‍🌾🐺🥦--🐐 { display: flex; } }
@@ -247,7 +374,6 @@
       #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } .boat { left: var(--boat-right); } }
       #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } .boat { left: var(--boat-right); } }
       #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } .boat { left: var(--boat-right); } }
-
     </style>
   </head>
   <body>
@@ -255,7 +381,7 @@
     <p class="subtitle">רק אתה יכול להסיע את הסירה ורק אחד יכול להצטרף אליך<br>אל תשאיר לבד את הזאב עם הכבש ואת הכבש עם הכרוב<br>העבר את כולם מהגדה השמאלית לימנית</p>
 
     <!-- ===== STATE RADIO INPUTS ===== -->
-    <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--" checked />
+    <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--" />
     <input type="radio" name="state" id="🧑‍🌾🐺🐐--🥦" />
     <input type="radio" name="state" id="🧑‍🌾🐺🥦--🐐" />
     <input type="radio" name="state" id="🧑‍🌾🐐🥦--🐺" />
@@ -363,6 +489,10 @@
             <div class="entity">🐺</div>
           </div>
         </div>
+        <div class="v-entity v-cabbage">🥦</div>
+        <div class="v-entity v-goat">🐐</div>
+        <div class="v-entity v-farmer">🧑‍🌾</div>
+        <div class="v-entity v-wolf">🐺</div>
 
         <div class="board 🐺🐐--🧑‍🌾🥦">
           <div class="board-side">
@@ -458,23 +588,21 @@
             <div class="entity">🧑‍🌾</div>
           </div>
         </div>
-
       </div>
       <!-- /scene -->
 
-      <!-- ===== MOVES PANEL ===== -->
-      <div class="move-panel">
-
-        <div class="end-msg lose 🧑‍🌾🐺--🐐🥦 🐐🥦--🧑‍🌾🐺">העז אכלה את הכרוב — השארת אותם לבד! 😱</div>
-        <div class="end-msg lose 🐺🐐--🧑‍🌾🥦 🧑‍🌾🥦--🐺🐐">הזאב אכל את העז — השארת אותם לבד! 😱</div>
-        <div class="end-msg lose 🐺🐐🥦--🧑‍🌾">העז אכלה את הכרוב והזאב אכל את העז — השארת אותם לבד! 😱</div>
-        <div class="end-msg win --🧑‍🌾🐺🐐🥦">🎉 ניצחת! הצלחת להעביר את כולם לגדה הימנית</div>
+      <!-- ===== END MESSAGES (shown by the same state-class mechanism as the boards) ===== -->
+      <div class="moves-panel">
+        <div class="end-msg lose 🧑‍🌾🐺--🐐🥦 🐐🥦--🧑‍🌾🐺">😱 העז אכלה את הכרוב — השארת אותם לבד!</div>
+        <div class="end-msg lose 🐺🐐--🧑‍🌾🥦 🧑‍🌾🥦--🐺🐐">😱 הזאב אכל את העז — השארת אותם לבד!</div>
+        <div class="end-msg lose 🐺🐐🥦--🧑‍🌾">😱 השארת את כולם לבד — הזאב אכל את העז והעז אכלה את הכרוב!</div>
+        <div class="end-msg win --🧑‍🌾🐺🐐🥦">🎉 ניצחת! כולם חצו לגדה ימין בשלום</div>
 
         <div class="btn-move 🐺🐐--🧑‍🌾🥦 🧑‍🌾🥦--🐺🐐 🧑‍🌾🐺--🐐🥦 🐐🥦--🧑‍🌾🐺 🐺🐐🥦--🧑‍🌾 --🧑‍🌾🐺🐐🥦">
           <label for="🧑‍🌾🐺🐐🥦--" class="btn">🔄 שחק שוב</label>
         </div>
-
       </div>
     </div>
+    <!-- /wrapper -->
   </body>
 </html>

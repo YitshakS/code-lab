@@ -1,4 +1,4 @@
-﻿<!-- סירה אחת + transition: left -->
+<!-- סירה אחת במקום שתיים, לא צורך בכפתור התחלה -->
 
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -98,9 +98,13 @@
       }
 
       /* ===== BOAT ===== */
+      :root {
+        --boat-left:  calc(28.5% - 40px);
+        --boat-right: calc(80% - 40px);
+      }
       .boat {
         display: flex;
-        left: calc(28.5% - 40px);
+        left: var(--boat-left);
         position: absolute;
         bottom: 18px;
         width: 80px;
@@ -170,8 +174,22 @@
         text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
         animation: shake 0.5s ease;
       }
-      .end-msg.lose { background: rgba(180,30,30,0.85); }
-      .end-msg.win  { background: rgba(20,160,50,0.85); }
+      .end-msg.lose {
+        background: rgba(180,30,30,0.85);
+      }
+      .end-msg.win  {
+        background: rgba(20,160,50,0.85);
+      }
+
+      /*
+      .move-panel {
+        width: min(700px, 95vw);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+      }
+      */
 
       .btn-move {
         display: none;
@@ -199,33 +217,22 @@
         transform: translateY(-2px);
       }
 
-      /* STATE MACHINE — CSS */
-
-      /* הזזת הסירה לימין */
-      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .boat,
-      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .boat,
-      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .boat,
-      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .boat,
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .boat,
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .boat,
-      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .boat,
-      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .boat { left: calc(80% - 40px); }
-
-      #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper .🧑‍🌾🐺🐐🥦--,
-      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper .🧑‍🌾🐺🐐--🥦,
-      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .🧑‍🌾🐺🥦--🐐,
-      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .🧑‍🌾🐐🥦--🐺,
-      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .🐺🐐🥦--🧑‍🌾,
-      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper .🧑‍🌾🐺--🐐🥦,
-      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper .🧑‍🌾🐐--🐺🥦,
-      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .🐺🐐--🧑‍🌾🥦,
-      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper .🧑‍🌾🥦--🐺🐐,
-      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .🐺🥦--🧑‍🌾🐐,
-      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .🐐🥦--🧑‍🌾🐺,
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper .🐺--🧑‍🌾🐐🥦,
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .🐐--🧑‍🌾🐺🥦,
-      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .🥦--🧑‍🌾🐺🐐,
-      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .--🧑‍🌾🐺🐐🥦 { display: flex; }
+      /* CSS STATE MACHINE */
+      #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper { .🧑‍🌾🐺🐐🥦-- { display: flex; } }
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { .🧑‍🌾🐺🐐--🥦 { display: flex; } }
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { .🧑‍🌾🐺🥦--🐐 { display: flex; } }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { .🧑‍🌾🐐🥦--🐺 { display: flex; } }
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } .boat { left: var(--boat-right); } }
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { .🧑‍🌾🐺--🐐🥦 { display: flex; } }
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { .🧑‍🌾🐐--🐺🥦 { display: flex; } }
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } .boat { left: var(--boat-right); } }
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { .🧑‍🌾🥦--🐺🐐 { display: flex; } }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } .boat { left: var(--boat-right); } }
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } .boat { left: var(--boat-right); } }
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } .boat { left: var(--boat-right); } }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } .boat { left: var(--boat-right); } }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } .boat { left: var(--boat-right); } }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } .boat { left: var(--boat-right); } }
 
     </style>
   </head>
@@ -497,8 +504,8 @@
         <label for="🧑‍🌾🥦--🐺🐐" class="btn">לחזור לבד 🧑‍🌾 ⬅️</label>
       </div>
 
-      <div class="end-msg lose 🐺🐐--🧑‍🌾🥦 🧑‍🌾🥦--🐺🐐">הזאב אכל את העז — השארת אותם לבד! 😱</div>
       <div class="end-msg lose 🧑‍🌾🐺--🐐🥦 🐐🥦--🧑‍🌾🐺">העז אכלה את הכרוב — השארת אותם לבד! 😱</div>
+      <div class="end-msg lose 🐺🐐--🧑‍🌾🥦 🧑‍🌾🥦--🐺🐐">הזאב אכל את העז — השארת אותם לבד! 😱</div>
       <div class="end-msg lose 🐺🐐🥦--🧑‍🌾">העז אכלה את הכרוב והזאב אכל את העז — השארת אותם לבד! 😱</div>
       <div class="end-msg win --🧑‍🌾🐺🐐🥦">🎉 ניצחת! הצלחת להעביר את כולם לגדה הימנית</div>
 
