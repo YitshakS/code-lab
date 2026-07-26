@@ -104,7 +104,7 @@
       }
       .boat {
         display: flex;
-        left: var(--boat-left);
+        left: var(--boat-pos, var(--boat-left));
         position: absolute;
         bottom: 18px;
         width: 80px;
@@ -236,17 +236,17 @@
       #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { .🧑‍🌾🐺🐐--🥦 { display: flex; } }
       #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { .🧑‍🌾🐺🥦--🐐 { display: flex; } }
       #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { .🧑‍🌾🐐🥦--🐺 { display: flex; } }
-      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } .boat { left: var(--boat-right); } }
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } --boat-pos: var(--boat-right); }
       #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { .🧑‍🌾🐺--🐐🥦 { display: flex; } }
       #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { .🧑‍🌾🐐--🐺🥦 { display: flex; } }
-      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } .boat { left: var(--boat-right); } }
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } --boat-pos: var(--boat-right); }
       #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { .🧑‍🌾🥦--🐺🐐 { display: flex; } }
-      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } .boat { left: var(--boat-right); } }
-      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } .boat { left: var(--boat-right); } }
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } .boat { left: var(--boat-right); } }
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } .boat { left: var(--boat-right); } }
-      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } .boat { left: var(--boat-right); } }
-      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } .boat { left: var(--boat-right); } }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } --boat-pos: var(--boat-right); }
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } --boat-pos: var(--boat-right); }
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } --boat-pos: var(--boat-right); }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } --boat-pos: var(--boat-right); }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } --boat-pos: var(--boat-right); }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } --boat-pos: var(--boat-right); }
     </style>
   </head>
   <body>
@@ -462,7 +462,7 @@
       <!-- /scene -->
 
       <!-- ===== MOVES PANEL ===== -->
-      <div class="move-panel">
+      <!-- <div class="move-panel"> -->
 
         <div class="end-msg lose 🧑‍🌾🐺--🐐🥦 🐐🥦--🧑‍🌾🐺">העז אכלה את הכרוב — השארת אותם לבד! 😱</div>
         <div class="end-msg lose 🐺🐐--🧑‍🌾🥦 🧑‍🌾🥦--🐺🐐">הזאב אכל את העז — השארת אותם לבד! 😱</div>
@@ -473,7 +473,7 @@
           <label for="🧑‍🌾🐺🐐🥦--" class="btn">🔄 שחק שוב</label>
         </div>
 
-      </div>
+      <!-- </div> -->
     </div>
   </body>
 </html>

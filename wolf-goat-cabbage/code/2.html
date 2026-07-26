@@ -104,7 +104,7 @@
       }
       .boat {
         display: flex;
-        left: var(--boat-left);
+        left: var(--boat-pos, var(--boat-left));
         position: absolute;
         bottom: 18px;
         width: 80px;
@@ -222,17 +222,17 @@
       #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { .🧑‍🌾🐺🐐--🥦 { display: flex; } }
       #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { .🧑‍🌾🐺🥦--🐐 { display: flex; } }
       #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { .🧑‍🌾🐐🥦--🐺 { display: flex; } }
-      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } .boat { left: var(--boat-right); } }
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } --boat-pos: var(--boat-right); }
       #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { .🧑‍🌾🐺--🐐🥦 { display: flex; } }
       #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { .🧑‍🌾🐐--🐺🥦 { display: flex; } }
-      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } .boat { left: var(--boat-right); } }
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } --boat-pos: var(--boat-right); }
       #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { .🧑‍🌾🥦--🐺🐐 { display: flex; } }
-      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } .boat { left: var(--boat-right); } }
-      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } .boat { left: var(--boat-right); } }
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } .boat { left: var(--boat-right); } }
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } .boat { left: var(--boat-right); } }
-      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } .boat { left: var(--boat-right); } }
-      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } .boat { left: var(--boat-right); } }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } --boat-pos: var(--boat-right); }
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } --boat-pos: var(--boat-right); }
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } --boat-pos: var(--boat-right); }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } --boat-pos: var(--boat-right); }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } --boat-pos: var(--boat-right); }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } --boat-pos: var(--boat-right); }
     </style>
   </head>
   <body>

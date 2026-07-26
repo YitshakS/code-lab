@@ -110,7 +110,7 @@
       }
       .boat {
         display: flex;
-        left: calc(var(--boat-left) + var(--🧑‍🌾-right,0) * (var(--boat-right) - var(--boat-left)));
+        left: var(--boat-pos, var(--boat-left));
         position: absolute;
         bottom: 18px;
         width: 80px;
@@ -196,11 +196,11 @@
         75%      { translate: 8px; }
       }
 
-      /* משבצת ברירת המחדל של כל ישות (הצד השמאלי, לפי סדר ה-HTML); --s-<entity> נדרס לפי מצב לצורך צמצום המעברים */
-      .moving.🧑‍🌾 { transform: var(--s-🧑‍🌾, var(--slot-left-1)); }
-      .moving.🐺 { transform: var(--s-🐺, var(--slot-left-2)); }
-      .moving.🐐 { transform: var(--s-🐐, var(--slot-left-3)); }
-      .moving.🥦 { transform: var(--s-🥦, var(--slot-left-4)); }
+      /* משבצת ברירת המחדל של כל ישות (הצד השמאלי, לפי סדר ה-HTML); --slot-<entity> נדרס לפי מצב לצורך צמצום המעברים */
+      .moving.🥦 { transform: var(--slot-🥦, var(--slot-left-4)); }
+      .moving.🐐 { transform: var(--slot-🐐, var(--slot-left-3)); }
+      .moving.🐺 { transform: var(--slot-🐺, var(--slot-left-2)); }
+      .moving.🧑‍🌾 { transform: var(--slot-🧑‍🌾, var(--slot-left-1)); }
 
       .end-msg {
         display: none;
@@ -260,22 +260,22 @@
       .board.🧑‍🌾🐺🐐🥦-- { display: flex; }
       :root:has(input[name="state"]:checked) .🧑‍🌾🐺🐐🥦-- { display: none; }
 
-      /* כל מצב במקום אחד: מי בצד ימין (--🧑‍🌾-right, לסירה האוטומטית), משבצת דחוסה לכל ישות (--s-<entity>), הצגת הלוח, ומי נטרף (eaten) */
+      /* כל מצב במקום אחד: מיקום הסירה (--boat-pos), משבצת דחוסה לכל ישות (--slot-<entity>), הצגת הלוח, ומי נטרף (eaten) */
       #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper { .🧑‍🌾🐺🐐🥦-- { display: flex; } }
-      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { --s-🥦:var(--slot-right-1); .🧑‍🌾🐺🐐--🥦 { display: flex; } }
-      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { --s-🐐:var(--slot-right-1); --s-🥦:var(--slot-left-3); .🧑‍🌾🐺🥦--🐐 { display: flex; } }
-      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { --s-🐺:var(--slot-right-1); --s-🐐:var(--slot-left-2); --s-🥦:var(--slot-left-3); .🧑‍🌾🐐🥦--🐺 { display: flex; } }
-      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { --🧑‍🌾-right:1; --s-🧑‍🌾:var(--slot-right-1); --s-🐺:var(--slot-left-1); --s-🐐:var(--slot-left-2); --s-🥦:var(--slot-left-3); .🐺🐐🥦--🧑‍🌾 { display: flex; } .moving.🐺, .moving.🐐, .moving.🥦 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { --s-🐐:var(--slot-right-1); --s-🥦:var(--slot-right-2); .🧑‍🌾🐺--🐐🥦 { display: flex; } .moving.🐐, .moving.🥦 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { --s-🐺:var(--slot-right-1); --s-🐐:var(--slot-left-2); --s-🥦:var(--slot-right-2); .🧑‍🌾🐐--🐺🥦 { display: flex; } }
-      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { --🧑‍🌾-right:1; --s-🧑‍🌾:var(--slot-right-1); --s-🐺:var(--slot-left-1); --s-🐐:var(--slot-left-2); --s-🥦:var(--slot-right-2); .🐺🐐--🧑‍🌾🥦 { display: flex; } .moving.🐺, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { --s-🐺:var(--slot-right-1); --s-🐐:var(--slot-right-2); --s-🥦:var(--slot-left-2); .🧑‍🌾🥦--🐺🐐 { display: flex; } .moving.🐺, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { --🧑‍🌾-right:1; --s-🧑‍🌾:var(--slot-right-1); --s-🐺:var(--slot-left-1); --s-🐐:var(--slot-right-2); --s-🥦:var(--slot-left-2); .🐺🥦--🧑‍🌾🐐 { display: flex; } }
-      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { --🧑‍🌾-right:1; --s-🧑‍🌾:var(--slot-right-1); --s-🐺:var(--slot-right-2); --s-🐐:var(--slot-left-1); --s-🥦:var(--slot-left-2); .🐐🥦--🧑‍🌾🐺 { display: flex; } .moving.🐐, .moving.🥦 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { --🧑‍🌾-right:1; --s-🧑‍🌾:var(--slot-right-1); --s-🐺:var(--slot-left-1); --s-🐐:var(--slot-right-2); --s-🥦:var(--slot-right-3); .🐺--🧑‍🌾🐐🥦 { display: flex; } }
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { --🧑‍🌾-right:1; --s-🧑‍🌾:var(--slot-right-1); --s-🐺:var(--slot-right-2); --s-🐐:var(--slot-left-1); --s-🥦:var(--slot-right-3); .🐐--🧑‍🌾🐺🥦 { display: flex; } }
-      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { --🧑‍🌾-right:1; --s-🧑‍🌾:var(--slot-right-1); --s-🐺:var(--slot-right-2); --s-🐐:var(--slot-right-3); --s-🥦:var(--slot-left-1); .🥦--🧑‍🌾🐺🐐 { display: flex; } }
-      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { --🧑‍🌾-right:1; --s-🧑‍🌾:var(--slot-right-1); --s-🐺:var(--slot-right-2); --s-🐐:var(--slot-right-3); --s-🥦:var(--slot-right-4); .--🧑‍🌾🐺🐐🥦 { display: flex; } }
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { .🧑‍🌾🐺🐐--🥦 { display: flex; } --slot-🥦:var(--slot-right-1); }
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { .🧑‍🌾🐺🥦--🐐 { display: flex; } --slot-🥦:var(--slot-left-3); --slot-🐐:var(--slot-right-1); }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { .🧑‍🌾🐐🥦--🐺 { display: flex; } --slot-🥦:var(--slot-left-3); --slot-🐐:var(--slot-left-2); --slot-🐺:var(--slot-right-1); }
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } --slot-🥦:var(--slot-left-3); --slot-🐐:var(--slot-left-2); --slot-🐺:var(--slot-left-1); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); .moving.🥦, .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { .🧑‍🌾🐺--🐐🥦 { display: flex; } --slot-🥦:var(--slot-right-2); --slot-🐐:var(--slot-right-1); .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { .🧑‍🌾🐐--🐺🥦 { display: flex; } --slot-🥦:var(--slot-right-2); --slot-🐐:var(--slot-left-2); --slot-🐺:var(--slot-right-1); }
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } --slot-🥦:var(--slot-right-2); --slot-🐐:var(--slot-left-2); --slot-🐺:var(--slot-left-1); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { .🧑‍🌾🥦--🐺🐐 { display: flex; } --slot-🥦:var(--slot-left-2); --slot-🐐:var(--slot-right-2); --slot-🐺:var(--slot-right-1); .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } --slot-🥦:var(--slot-left-2); --slot-🐐:var(--slot-right-2); --slot-🐺:var(--slot-left-1); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); }
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } --slot-🥦:var(--slot-left-2); --slot-🐐:var(--slot-left-1); --slot-🐺:var(--slot-right-2); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } --slot-🥦:var(--slot-right-3); --slot-🐐:var(--slot-right-2); --slot-🐺:var(--slot-left-1); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } --slot-🥦:var(--slot-right-3); --slot-🐐:var(--slot-left-1); --slot-🐺:var(--slot-right-2); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } --slot-🥦:var(--slot-left-1); --slot-🐐:var(--slot-right-3); --slot-🐺:var(--slot-right-2); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } --slot-🥦:var(--slot-right-4); --slot-🐐:var(--slot-right-3); --slot-🐺:var(--slot-right-2); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); }
     </style>
   </head>
   <body>

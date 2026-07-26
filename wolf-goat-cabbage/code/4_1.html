@@ -263,20 +263,20 @@
 
       /* כל מצב במקום אחד: מי בצד ימין (--<emoji>-right), הצגת הלוח, ומי נטרף (eaten) */
       #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper { .🧑‍🌾🐺🐐🥦-- { display: flex; } }
-      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { --🥦-right:1; .🧑‍🌾🐺🐐--🥦 { display: flex; } }
-      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { --🐐-right:1; .🧑‍🌾🐺🥦--🐐 { display: flex; } }
-      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { --🐺-right:1; .🧑‍🌾🐐🥦--🐺 { display: flex; } }
-      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { --🧑‍🌾-right:1; .🐺🐐🥦--🧑‍🌾 { display: flex; } .moving.🐺, .moving.🐐, .moving.🥦 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { --🐐-right:1; --🥦-right:1; .🧑‍🌾🐺--🐐🥦 { display: flex; } .moving.🐐, .moving.🥦 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { --🐺-right:1; --🥦-right:1; .🧑‍🌾🐐--🐺🥦 { display: flex; } }
-      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { --🧑‍🌾-right:1; --🥦-right:1; .🐺🐐--🧑‍🌾🥦 { display: flex; } .moving.🐺, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { --🐺-right:1; --🐐-right:1; .🧑‍🌾🥦--🐺🐐 { display: flex; } .moving.🐺, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { --🧑‍🌾-right:1; --🐐-right:1; .🐺🥦--🧑‍🌾🐐 { display: flex; } }
-      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { --🧑‍🌾-right:1; --🐺-right:1; .🐐🥦--🧑‍🌾🐺 { display: flex; } .moving.🐐, .moving.🥦 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { --🧑‍🌾-right:1; --🐐-right:1; --🥦-right:1; .🐺--🧑‍🌾🐐🥦 { display: flex; } }
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { --🧑‍🌾-right:1; --🐺-right:1; --🥦-right:1; .🐐--🧑‍🌾🐺🥦 { display: flex; } }
-      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { --🧑‍🌾-right:1; --🐺-right:1; --🐐-right:1; .🥦--🧑‍🌾🐺🐐 { display: flex; } }
-      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { --🧑‍🌾-right:1; --🐺-right:1; --🐐-right:1; --🥦-right:1; .--🧑‍🌾🐺🐐🥦 { display: flex; } }
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { .🧑‍🌾🐺🐐--🥦 { display: flex; } --🥦-right:1; }
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { .🧑‍🌾🐺🥦--🐐 { display: flex; } --🐐-right:1; }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { .🧑‍🌾🐐🥦--🐺 { display: flex; } --🐺-right:1; }
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } --🧑‍🌾-right:1; .moving.🥦, .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { .🧑‍🌾🐺--🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { .🧑‍🌾🐐--🐺🥦 { display: flex; } --🥦-right:1; --🐺-right:1; }
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } --🥦-right:1; --🧑‍🌾-right:1; .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { .🧑‍🌾🥦--🐺🐐 { display: flex; } --🐐-right:1; --🐺-right:1; .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } --🐐-right:1; --🧑‍🌾-right:1; }
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } --🐺-right:1; --🧑‍🌾-right:1; .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; --🧑‍🌾-right:1; }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } --🥦-right:1; --🐺-right:1; --🧑‍🌾-right:1; }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } --🐐-right:1; --🐺-right:1; --🧑‍🌾-right:1; }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; --🐺-right:1; --🧑‍🌾-right:1; }
     </style>
   </head>
   <body>
