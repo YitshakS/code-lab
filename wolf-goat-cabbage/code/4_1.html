@@ -42,10 +42,14 @@
         text-align: center;
       }
 
+      .wrapper {
+        min-height: 310px;
+      }
+
       /* לוח משחק */
       .scene {
         direction: ltr;
-        width: min(700px, 95vw);
+        width: min(690px, 95vw);
         height: 220px;
         display: flex;
         position: relative;
@@ -71,7 +75,7 @@
 
       /* נהר */
       .river {
-        width: 130px;
+        width: 250px;
         /* flex-shrink: 0; */
         background: linear-gradient(to bottom, #1e90de, #0c6dad);
         position: relative;
@@ -99,8 +103,8 @@
 
       /* ===== BOAT ===== */
       :root {
-        --boat-left:  285px;
-        --boat-right: 335px;
+        --boat-left:  195px;
+        --boat-right: 320px;
         /* מראה ה-eaten (מי שנטרף) — מוגדר פעם אחת */
         --eaten-bg: rgba(255,100,100,0.92);
         --eaten-shake: shake-translate 0.5s 0.8s ease;
@@ -109,17 +113,21 @@
         display: flex;
         left: calc(var(--boat-left) + var(--🧑‍🌾-right,0) * (var(--boat-right) - var(--boat-left)));
         position: absolute;
-        bottom: 18px;
-        width: 80px;
-        height: 44px;
-        background: linear-gradient(to bottom, #9b6b42, #5e3d1e);
-        border-radius: 8px 8px 28px 28px;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.4rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+        top: 10%;
+        width: 220px;
+        height: 160px;
+        align-items: flex-start;
+        justify-content: flex-start;
+        font-size: 8rem;
         z-index: 10;
+        overflow: hidden;
+        pointer-events: none;
         transition: left 0.8s 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .boat .hull {
+        transform: scaleX(var(--boat-hull-flip, 1));
+        mask-image: linear-gradient(to bottom, #000 70%, transparent 80%);
+        -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 80%);
       }
 
       .board {
@@ -146,16 +154,17 @@
         flex: 1;
         display: grid;
         grid-template-columns: repeat(4, 46px);
-        align-content: flex-start;
+        justify-content: center;
+        align-content: center;
         gap: 6px;
-        padding: 28px 8px 8px;
+        padding: 8px;
       }
       .board-side .🧑‍🌾 { grid-column: 1; }
       .board-side .🐺 { grid-column: 2; }
       .board-side .🐐 { grid-column: 3; }
       .board-side .🥦 { grid-column: 4; }
       .board-gap {
-        width: 130px;
+        width: 250px;
         flex-shrink: 0;
       }
 
@@ -180,7 +189,7 @@
       /* השכבה המונפשת: יורשת גודל/צורה/רקע מ-.entity, ומוסיפה רק מיקום מוחלט ותנועה */
       .entity.moving {
         position: absolute;
-        top: 28px;
+        top: 87px;
         left: 0;
         pointer-events: none;
         z-index: 8;
@@ -198,10 +207,10 @@
       }
 
       /* fixed slot folded into base; --<entity>-right (inherited from .wrapper) toggles bank */
-      .moving.🧑‍🌾 { transform: translateX(calc(var(--🧑‍🌾-right,0)*415px + 8px)); }
-      .moving.🐺 { transform: translateX(calc(var(--🐺-right,0)*415px + 60px)); }
-      .moving.🐐 { transform: translateX(calc(var(--🐐-right,0)*415px + 112px)); }
-      .moving.🥦 { transform: translateX(calc(var(--🥦-right,0)*415px + 164px)); }
+      .moving.🧑‍🌾 { transform: translateX(calc(var(--🧑‍🌾-right,0)*470px + 8px)); }
+      .moving.🐺 { transform: translateX(calc(var(--🐺-right,0)*470px + 60px)); }
+      .moving.🐐 { transform: translateX(calc(var(--🐐-right,0)*470px + 112px)); }
+      .moving.🥦 { transform: translateX(calc(var(--🥦-right,0)*470px + 164px)); }
 
       .end-msg {
         display: none;
@@ -266,17 +275,17 @@
       #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { .🧑‍🌾🐺🐐--🥦 { display: flex; } --🥦-right:1; }
       #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { .🧑‍🌾🐺🥦--🐐 { display: flex; } --🐐-right:1; }
       #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { .🧑‍🌾🐐🥦--🐺 { display: flex; } --🐺-right:1; }
-      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } --🧑‍🌾-right:1; .moving.🥦, .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } --🧑‍🌾-right:1; --boat-hull-flip: -1; .moving.🥦, .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
       #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { .🧑‍🌾🐺--🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
       #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { .🧑‍🌾🐐--🐺🥦 { display: flex; } --🥦-right:1; --🐺-right:1; }
-      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } --🥦-right:1; --🧑‍🌾-right:1; .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } --🥦-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
       #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { .🧑‍🌾🥦--🐺🐐 { display: flex; } --🐐-right:1; --🐺-right:1; .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } --🐐-right:1; --🧑‍🌾-right:1; }
-      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } --🐺-right:1; --🧑‍🌾-right:1; .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; --🧑‍🌾-right:1; }
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } --🥦-right:1; --🐺-right:1; --🧑‍🌾-right:1; }
-      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } --🐐-right:1; --🐺-right:1; --🧑‍🌾-right:1; }
-      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; --🐺-right:1; --🧑‍🌾-right:1; }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } --🐐-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; }
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } --🐺-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } --🥦-right:1; --🐺-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } --🐐-right:1; --🐺-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; --🐺-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; }
     </style>
   </head>
   <body>
@@ -308,7 +317,7 @@
         <div class="river"></div>
         <div class="bank"><span class="bank-label">גדה ימין</span></div>
 
-        <div class="boat">⛵</div>
+        <div class="boat"><span class="hull">⛵</span></div>
 
         <div class="board 🧑‍🌾🐺🐐🥦--">
           <div class="board-side">

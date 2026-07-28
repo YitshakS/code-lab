@@ -1,4 +1,4 @@
-<!-- ללא צורך בכפתורי ניווט -->
+<!-- עם אנימצית מעברים, כולל צמצום רווחים -->
 
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -105,6 +105,12 @@
       :root {
         --boat-left:  195px;
         --boat-right: 320px;
+        /* מיקומי הישויות לפי גדה (שמאל/ימין) ומשבצת 1-4 */
+        --slot-left-1: translateX(8px); --slot-left-2: translateX(60px); --slot-left-3: translateX(112px); --slot-left-4: translateX(164px);
+        --slot-right-1: translateX(478px); --slot-right-2: translateX(530px); --slot-right-3: translateX(582px); --slot-right-4: translateX(634px);
+        /* מראה ה-eaten (מי שנטרף) — מוגדר פעם אחת */
+        --eaten-bg: rgba(255,100,100,0.92);
+        --eaten-shake: shake-translate 0.5s 0.8s ease;
       }
       .boat {
         display: flex;
@@ -119,7 +125,7 @@
         z-index: 10;
         overflow: hidden;
         pointer-events: none;
-        transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: left 0.8s linear;
       }
       .boat .hull {
         transform: scaleX(var(--boat-hull-flip, 1));
@@ -151,7 +157,7 @@
         flex: 1;
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         align-content: center;
         gap: 6px;
@@ -180,11 +186,31 @@
         75%      { transform: translateX(8px); }
       }
 
-      /* רקע אדום — מסמן מי נאכל */
-      .entity.danger {
-        background: rgba(255,100,100,0.92);
-        animation: shake 0.5s ease;
+      /* השכבה המונפשת: יורשת גודל/צורה/רקע מ-.entity, ומוסיפה רק מיקום מוחלט ותנועה */
+      .entity.moving {
+        position: absolute;
+        top: 87px;
+        left: 0;
+        pointer-events: none;
+        z-index: 11;
+        transition: transform 0.8s linear(0, 0.4525 37.5%, 0.5475 62.5%, 1), background 0.3s;
       }
+
+      /* Hide original entity visuals; labels remain as invisible click targets */
+      .board .entity { opacity: 0; }
+      .board label { cursor: pointer; }
+
+      @keyframes shake-translate {
+        0%,100% { translate: 0; }
+        25%      { translate: -8px; }
+        75%      { translate: 8px; }
+      }
+
+      /* ניסוי #3: הסירה יושבת באותו קו אופקי כמו הישויות — המעבר הישר הקיים כבר "עובר דרכה" בלי שום שינוי במנגנון */
+      .moving.🥦 { transform: var(--slot-🥦, var(--slot-left-4)); }
+      .moving.🐐 { transform: var(--slot-🐐, var(--slot-left-3)); }
+      .moving.🐺 { transform: var(--slot-🐺, var(--slot-left-2)); }
+      .moving.🧑‍🌾 { transform: var(--slot-🧑‍🌾, var(--slot-left-1)); }
 
       .end-msg {
         display: none;
@@ -241,22 +267,25 @@
         transform: translateY(-2px);
       }
 
-      /* CSS STATE MACHINE */
+      .board.🧑‍🌾🐺🐐🥦-- { display: flex; }
+      :root:has(input[name="state"]:checked) .🧑‍🌾🐺🐐🥦-- { display: none; }
+
+      /* כל מצב במקום אחד: מיקום הסירה (--boat-pos), משבצת דחוסה לכל ישות (--slot-<entity>), הצגת הלוח, ומי נטרף (eaten) */
       #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper { .🧑‍🌾🐺🐐🥦-- { display: flex; } }
-      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { .🧑‍🌾🐺🐐--🥦 { display: flex; } }
-      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { .🧑‍🌾🐺🥦--🐐 { display: flex; } }
-      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { .🧑‍🌾🐐🥦--🐺 { display: flex; } }
-      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
-      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { .🧑‍🌾🐺--🐐🥦 { display: flex; } }
-      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { .🧑‍🌾🐐--🐺🥦 { display: flex; } }
-      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
-      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { .🧑‍🌾🥦--🐺🐐 { display: flex; } }
-      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
-      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
-      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
-      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
-      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
-      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { .🧑‍🌾🐺🐐--🥦 { display: flex; } --slot-🥦:var(--slot-right-1); }
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { .🧑‍🌾🐺🥦--🐐 { display: flex; } --slot-🥦:var(--slot-left-3); --slot-🐐:var(--slot-right-1); }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { .🧑‍🌾🐐🥦--🐺 { display: flex; } --slot-🥦:var(--slot-left-3); --slot-🐐:var(--slot-left-2); --slot-🐺:var(--slot-right-1); }
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } --slot-🥦:var(--slot-left-3); --slot-🐐:var(--slot-left-2); --slot-🐺:var(--slot-left-1); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); --boat-hull-flip: -1; .moving.🥦, .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { .🧑‍🌾🐺--🐐🥦 { display: flex; } --slot-🥦:var(--slot-right-2); --slot-🐐:var(--slot-right-1); .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { .🧑‍🌾🐐--🐺🥦 { display: flex; } --slot-🥦:var(--slot-right-2); --slot-🐐:var(--slot-left-2); --slot-🐺:var(--slot-right-1); }
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } --slot-🥦:var(--slot-right-2); --slot-🐐:var(--slot-left-2); --slot-🐺:var(--slot-left-1); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); --boat-hull-flip: -1; .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { .🧑‍🌾🥦--🐺🐐 { display: flex; } --slot-🥦:var(--slot-left-2); --slot-🐐:var(--slot-right-2); --slot-🐺:var(--slot-right-1); .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } --slot-🥦:var(--slot-left-2); --slot-🐐:var(--slot-right-2); --slot-🐺:var(--slot-left-1); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } --slot-🥦:var(--slot-left-2); --slot-🐐:var(--slot-left-1); --slot-🐺:var(--slot-right-2); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); --boat-hull-flip: -1; .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } --slot-🥦:var(--slot-right-3); --slot-🐐:var(--slot-right-2); --slot-🐺:var(--slot-left-1); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } --slot-🥦:var(--slot-right-3); --slot-🐐:var(--slot-left-1); --slot-🐺:var(--slot-right-2); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } --slot-🥦:var(--slot-left-1); --slot-🐐:var(--slot-right-3); --slot-🐺:var(--slot-right-2); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } --slot-🥦:var(--slot-right-4); --slot-🐐:var(--slot-right-3); --slot-🐺:var(--slot-right-2); --slot-🧑‍🌾:var(--slot-right-1); --boat-pos: var(--boat-right); --boat-hull-flip: -1; }
     </style>
   </head>
   <body>
@@ -264,7 +293,7 @@
     <p class="subtitle">רק אתה יכול להסיע את הסירה ורק אחד יכול להצטרף אליך בכל הפלגה<br>אל תשאיר לבד את הזאב עם הכבש ואת הכבש עם הכרוב<br>העבר את כולם מהגדה השמאלית לימנית</p>
 
     <!-- ===== STATE RADIO INPUTS ===== -->
-    <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--" checked />
+    <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--" />
     <input type="radio" name="state" id="🧑‍🌾🐺🐐--🥦" />
     <input type="radio" name="state" id="🧑‍🌾🐺🥦--🐐" />
     <input type="radio" name="state" id="🧑‍🌾🐐🥦--🐺" />
@@ -292,10 +321,10 @@
 
         <div class="board 🧑‍🌾🐺🐐🥦--">
           <div class="board-side">
-            <label for="🐺🐐--🧑‍🌾🥦"><div class="entity">🥦</div></label>
-            <label for="🐺🥦--🧑‍🌾🐐"><div class="entity">🐐</div></label>
-            <label for="🐐🥦--🧑‍🌾🐺"><div class="entity">🐺</div></label>
             <label for="🐺🐐🥦--🧑‍🌾"><div class="entity">🧑‍🌾</div></label>
+            <label for="🐐🥦--🧑‍🌾🐺"><div class="entity">🐺</div></label>
+            <label for="🐺🥦--🧑‍🌾🐐"><div class="entity">🐐</div></label>
+            <label for="🐺🐐--🧑‍🌾🥦"><div class="entity">🥦</div></label>
           </div>
           <div class="board-gap"></div>
           <div class="board-side"></div>
@@ -303,168 +332,83 @@
 
         <div class="board 🧑‍🌾🐺🐐--🥦">
           <div class="board-side">
-            <label for="🐺--🧑‍🌾🐐🥦"><div class="entity">🐐</div></label>
-            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity">🐺</div></label>
             <label for="🐺🐐--🧑‍🌾🥦"><div class="entity">🧑‍🌾</div></label>
+            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity">🐺</div></label>
+            <label for="🐺--🧑‍🌾🐐🥦"><div class="entity">🐐</div></label>
           </div>
           <div class="board-gap"></div>
-          <div class="board-side">
-            <div class="entity">🥦</div>
-          </div>
+          <div class="board-side"></div>
         </div>
 
         <div class="board 🧑‍🌾🐺🥦--🐐">
           <div class="board-side">
-            <label for="🐺--🧑‍🌾🐐🥦"><div class="entity">🥦</div></label>
-            <label for="🥦--🧑‍🌾🐺🐐"><div class="entity">🐺</div></label>
             <label for="🐺🥦--🧑‍🌾🐐"><div class="entity">🧑‍🌾</div></label>
+            <label for="🥦--🧑‍🌾🐺🐐"><div class="entity">🐺</div></label>
+            <label for="🐺--🧑‍🌾🐐🥦"><div class="entity">🥦</div></label>
           </div>
           <div class="board-gap"></div>
-          <div class="board-side">
-            <div class="entity">🐐</div>
-          </div>
+          <div class="board-side"></div>
         </div>
 
         <div class="board 🧑‍🌾🐐🥦--🐺">
           <div class="board-side">
-            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity">🥦</div></label>
-            <label for="🥦--🧑‍🌾🐺🐐"><div class="entity">🐐</div></label>
             <label for="🐐🥦--🧑‍🌾🐺"><div class="entity">🧑‍🌾</div></label>
+            <label for="🥦--🧑‍🌾🐺🐐"><div class="entity">🐐</div></label>
+            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity">🥦</div></label>
           </div>
           <div class="board-gap"></div>
-          <div class="board-side">
-            <div class="entity">🐺</div>
-          </div>
-        </div>
-
-        <div class="board 🐺🐐🥦--🧑‍🌾">
-          <div class="board-side">
-            <div class="entity danger">🥦</div>
-            <div class="entity danger">🐐</div>
-            <div class="entity danger">🐺</div>
-          </div>
-          <div class="board-gap"></div>
-          <div class="board-side">
-            <div class="entity">🧑‍🌾</div>
-          </div>
-        </div>
-
-        <div class="board 🧑‍🌾🐺--🐐🥦">
-          <div class="board-side">
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
-          </div>
-          <div class="board-gap"></div>
-          <div class="board-side">
-            <div class="entity danger">🥦</div>
-            <div class="entity danger">🐐</div>
-          </div>
+          <div class="board-side"></div>
         </div>
 
         <div class="board 🧑‍🌾🐐--🐺🥦">
           <div class="board-side">
-            <label for="--🧑‍🌾🐺🐐🥦"><div class="entity">🐐</div></label>
             <label for="🐐--🧑‍🌾🐺🥦"><div class="entity">🧑‍🌾</div></label>
+            <label for="--🧑‍🌾🐺🐐🥦"><div class="entity">🐐</div></label>
           </div>
           <div class="board-gap"></div>
-          <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐺</div>
-          </div>
+          <div class="board-side"></div>
         </div>
-
-        <div class="board 🐺🐐--🧑‍🌾🥦">
-          <div class="board-side">
-            <div class="entity danger">🐐</div>
-            <div class="entity danger">🐺</div>
-          </div>
-          <div class="board-gap"></div>
-          <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🧑‍🌾</div>
-          </div>
-        </div>
-
-        <div class="board 🧑‍🌾🥦--🐺🐐">
-          <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🧑‍🌾</div>
-          </div>
-          <div class="board-gap"></div>
-          <div class="board-side">
-            <div class="entity danger">🐐</div>
-            <div class="entity danger">🐺</div>
-          </div>
-        </div>
+        <div class="entity moving 🥦">🥦</div>
+        <div class="entity moving 🐐">🐐</div>
+        <div class="entity moving 🧑‍🌾">🧑‍🌾</div>
+        <div class="entity moving 🐺">🐺</div>
 
         <div class="board 🐺🥦--🧑‍🌾🐐">
-          <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐺</div>
-          </div>
+          <div class="board-side"></div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <label for="🧑‍🌾🐺🐐🥦--"><div class="entity">🐐</div></label>
             <label for="🧑‍🌾🐺🥦--🐐"><div class="entity">🧑‍🌾</div></label>
-          </div>
-        </div>
-
-        <div class="board 🐐🥦--🧑‍🌾🐺">
-          <div class="board-side">
-            <div class="entity danger">🥦</div>
-            <div class="entity danger">🐐</div>
-          </div>
-          <div class="board-gap"></div>
-          <div class="board-side">
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🧑‍🌾🐺🐐🥦--"><div class="entity">🐐</div></label>
           </div>
         </div>
 
         <div class="board 🐺--🧑‍🌾🐐🥦">
-          <div class="board-side">
-            <div class="entity">🐺</div>
-          </div>
+          <div class="board-side"></div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <label for="🧑‍🌾🐺🥦--🐐"><div class="entity">🥦</div></label>
-            <label for="🧑‍🌾🐺🐐--🥦"><div class="entity">🐐</div></label>
             <label for="🧑‍🌾🐺--🐐🥦"><div class="entity">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🐐--🥦"><div class="entity">🐐</div></label>
+            <label for="🧑‍🌾🐺🥦--🐐"><div class="entity">🥦</div></label>
           </div>
         </div>
 
         <div class="board 🐐--🧑‍🌾🐺🥦">
-          <div class="board-side">
-            <div class="entity">🐐</div>
-          </div>
+          <div class="board-side"></div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <label for="🧑‍🌾🐐🥦--🐺"><div class="entity">🥦</div></label>
-            <label for="🧑‍🌾🐺🐐--🥦"><div class="entity">🐺</div></label>
             <label for="🧑‍🌾🐐--🐺🥦"><div class="entity">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🐐--🥦"><div class="entity">🐺</div></label>
+            <label for="🧑‍🌾🐐🥦--🐺"><div class="entity">🥦</div></label>
           </div>
         </div>
 
         <div class="board 🥦--🧑‍🌾🐺🐐">
-          <div class="board-side">
-            <div class="entity">🥦</div>
-          </div>
-          <div class="board-gap"></div>
-          <div class="board-side">
-            <label for="🧑‍🌾🐐🥦--🐺"><div class="entity">🐐</div></label>
-            <label for="🧑‍🌾🐺🥦--🐐"><div class="entity">🐺</div></label>
-            <label for="🧑‍🌾🥦--🐺🐐"><div class="entity">🧑‍🌾</div></label>
-          </div>
-        </div>
-
-        <div class="board --🧑‍🌾🐺🐐🥦">
           <div class="board-side"></div>
           <div class="board-gap"></div>
           <div class="board-side">
-            <div class="entity">🥦</div>
-            <div class="entity">🐐</div>
-            <div class="entity">🐺</div>
-            <div class="entity">🧑‍🌾</div>
+            <label for="🧑‍🌾🥦--🐺🐐"><div class="entity">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🥦--🐐"><div class="entity">🐺</div></label>
+            <label for="🧑‍🌾🐐🥦--🐺"><div class="entity">🐐</div></label>
           </div>
         </div>
 
@@ -485,5 +429,6 @@
 
       <!-- </div> -->
     </div>
+    <!-- /wrapper -->
   </body>
 </html>

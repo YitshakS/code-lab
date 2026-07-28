@@ -42,10 +42,14 @@
         text-align: center;
       }
 
+      .wrapper {
+        min-height: 310px;
+      }
+
       /* לוח משחק */
       .scene {
         direction: ltr;
-        width: min(700px, 95vw);
+        width: min(690px, 95vw);
         height: 220px;
         display: flex;
         position: relative;
@@ -71,7 +75,7 @@
 
       /* נהר */
       .river {
-        width: 130px;
+        width: 250px;
         /* flex-shrink: 0; */
         background: linear-gradient(to bottom, #1e90de, #0c6dad);
         position: relative;
@@ -102,17 +106,21 @@
         display: flex;
         left: var(--boat-left);
         position: absolute;
-        bottom: 18px;
-        width: 80px;
-        height: 44px;
-        background: linear-gradient(to bottom, #9b6b42, #5e3d1e);
-        border-radius: 8px 8px 28px 28px;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.4rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+        top: 10%;
+        width: 220px;
+        height: 160px;
+        align-items: flex-start;
+        justify-content: flex-start;
+        font-size: 8rem;
         z-index: 10;
+        overflow: hidden;
+        pointer-events: none;
         transition: left 0.8s 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .boat .hull {
+        transform: scaleX(var(--boat-hull-flip, 1));
+        mask-image: linear-gradient(to bottom, #000 70%, transparent 80%);
+        -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 80%);
       }
 
       .game-board {
@@ -139,12 +147,14 @@
         flex: 1;
         display: flex;
         flex-wrap: wrap;
-        align-content: flex-start;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
         gap: 6px;
-        padding: 28px 8px 8px;
+        padding: 8px;
       }
       .board-gap {
-        width: 130px;
+        width: 250px;
         flex-shrink: 0;
       }
 
@@ -252,7 +262,7 @@
       }
 
       .moves-panel {
-        width: min(700px, 95vw);
+        width: min(690px, 95vw);
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -288,8 +298,8 @@
       /* STATE MACHINE — CSS */
 
       :root {
-        --boat-left:  285px;
-        --boat-right: 335px;
+        --boat-left:  195px;
+        --boat-right: 320px;
       }
 
       .game-board.🧑‍🌾🐺🐐🥦-- { display: flex; }
@@ -305,7 +315,7 @@
       #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .boat,
       #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper .boat,
       #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper .boat,
-      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .boat { left: var(--boat-right); }
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper .boat { left: var(--boat-right); --boat-hull-flip: -1; }
 
       /* הצגת הלוח */
       .🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .🐺🥦--🧑‍🌾🐐,
@@ -329,7 +339,7 @@
 
   <body>
     <h1>זאב, עז וכרוב 🌊</h1>
-    <p class="subtitle">קח את כולם לגדה ימין בשלום — ללא JS, רק CSS</p>
+    <p class="subtitle">רק אתה יכול להסיע את הסירה ורק אחד יכול להצטרף אליך בכל הפלגה<br>אל תשאיר לבד את הזאב עם הכבש ואת הכבש עם הכרוב<br>העבר את כולם מהגדה השמאלית לימנית</p>
 
     <!-- ===== STATE RADIO INPUTS ===== -->
     <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--reset" />
@@ -362,11 +372,11 @@
 
       <!-- ===== SCENE ===== -->
       <div class="scene">
-        <div class="bank"><span class="bank-label">גדה שמאל ← התחלה</span></div>
+        <div class="bank"><span class="bank-label">גדה שמאל</span></div>
         <div class="river"></div>
-        <div class="bank"><span class="bank-label">גדה ימין ← יעד</span></div>
+        <div class="bank"><span class="bank-label">גדה ימין</span></div>
 
-        <div class="boat">⛵</div>
+        <div class="boat"><span class="hull">⛵</span></div>
 
         <div class="game-board 🧑‍🌾🐺🐐🥦--">
           <div class="board-side">
