@@ -1,0 +1,496 @@
+<!-- עם אנימצית מעברים -->
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>זאב, עז וכרוב</title>
+    <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        /* padding: 0; */
+      }
+
+      input[type="radio"] {
+        position: absolute;
+        /* opacity: 0; */
+        /* pointer-events: none; */
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        min-height: 100vh;
+        background: linear-gradient(to bottom, #87ceeb 55%, #3d8b37 55%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        /* padding: 20px; */
+      }
+
+      h1 {
+        color: #fff;
+        font-size: 1.8rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      }
+      .subtitle {
+        color: rgba(255,255,255,0.9);
+        font-size: 0.85rem;
+        text-align: center;
+      }
+
+      .wrapper {
+        min-height: 310px;
+      }
+
+      /* לוח משחק */
+      .scene {
+        direction: ltr;
+        width: min(690px, 95vw);
+        height: 220px;
+        display: flex;
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      }
+      /* גדות נהר */
+      .bank {
+        flex: 1;
+        background: linear-gradient(to bottom, #c9a96e, #8b6331);
+        padding: 10px 6px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .bank-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: rgba(255,255,255,0.9);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      }
+
+      /* נהר */
+      .river {
+        width: 250px;
+        /* flex-shrink: 0; */
+        background: linear-gradient(to bottom, #1e90de, #0c6dad);
+        position: relative;
+        overflow: hidden;
+      }
+      .river::before, .river::after {
+        content: "";
+        position: absolute;
+        left: -50%;
+        width: 200%;
+        height: 12px;
+        background: rgba(255,255,255,0.18);
+        border-radius: 50%;
+        animation: wave 3s linear infinite;
+      }
+      .river::before { top: 55px; }
+      .river::after {
+        top: 90px;
+        animation-delay: 1.5s;
+      }
+      @keyframes wave {
+        from { transform: translateX(0); }
+        to   { transform: translateX(50%); }
+      }
+
+      /* ===== BOAT ===== */
+      :root {
+        --boat-left:  195px;
+        --boat-right: 320px;
+        /* מראה ה-eaten (מי שנטרף) — מוגדר פעם אחת */
+        --eaten-bg: rgba(255,100,100,0.92);
+        --eaten-shake: shake-translate 0.5s 0.8s ease;
+      }
+      .boat {
+        display: flex;
+        left: calc(var(--boat-left) + var(--🧑‍🌾-right,0) * (var(--boat-right) - var(--boat-left)));
+        position: absolute;
+        top: 10%;
+        width: 220px;
+        height: 160px;
+        align-items: flex-start;
+        justify-content: flex-start;
+        font-size: 8rem;
+        z-index: 10;
+        overflow: hidden;
+        pointer-events: none;
+        transition: left 0.8s 0.4s ease-out;
+      }
+      .boat .hull {
+        transform: scaleX(var(--boat-hull-flip, 1));
+        mask-image: linear-gradient(to bottom, #000 70%, transparent 80%);
+        -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 80%);
+      }
+
+      .board {
+        position: absolute;
+        inset: 0;
+        display: none;
+        pointer-events: none;
+      }
+
+      .board label {
+        pointer-events: auto;
+        display: contents;
+      }
+      .board label .entity {
+        cursor: pointer;
+        transition: background 0.15s, transform 0.15s;
+      }
+      .board label:hover .entity {
+        background: rgba(255,255,255,0.75);
+        transform: scale(1.1);
+      }
+
+      .board-side {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(4, 46px);
+        justify-content: center;
+        align-content: center;
+        gap: 6px;
+        padding: 8px;
+      }
+      .board-side .🧑‍🌾 { grid-column: 1; }
+      .board-side .🐺 { grid-column: 2; }
+      .board-side .🐐 { grid-column: 3; }
+      .board-side .🥦 { grid-column: 4; }
+      .board-gap {
+        width: 250px;
+        flex-shrink: 0;
+      }
+
+      .entity {
+        width: 46px;
+        height: 46px;
+        background: rgba(255,255,255,0.92);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      }
+
+      @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        25%      { transform: translateX(-8px); }
+        75%      { transform: translateX(8px); }
+      }
+
+      /* השכבה המונפשת: יורשת גודל/צורה/רקע מ-.entity, ומוסיפה רק מיקום מוחלט ותנועה */
+      .entity.moving {
+        position: absolute;
+        top: 87px;
+        left: 0;
+        pointer-events: none;
+        z-index: 8;
+        transition: transform 0.8s ease-in-out, background 0.3s;
+      }
+
+      /* Hide original entity visuals; labels remain as invisible click targets */
+      .board .entity { opacity: 0; }
+      .board label { cursor: pointer; }
+
+      @keyframes shake-translate {
+        0%,100% { translate: 0; }
+        25%      { translate: -8px; }
+        75%      { translate: 8px; }
+      }
+
+      /* fixed slot folded into base; --<entity>-right (inherited from .wrapper) toggles bank */
+      .moving.🧑‍🌾 { transform: translateX(calc(var(--🧑‍🌾-right,0)*470px + 8px)); }
+      .moving.🐺 { transform: translateX(calc(var(--🐺-right,0)*470px + 60px)); }
+      .moving.🐐 { transform: translateX(calc(var(--🐐-right,0)*470px + 112px)); }
+      .moving.🥦 { transform: translateX(calc(var(--🥦-right,0)*470px + 164px)); }
+
+      /* ניסוי: הליכה לסירה (0-20%), הפלגה יחד עם הסירה (20-60%, תואם את תזמון .boat), הליכה למקום (60-100%) */
+      @keyframes cross-via-boat-🧑‍🌾 {
+        from { transform: translateX(8px); animation-timing-function: linear; }
+        20%  { transform: translateX(235px); animation-timing-function: ease-out; }
+        60%  { transform: translateX(360px); animation-timing-function: linear; }
+        to   { transform: translateX(478px); }
+      }
+      @keyframes cross-via-boat-🐐 {
+        from { transform: translateX(112px); animation-timing-function: linear; }
+        20%  { transform: translateX(285px); animation-timing-function: ease-out; }
+        60%  { transform: translateX(410px); animation-timing-function: linear; }
+        to   { transform: translateX(582px); }
+      }
+      @keyframes cross-via-boat-🐺 {
+        from { transform: translateX(60px); animation-timing-function: linear; }
+        20%  { transform: translateX(285px); animation-timing-function: ease-out; }
+        60%  { transform: translateX(410px); animation-timing-function: linear; }
+        to   { transform: translateX(530px); }
+      }
+      @keyframes cross-via-boat-🥦 {
+        from { transform: translateX(164px); animation-timing-function: linear; }
+        20%  { transform: translateX(285px); animation-timing-function: ease-out; }
+        60%  { transform: translateX(410px); animation-timing-function: linear; }
+        to   { transform: translateX(634px); }
+      }
+      @keyframes cross-back-via-boat-🧑‍🌾 {
+        from { transform: translateX(478px); animation-timing-function: linear; }
+        20%  { transform: translateX(360px); animation-timing-function: ease-out; }
+        60%  { transform: translateX(235px); animation-timing-function: linear; }
+        to   { transform: translateX(8px); }
+      }
+      @keyframes cross-back-via-boat-🐐 {
+        from { transform: translateX(582px); animation-timing-function: linear; }
+        20%  { transform: translateX(410px); animation-timing-function: ease-out; }
+        60%  { transform: translateX(285px); animation-timing-function: linear; }
+        to   { transform: translateX(112px); }
+      }
+      @keyframes cross-back-via-boat-🐺 {
+        from { transform: translateX(530px); animation-timing-function: linear; }
+        20%  { transform: translateX(410px); animation-timing-function: ease-out; }
+        60%  { transform: translateX(285px); animation-timing-function: linear; }
+        to   { transform: translateX(60px); }
+      }
+      @keyframes cross-back-via-boat-🥦 {
+        from { transform: translateX(634px); animation-timing-function: linear; }
+        20%  { transform: translateX(410px); animation-timing-function: ease-out; }
+        60%  { transform: translateX(285px); animation-timing-function: linear; }
+        to   { transform: translateX(164px); }
+      }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .moving.🧑‍🌾 { animation: cross-via-boat-🧑‍🌾 2s linear forwards; }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper .moving.🐐 { animation: cross-via-boat-🐐 2s linear forwards; }
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper .moving.🧑‍🌾 { animation: cross-back-via-boat-🧑‍🌾 2s linear forwards; }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .moving.🧑‍🌾 { animation: cross-via-boat-🧑‍🌾 2s linear forwards; }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper .moving.🐺 { animation: cross-via-boat-🐺 2s linear forwards; }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .moving.🧑‍🌾 { animation: cross-back-via-boat-🧑‍🌾 2s linear forwards; }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper .moving.🐐 { animation: cross-back-via-boat-🐐 2s linear forwards; }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .moving.🧑‍🌾 { animation: cross-via-boat-🧑‍🌾 2s linear forwards; }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper .moving.🥦 { animation: cross-via-boat-🥦 2s linear forwards; }
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper .moving.🧑‍🌾 { animation: cross-back-via-boat-🧑‍🌾 2s linear forwards; }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .moving.🧑‍🌾 { animation: cross-via-boat-🧑‍🌾 2s linear forwards; }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper .moving.🐐 { animation: cross-via-boat-🐐 2s linear forwards; }
+
+      .end-msg {
+        display: none;
+        width: 100%;
+        padding: 10px 16px;
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: center;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+        animation: shake 0.5s ease;
+      }
+      .end-msg.lose {
+        background: rgba(180,30,30,0.85);
+      }
+      .end-msg.win  {
+        background: rgba(20,160,50,0.85);
+      }
+
+      /*
+      .move-panel {
+        width: min(700px, 95vw);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+      }
+      */
+
+      .btn-move {
+        display: none;
+        flex-wrap: wrap;
+        /* column-gap: 8px; */
+        /* gap: 8px; */
+        justify-content: center;
+      }
+
+      .btn {
+        padding: 9px 16px;
+        background: rgba(255,255,255,0.18);
+        border: 2px solid rgba(255,255,255,0.55);
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        font-size: 0.88rem;
+        font-weight: 600;
+        backdrop-filter: blur(6px);
+        transition: background 0.2s, transform 0.1s;
+        user-select: none;
+      }
+      .btn:hover {
+        background: rgba(255,255,255,0.32);
+        transform: translateY(-2px);
+      }
+
+      .board.🧑‍🌾🐺🐐🥦-- { display: flex; }
+      :root:has(input[name="state"]:checked) .🧑‍🌾🐺🐐🥦-- { display: none; }
+
+      /* כל מצב במקום אחד: מי בצד ימין (--<emoji>-right), הצגת הלוח, ומי נטרף (eaten) */
+      #🧑‍🌾🐺🐐🥦--:checked ~ .wrapper { .🧑‍🌾🐺🐐🥦-- { display: flex; } }
+      #🧑‍🌾🐺🐐--🥦:checked ~ .wrapper { .🧑‍🌾🐺🐐--🥦 { display: flex; } --🥦-right:1; }
+      #🧑‍🌾🐺🥦--🐐:checked ~ .wrapper { .🧑‍🌾🐺🥦--🐐 { display: flex; } --🐐-right:1; }
+      #🧑‍🌾🐐🥦--🐺:checked ~ .wrapper { .🧑‍🌾🐐🥦--🐺 { display: flex; } --🐺-right:1; }
+      #🐺🐐🥦--🧑‍🌾:checked ~ .wrapper { .🐺🐐🥦--🧑‍🌾 { display: flex; } --🧑‍🌾-right:1; --boat-hull-flip: -1; .moving.🥦, .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🐺--🐐🥦:checked ~ .wrapper { .🧑‍🌾🐺--🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🐐--🐺🥦:checked ~ .wrapper { .🧑‍🌾🐐--🐺🥦 { display: flex; } --🥦-right:1; --🐺-right:1; }
+      #🐺🐐--🧑‍🌾🥦:checked ~ .wrapper { .🐺🐐--🧑‍🌾🥦 { display: flex; } --🥦-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🧑‍🌾🥦--🐺🐐:checked ~ .wrapper { .🧑‍🌾🥦--🐺🐐 { display: flex; } --🐐-right:1; --🐺-right:1; .moving.🐐, .moving.🐺 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺🥦--🧑‍🌾🐐:checked ~ .wrapper { .🐺🥦--🧑‍🌾🐐 { display: flex; } --🐐-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; }
+      #🐐🥦--🧑‍🌾🐺:checked ~ .wrapper { .🐐🥦--🧑‍🌾🐺 { display: flex; } --🐺-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; .moving.🥦, .moving.🐐 { background: var(--eaten-bg); animation: var(--eaten-shake); } }
+      #🐺--🧑‍🌾🐐🥦:checked ~ .wrapper { .🐺--🧑‍🌾🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; }
+      #🐐--🧑‍🌾🐺🥦:checked ~ .wrapper { .🐐--🧑‍🌾🐺🥦 { display: flex; } --🥦-right:1; --🐺-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; }
+      #🥦--🧑‍🌾🐺🐐:checked ~ .wrapper { .🥦--🧑‍🌾🐺🐐 { display: flex; } --🐐-right:1; --🐺-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; }
+      #--🧑‍🌾🐺🐐🥦:checked ~ .wrapper { .--🧑‍🌾🐺🐐🥦 { display: flex; } --🥦-right:1; --🐐-right:1; --🐺-right:1; --🧑‍🌾-right:1; --boat-hull-flip: -1; }
+    </style>
+  </head>
+  <body>
+    <h1>זאב, עז וכרוב 🌊</h1>
+    <p class="subtitle">רק אתה יכול להסיע את הסירה ורק אחד יכול להצטרף אליך בכל הפלגה<br>אל תשאיר לבד את הזאב עם הכבש ואת הכבש עם הכרוב<br>העבר את כולם מהגדה השמאלית לימנית</p>
+
+    <!-- ===== STATE RADIO INPUTS ===== -->
+    <input type="radio" name="state" id="🧑‍🌾🐺🐐🥦--" />
+    <input type="radio" name="state" id="🧑‍🌾🐺🐐--🥦" />
+    <input type="radio" name="state" id="🧑‍🌾🐺🥦--🐐" />
+    <input type="radio" name="state" id="🧑‍🌾🐐🥦--🐺" />
+    <input type="radio" name="state" id="🐺🐐🥦--🧑‍🌾" />
+    <input type="radio" name="state" id="🧑‍🌾🐺--🐐🥦" />
+    <input type="radio" name="state" id="🧑‍🌾🐐--🐺🥦" />
+    <input type="radio" name="state" id="🐺🐐--🧑‍🌾🥦" />
+    <input type="radio" name="state" id="🧑‍🌾🥦--🐺🐐" />
+    <input type="radio" name="state" id="🐺🥦--🧑‍🌾🐐" />
+    <input type="radio" name="state" id="🐐🥦--🧑‍🌾🐺" />
+    <input type="radio" name="state" id="🐺--🧑‍🌾🐐🥦" />
+    <input type="radio" name="state" id="🐐--🧑‍🌾🐺🥦" />
+    <input type="radio" name="state" id="🥦--🧑‍🌾🐺🐐" />
+    <input type="radio" name="state" id="--🧑‍🌾🐺🐐🥦" />
+
+    <div class="wrapper">
+
+      <!-- ===== SCENE ===== -->
+      <div class="scene">
+        <div class="bank"><span class="bank-label">גדה שמאל</span></div>
+        <div class="river"></div>
+        <div class="bank"><span class="bank-label">גדה ימין</span></div>
+
+        <div class="boat"><span class="hull">⛵</span></div>
+
+        <div class="board 🧑‍🌾🐺🐐🥦--">
+          <div class="board-side">
+            <label for="🐺🐐🥦--🧑‍🌾"><div class="entity 🧑‍🌾">🧑‍🌾</div></label>
+            <label for="🐐🥦--🧑‍🌾🐺"><div class="entity 🐺">🐺</div></label>
+            <label for="🐺🥦--🧑‍🌾🐐"><div class="entity 🐐">🐐</div></label>
+            <label for="🐺🐐--🧑‍🌾🥦"><div class="entity 🥦">🥦</div></label>
+          </div>
+          <div class="board-gap"></div>
+          <div class="board-side"></div>
+        </div>
+
+        <div class="board 🧑‍🌾🐺🐐--🥦">
+          <div class="board-side">
+            <label for="🐺🐐--🧑‍🌾🥦"><div class="entity 🧑‍🌾">🧑‍🌾</div></label>
+            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity 🐺">🐺</div></label>
+            <label for="🐺--🧑‍🌾🐐🥦"><div class="entity 🐐">🐐</div></label>
+          </div>
+          <div class="board-gap"></div>
+          <div class="board-side"></div>
+        </div>
+
+        <div class="board 🧑‍🌾🐺🥦--🐐">
+          <div class="board-side">
+            <label for="🐺🥦--🧑‍🌾🐐"><div class="entity 🧑‍🌾">🧑‍🌾</div></label>
+            <label for="🥦--🧑‍🌾🐺🐐"><div class="entity 🐺">🐺</div></label>
+            <label for="🐺--🧑‍🌾🐐🥦"><div class="entity 🥦">🥦</div></label>
+          </div>
+          <div class="board-gap"></div>
+          <div class="board-side"></div>
+        </div>
+
+        <div class="board 🧑‍🌾🐐🥦--🐺">
+          <div class="board-side">
+            <label for="🐐🥦--🧑‍🌾🐺"><div class="entity 🧑‍🌾">🧑‍🌾</div></label>
+            <label for="🥦--🧑‍🌾🐺🐐"><div class="entity 🐐">🐐</div></label>
+            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity 🥦">🥦</div></label>
+          </div>
+          <div class="board-gap"></div>
+          <div class="board-side"></div>
+        </div>
+
+        <div class="board 🧑‍🌾🐐--🐺🥦">
+          <div class="board-side">
+            <label for="🐐--🧑‍🌾🐺🥦"><div class="entity 🧑‍🌾">🧑‍🌾</div></label>
+            <label for="--🧑‍🌾🐺🐐🥦"><div class="entity 🐐">🐐</div></label>
+          </div>
+          <div class="board-gap"></div>
+          <div class="board-side"></div>
+        </div>
+        <div class="entity moving 🥦">🥦</div>
+        <div class="entity moving 🐐">🐐</div>
+        <div class="entity moving 🧑‍🌾">🧑‍🌾</div>
+        <div class="entity moving 🐺">🐺</div>
+
+        <div class="board 🐺🥦--🧑‍🌾🐐">
+          <div class="board-side"></div>
+          <div class="board-gap"></div>
+          <div class="board-side">
+            <label for="🧑‍🌾🐺🥦--🐐"><div class="entity 🧑‍🌾">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🐐🥦--"><div class="entity 🐐">🐐</div></label>
+          </div>
+        </div>
+
+        <div class="board 🐺--🧑‍🌾🐐🥦">
+          <div class="board-side"></div>
+          <div class="board-gap"></div>
+          <div class="board-side">
+            <label for="🧑‍🌾🐺--🐐🥦"><div class="entity 🧑‍🌾">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🐐--🥦"><div class="entity 🐐">🐐</div></label>
+            <label for="🧑‍🌾🐺🥦--🐐"><div class="entity 🥦">🥦</div></label>
+          </div>
+        </div>
+
+        <div class="board 🐐--🧑‍🌾🐺🥦">
+          <div class="board-side"></div>
+          <div class="board-gap"></div>
+          <div class="board-side">
+            <label for="🧑‍🌾🐐--🐺🥦"><div class="entity 🧑‍🌾">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🐐--🥦"><div class="entity 🐺">🐺</div></label>
+            <label for="🧑‍🌾🐐🥦--🐺"><div class="entity 🥦">🥦</div></label>
+          </div>
+        </div>
+
+        <div class="board 🥦--🧑‍🌾🐺🐐">
+          <div class="board-side"></div>
+          <div class="board-gap"></div>
+          <div class="board-side">
+            <label for="🧑‍🌾🥦--🐺🐐"><div class="entity 🧑‍🌾">🧑‍🌾</div></label>
+            <label for="🧑‍🌾🐺🥦--🐐"><div class="entity 🐺">🐺</div></label>
+            <label for="🧑‍🌾🐐🥦--🐺"><div class="entity 🐐">🐐</div></label>
+          </div>
+        </div>
+
+      </div>
+      <!-- /scene -->
+      
+      <!-- ===== MOVES PANEL ===== -->
+      <!-- <div class="move-panel"> -->
+
+        <div class="end-msg lose 🧑‍🌾🐺--🐐🥦 🐐🥦--🧑‍🌾🐺">העז אכלה את הכרוב — השארת אותם לבד! 😱</div>
+        <div class="end-msg lose 🐺🐐--🧑‍🌾🥦 🧑‍🌾🥦--🐺🐐">הזאב אכל את העז — השארת אותם לבד! 😱</div>
+        <div class="end-msg lose 🐺🐐🥦--🧑‍🌾">העז אכלה את הכרוב והזאב אכל את העז — השארת אותם לבד! 😱</div>
+        <div class="end-msg win --🧑‍🌾🐺🐐🥦">ניצחת! הצלחת להעביר את כולם לגדה הימנית 🎉</div>
+  
+        <div class="btn-move 🐺🐐--🧑‍🌾🥦 🧑‍🌾🥦--🐺🐐 🧑‍🌾🐺--🐐🥦 🐐🥦--🧑‍🌾🐺 🐺🐐🥦--🧑‍🌾 --🧑‍🌾🐺🐐🥦">
+          <label for="🧑‍🌾🐺🐐🥦--" class="btn">🔄 שחק שוב</label>
+        </div>
+
+      <!-- </div> -->
+    </div>
+    <!-- /wrapper -->
+  </body>
+</html>
